@@ -89,7 +89,7 @@ public class SignUpUI extends JFrame {
                     emailField.setText("");
                     mobileNoField.setText("");
                     // Optionally, open a new window or switch to another view
-                    new home().setVisible(true);
+                    new Login().setVisible(true);
                 }
             }
         });

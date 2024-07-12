@@ -6,6 +6,7 @@ import javax.swing.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Font;
 
 public class WelcomePage extends JFrame {
 
@@ -47,23 +48,37 @@ public class WelcomePage extends JFrame {
 
         setContentPane(contentPane);
         
-        JButton btnNewButton = new JButton("Sign up");
+        JButton btnNewButton = new JButton("Admin");
         btnNewButton.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		new SignUpForm().setVisible(true);
-        	}
-        });
-        btnNewButton.setBounds(798, 54, 89, 23);
-        contentPane.add(btnNewButton);
-        setVisible(true);
-        JButton btnNewButton_1 = new JButton("Sign in");
-        btnNewButton_1.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		new Login_S().setVisible(true);
         	}
         });
-        btnNewButton_1.setBounds(798, 117, 89, 23);
+        btnNewButton.setBounds(850, 115, 89, 23);
+        contentPane.add(btnNewButton);
+        setVisible(true);
+        JButton btnNewButton_1 = new JButton("Donor");
+        btnNewButton_1.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		new SignUpUI().setVisible(true);
+        	}
+        });
+        btnNewButton_1.setBounds(850, 151, 89, 23);
         contentPane.add(btnNewButton_1);
+        
+        JButton btnNewButton_1_1 = new JButton("Patient");
+        btnNewButton_1_1.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		new UserSignUpUI().setVisible(true);
+        	}
+        });
+        btnNewButton_1_1.setBounds(850, 185, 89, 23);
+        contentPane.add(btnNewButton_1_1);
+        
+        JLabel lblNewLabel = new JLabel("Sign Up As:");
+        lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 34));
+        lblNewLabel.setBounds(745, 32, 210, 52);
+        contentPane.add(lblNewLabel);
         setVisible(true);
     }
 
