@@ -19,7 +19,7 @@ import java.awt.Font;
 import javax.swing.JScrollPane;
 import java.awt.Color;
 
-public class allDonorDetails extends JFrame {
+public class allPatientDetails extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
@@ -33,7 +33,7 @@ public class allDonorDetails extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    allDonorDetails frame = new allDonorDetails();
+                	allPatientDetails frame = new allPatientDetails();
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -45,7 +45,7 @@ public class allDonorDetails extends JFrame {
     /**
      * Create the frame.
      */
-    public allDonorDetails() {
+    public allPatientDetails() {
     	setForeground(Color.PINK);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 1180, 500);
@@ -54,7 +54,7 @@ public class allDonorDetails extends JFrame {
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        JLabel lblNewLabel = new JLabel("Donor Details");
+        JLabel lblNewLabel = new JLabel("Patient Details");
         lblNewLabel.setFont(new Font("Sitka Text", Font.BOLD | Font.ITALIC, 60));
         lblNewLabel.setBounds(99, 11, 556, 76);
         contentPane.add(lblNewLabel);
@@ -68,7 +68,7 @@ public class allDonorDetails extends JFrame {
         table.setModel(new DefaultTableModel(
             new Object[][] {},
             new String[] {
-                "DonorId","UserType", "Name", "FatherName", "MotherName", "DOB", "MobileNo", "Gender", "Email", "BloodGroup","BloodUnit", "City", "Address", "CreatedAt", "UpdatedAt"
+                "PatientId","UserType", "Name", "FatherName", "MotherName", "DOB", "MobileNo", "Gender", "Email", "BloodGroup","BloodUnit", "City", "Address", "CreatedAt", "UpdatedAt"
             }
         ));
 
@@ -151,11 +151,12 @@ public class allDonorDetails extends JFrame {
     private void loadData() {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0); // Clear existing rows
-        String query = "SELECT * FROM donor";
+        String query = "SELECT * FROM Patient";
         try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(query)) {
             while (rs.next()) {
-                String DonorId = rs.getString(1);
-                String UserType = rs.getString(2);
+                String PatientId = rs.getString(1);
+                @SuppressWarnings("unused")
+				String UserType = rs.getString(2);
                 String Name = rs.getString(3);
                 String FatherName = rs.getString(4);
                 String MotherName = rs.getString(5);
@@ -169,7 +170,7 @@ public class allDonorDetails extends JFrame {
                 String Address = rs.getString(13);
                 String CreatedAt = rs.getString(14);
                 String UpdatedAt = rs.getString(15);
-                String[] row = { DonorId,UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup,BloodUnit, City, Address, CreatedAt, UpdatedAt};
+                String[] row = { PatientId,UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup,BloodUnit, City, Address, CreatedAt, UpdatedAt};
                 model.addRow(row);
             }
         } catch (Exception e) {

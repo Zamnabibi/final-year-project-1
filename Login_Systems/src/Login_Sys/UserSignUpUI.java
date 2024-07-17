@@ -1,6 +1,9 @@
 package Login_Sys;
 
 import java.awt.Font;
+import java.awt.Image;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -37,7 +40,7 @@ public class UserSignUpUI extends JFrame {
 
         JLabel usernameLabel = new JLabel("Username:");
         usernameLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        usernameLabel.setBounds(200, 100, 100, 25); // Adjusted position
+        usernameLabel.setBounds(79, 100, 100, 25); // Adjusted position
         contentPane.add(usernameLabel);
 
         usernameField = new JTextField();
@@ -47,7 +50,7 @@ public class UserSignUpUI extends JFrame {
 
         JLabel passwordLabel = new JLabel("Password:");
         passwordLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        passwordLabel.setBounds(200, 150, 100, 20); // Adjusted position
+        passwordLabel.setBounds(79, 152, 100, 20); // Adjusted position
         contentPane.add(passwordLabel);
 
         passwordField = new JPasswordField();
@@ -57,7 +60,7 @@ public class UserSignUpUI extends JFrame {
 
         JLabel emailLabel = new JLabel("Email:");
         emailLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        emailLabel.setBounds(200, 200, 100, 20); // Adjusted position
+        emailLabel.setBounds(79, 202, 100, 20); // Adjusted position
         contentPane.add(emailLabel);
 
         emailField = new JTextField();
@@ -67,7 +70,7 @@ public class UserSignUpUI extends JFrame {
 
         JLabel mobileNoLabel = new JLabel("Mobile No:");
         mobileNoLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        mobileNoLabel.setBounds(200, 250, 100, 20); // Adjusted position
+        mobileNoLabel.setBounds(79, 252, 100, 20); // Adjusted position
         contentPane.add(mobileNoLabel);
 
         mobileNoField = new JTextField();
@@ -77,7 +80,7 @@ public class UserSignUpUI extends JFrame {
 
         JLabel addressLabel = new JLabel("Address:");
         addressLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        addressLabel.setBounds(200, 300, 100, 20); // Adjusted position
+        addressLabel.setBounds(79, 302, 100, 20); // Adjusted position
         contentPane.add(addressLabel);
 
         addressField = new JTextField();
@@ -89,6 +92,12 @@ public class UserSignUpUI extends JFrame {
         submitButton.setFont(new Font("Arial", Font.BOLD, 14));
         submitButton.setBounds(320, 350, 100, 30); // Adjusted position
         contentPane.add(submitButton);
+        
+        JLabel lblNewLabel = new JLabel("");
+        lblNewLabel.setBounds(0, 0, 784, 461);
+        Image img4 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
+        lblNewLabel.setIcon(new ImageIcon(img4));
+        contentPane.add(lblNewLabel);
 
         submitButton.addActionListener(new ActionListener() {
             @Override

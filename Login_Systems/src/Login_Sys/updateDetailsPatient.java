@@ -8,8 +8,9 @@ import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 
-public class deleteDonor extends JFrame {
+public class updateDetailsPatient extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
@@ -26,13 +27,14 @@ public class deleteDonor extends JFrame {
     private JTextArea textArea;
     private Connection con;
     private JTextField textField_10;
+    private JLabel timeLabel;
     private JTextField textField_11;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                	deleteDonor frame = new deleteDonor();
+                	updateDetailsPatient frame = new updateDetailsPatient();
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -41,13 +43,31 @@ public class deleteDonor extends JFrame {
         });
     }
 
-    public deleteDonor() {
+	public updateDetailsPatient() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 850, 500);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
+
+        // Add time label
+        timeLabel = new JLabel(); // Changed from JTextField to JLabel
+        timeLabel.setBounds(640, 10, 184, 20);
+        timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+        contentPane.add(timeLabel);
+
+        // Set the timer to update the JLabel every second
+        Timer timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTime();
+            }
+        });
+        timer.start();
+
+        // Initial time update
+        updateTime();
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -57,7 +77,7 @@ public class deleteDonor extends JFrame {
             JOptionPane.showMessageDialog(null, m);
         }
 
-        JLabel lblNewLabel = new JLabel("Delete Donor ");
+        JLabel lblNewLabel = new JLabel("Update Patient ");
         lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD | Font.ITALIC, 60));
         lblNewLabel.setBounds(130, 0, 666, 69);
         contentPane.add(lblNewLabel);
@@ -66,26 +86,26 @@ public class deleteDonor extends JFrame {
         separator.setBounds(10, 67, 1339, 2);
         contentPane.add(separator);*/
 
-        JLabel lblNewLabel_1 = new JLabel("Donor ID");
+        JLabel lblNewLabel_1 = new JLabel("Patient ID");
         lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 16));
-        lblNewLabel_1.setBounds(30, 86, 100, 23);
+        lblNewLabel_1.setBounds(140, 86, 100, 23);
         contentPane.add(lblNewLabel_1);
 
         textField = new JTextField();
         textField.setFont(new Font("Tahoma", Font.BOLD, 16));
-        textField.setBounds(140, 81, 130, 33);
+        textField.setBounds(250, 80, 130, 33);
         contentPane.add(textField);
         textField.setColumns(10);
 
         JButton btnNewButton = new JButton("Search");
         btnNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String DonorId = textField.getText();
+                String PatientId = textField.getText();
                 try {
                     Statement st = con.createStatement();
-                    ResultSet rs = st.executeQuery("select * from donor where DonorId=" + DonorId);
+                    ResultSet rs = st.executeQuery("SELECT * FROM Patient WHERE PatientId=" + PatientId);
                     if (rs.next()) {
-                        textField_1.setText(rs.getString(3));
+                    	textField_1.setText(rs.getString(3));
                         textField_2.setText(rs.getString(4));
                         textField_3.setText(rs.getString(5));
                         textField_9.setText(rs.getString(6));
@@ -99,9 +119,10 @@ public class deleteDonor extends JFrame {
                         textField_11.setText(rs.getString(2));
                         textField.setEditable(false);
                     } else {
-                        JOptionPane.showMessageDialog(null, "DonorId does not exist");
+                        JOptionPane.showMessageDialog(null, "PatientId does not exist");
                     }
                 } catch (Exception c) {
+                    JOptionPane.showMessageDialog(null, "Error occurred while fetching data.");
                     c.printStackTrace();
                 }
             }
@@ -110,9 +131,20 @@ public class deleteDonor extends JFrame {
         Image img = new ImageIcon(this.getClass().getResource("/search 1.png")).getImage();
         btnNewButton.setIcon(new ImageIcon(img));
         btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 16));
-        btnNewButton.setBounds(306, 80, 116, 35);
+        btnNewButton.setBounds(403, 80, 116, 35);
         contentPane.add(btnNewButton);
-
+        
+        JLabel lblNewLabel_15 = new JLabel("UserType");
+        lblNewLabel_15.setFont(new Font("Tahoma", Font.BOLD, 14));
+        lblNewLabel_15.setBounds(540, 85, 73, 24);
+        contentPane.add(lblNewLabel_15);
+        
+        textField_11 = new JTextField();
+        textField_11.setFont(new Font("Tahoma", Font.BOLD, 14));
+        textField_11.setBounds(641, 87, 183, 20);
+        contentPane.add(textField_11);
+        textField_11.setColumns(10);
+        
         /*JSeparator separator_1 = new JSeparator();
         separator_1.setBounds(10, 120, 1339, 2);
         contentPane.add(separator_1);*/
@@ -162,7 +194,7 @@ public class deleteDonor extends JFrame {
         lblNewLabel_11.setBounds(30, 351, 58, 23);
         contentPane.add(lblNewLabel_11);
 
-        JLabel lblNewLabel_12 = new JLabel("Complete Address");
+        JLabel lblNewLabel_12 = new JLabel("Permant Address");
         lblNewLabel_12.setFont(new Font("Tahoma", Font.BOLD, 14));
         lblNewLabel_12.setBounds(491, 221, 140, 20);
         contentPane.add(lblNewLabel_12);
@@ -172,12 +204,6 @@ public class deleteDonor extends JFrame {
         lblNewLabel_9_1.setBounds(500, 167, 93, 19);
         contentPane.add(lblNewLabel_9_1);
 
-        JLabel lblNewLabel_13 = new JLabel("UserType");
-        lblNewLabel_13.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblNewLabel_13.setBounds(500, 86, 81, 26);
-        contentPane.add(lblNewLabel_13);
-
-        
         textField_10 = new JTextField();
         textField_10.setFont(new Font("Tahoma", Font.BOLD, 14));
         textField_10.setColumns(10);
@@ -218,38 +244,53 @@ public class deleteDonor extends JFrame {
         textArea.setFont(new Font("Monospaced", Font.BOLD, 14));
         textArea.setBounds(641, 226, 183, 114);
         contentPane.add(textArea);
-        
-        textField_11 = new JTextField();
-        textField_11.setFont(new Font("Tahoma", Font.BOLD, 14));
-        textField_11.setBounds(641, 89, 109, 20);
-        contentPane.add(textField_11);
-        textField_11.setColumns(10);
 
         /*JSeparator separator_2 = new JSeparator();
         separator_2.setBounds(10, 399, 1339, 2);
         contentPane.add(separator_2);*/
 
-        JButton btnNewButton_1 = new JButton("Delete");
-        btnNewButton_1.setBounds(90, 396, 109, 35);
+        JButton btnNewButton_1 = new JButton("Update");
+        btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 14));
         btnNewButton_1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String DonorId = textField.getText();
+                Timestamp now = new Timestamp(System.currentTimeMillis());
+                String PatientId = textField.getText();
+                String UserType = textField_11.getText();
+                String Name = textField_1.getText();
+                String FatherName = textField_2.getText();
+                String MotherName = textField_3.getText();
+                String DOB = textField_9.getText();
+                String MobileNo = textField_6.getText();
+                String Gender = textField_8.getText();
+                String Email = textField_4.getText();
+                String BloodGroup = textField_7.getText();
+                String City = textField_5.getText();
+                String Address = textArea.getText();
                 try {
-                    Statement st = con.createStatement();
-                    ResultSet rs = st.executeQuery("SELECT * FROM donor WHERE DonorId=" + DonorId);
-                    if (rs.next()) {
-                        PreparedStatement ps = con.prepareStatement("INSERT INTO History(UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, BloodGroup, BloodUnit, City, Email, Address) SELECT UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, BloodGroup, BloodUnit, City, Email, Address FROM donor WHERE DonorId=?");
-                        ps.setString(1, DonorId);
-                        ps.executeUpdate();
-
-                        st.executeUpdate("DELETE FROM donor WHERE DonorId=" + DonorId);
-                        JOptionPane.showMessageDialog(null, "Deleted successfully");
-                        //clearFields();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "DonorId does not exist");
-                    }
-                } catch (Exception c) {
-                    c.printStackTrace();
+                    String query = "UPDATE Patient SET UserType=?,Name=?, FatherName=?, MotherName=?, DOB=?, MobileNo=?, Gender=?, Email=?, BloodGroup=?, City=?, Address=?, UpdatedAt=? WHERE PatientId=?";
+                    PreparedStatement pst = con.prepareStatement(query);
+                    pst.setString(1, UserType);
+                    pst.setString(2, Name);
+                    pst.setString(3, FatherName);
+                    pst.setString(4, MotherName);
+                    pst.setString(5, DOB);
+                    pst.setString(6, MobileNo);
+                    pst.setString(7, Gender);
+                    pst.setString(8, Email);
+                    pst.setString(9, BloodGroup);
+                    pst.setString(10, City);
+                    pst.setString(11, Address);
+                    pst.setTimestamp(12, now); // Corrected index for UpdatedAt
+                    pst.setString(13, PatientId); // Corrected index for DonorId
+                    pst.executeUpdate();
+                    JOptionPane.showMessageDialog(null, "Successfully Updated");
+                    pst.close();
+                    con.close();
+                    setVisible(false);
+                    new updateDetailsDonor().setVisible(true);
+                } catch (Exception b) {
+                    JOptionPane.showMessageDialog(null, "Error occurred while updating data.");
+                    b.printStackTrace();
                 }
             }
         });
@@ -261,7 +302,7 @@ public class deleteDonor extends JFrame {
         btnNewButton_2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
-                new deleteDonor().setVisible(true);
+                new updateDetailsDonor().setVisible(true);
             }
         });
         Image img3 = new ImageIcon(this.getClass().getResource("/reset-icon.png")).getImage();
@@ -310,5 +351,10 @@ public class deleteDonor extends JFrame {
         lblNewLabel_8.setIcon(new ImageIcon(img4));
         lblNewLabel_8.setBounds(-21, -121, 1370, 749);
         contentPane.add(lblNewLabel_8);
+    }
+
+    private void updateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        timeLabel.setText(sdf.format(new java.util.Date()));
     }
 }

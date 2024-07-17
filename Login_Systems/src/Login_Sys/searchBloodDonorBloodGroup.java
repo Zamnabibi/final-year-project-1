@@ -9,7 +9,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JSeparator;
+//import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JTable;
 import javax.swing.ImageIcon;
@@ -77,9 +77,9 @@ public class searchBloodDonorBloodGroup extends JFrame {
         lblNewLabel.setBounds(111, 11, 951, 51);
         contentPane.add(lblNewLabel);
 
-        JSeparator separator = new JSeparator();
+        /*JSeparator separator = new JSeparator();
         separator.setBounds(10, 73, 1323, 2);
-        contentPane.add(separator);
+        contentPane.add(separator);*/
 
         JLabel lblNewLabel_1 = new JLabel("Blood Group");
         lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -92,9 +92,9 @@ public class searchBloodDonorBloodGroup extends JFrame {
         contentPane.add(textField);
         textField.setColumns(10);
 
-        JSeparator separator_1 = new JSeparator();
+        /*JSeparator separator_1 = new JSeparator();
         separator_1.setBounds(10, 122, 1323, 2);
-        contentPane.add(separator_1);
+        contentPane.add(separator_1);*/
 
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(26, 140, 798, 217);
@@ -103,9 +103,9 @@ public class searchBloodDonorBloodGroup extends JFrame {
         table = new JTable();
         scrollPane.setViewportView(table);
 
-        JSeparator separator_2 = new JSeparator();
+        /*JSeparator separator_2 = new JSeparator();
         separator_2.setBounds(10, 368, 1323, 2);
-        contentPane.add(separator_2);
+        contentPane.add(separator_2);*/
 
         JButton btnNewButton = new JButton("Print");
         Image img3 = new ImageIcon(this.getClass().getResource("/print.png")).getImage();

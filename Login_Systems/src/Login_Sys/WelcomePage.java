@@ -51,7 +51,7 @@ public class WelcomePage extends JFrame {
         JButton btnNewButton = new JButton("Admin");
         btnNewButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		new Login_S().setVisible(true);
+        		new AddAdmin().setVisible(true);
         	}
         });
         btnNewButton.setBounds(850, 115, 89, 23);

@@ -18,13 +18,12 @@ import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.Timer;
 
-public class addNewDonor extends JFrame {
+public class addNewPatient extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
@@ -49,14 +48,12 @@ public class addNewDonor extends JFrame {
      * Launch the application.
      */
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    addNewDonor frame = new addNewDonor();
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        EventQueue.invokeLater(() -> {
+            try {
+                addNewPatient frame = new addNewPatient();
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }
@@ -65,7 +62,7 @@ public class addNewDonor extends JFrame {
      * Create the frame.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-	public addNewDonor() {
+	public addNewPatient() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 850, 500);
         contentPane = new JPanel();
@@ -88,6 +85,7 @@ public class addNewDonor extends JFrame {
         comboBox_2.setFont(new Font("Tahoma", Font.BOLD, 14));
         comboBox_2.setModel(new DefaultComboBoxModel(new String[] {"Donor", "Patient"}));
         contentPane.add(comboBox_2);
+        
 
         // Add time label
         timeLabel = new JLabel(); // Changed from JTextField to JLabel
@@ -96,12 +94,7 @@ public class addNewDonor extends JFrame {
         contentPane.add(timeLabel);
 
         // Set the timer to update the JLabel every second
-        Timer timer = new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateTime();
-            }
-        });
+        Timer timer = new Timer(1000, e -> updateTime());
         timer.start();
 
         // Initial time update
@@ -112,27 +105,25 @@ public class addNewDonor extends JFrame {
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bbms", "root", "zamna0");
             System.out.println("Connection created");
 
-            try (PreparedStatement pst = con.prepareStatement("select max(DonorId) from donor")) {
+            try (PreparedStatement pst = con.prepareStatement("select max(PatientId) from Patient")) {
                 ResultSet rs = pst.executeQuery();
 
                 if (rs.next()) {
                     int id = rs.getInt(1);
-                    id = id + 1;
-                    String str = String.valueOf(id);
-                    lblNewLabel_8.setText(str);
+                    lblNewLabel_8.setText(String.valueOf(id + 1));
                 }
             }
         } catch (Exception m) {
-            JOptionPane.showMessageDialog(null, m);
+            JOptionPane.showMessageDialog(null, "Database Error: " + m.getMessage());
         }
 
-        JLabel lblNewLabel = new JLabel("Add New Donor");
+        JLabel lblNewLabel = new JLabel("Add New Patient");
         lblNewLabel.setBounds(220, 11, 340, 54);
         lblNewLabel.setFont(new Font("Microsoft Himalaya", Font.BOLD | Font.ITALIC, 60));
         contentPane.add(lblNewLabel);
 
-        JLabel lblNewLabel_1 = new JLabel("New Donor ID");
-        lblNewLabel_1.setBounds(26, 81, 119, 21);
+        JLabel lblNewLabel_1 = new JLabel("New Patient ID");
+        lblNewLabel_1.setBounds(20, 81, 146, 21);
         lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 16));
         contentPane.add(lblNewLabel_1);
 
@@ -190,6 +181,15 @@ public class addNewDonor extends JFrame {
         textField_2 = new JTextField();
         textField_2.setBounds(167, 262, 162, 21);
         textField_2.setFont(new Font("Tahoma", Font.BOLD, 14));
+        textField_2.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if (!Character.isDigit(c) && !Character.isWhitespace(c)) {
+                    e.consume();
+                }
+            }
+        });
         contentPane.add(textField_2);
         textField_2.setColumns(10);
 
@@ -197,13 +197,13 @@ public class addNewDonor extends JFrame {
         dateChooser.setBounds(170, 219, 158, 20);
         contentPane.add(dateChooser);
 
-        //JSeparator separator = new JSeparator();
-        //separator.setBounds(10, 56, 1339, 9);
-        //contentPane.add(separator);
+        /*JSeparator separator = new JSeparator();
+        separator.setBounds(10, 56, 1339, 9);
+        contentPane.add(separator);*/
 
-        comboBox = new JComboBox<String>();
+        comboBox = new JComboBox<>();
         comboBox.setBounds(167, 293, 157, 22);
-        comboBox.setModel(new DefaultComboBoxModel<String>(new String[] { "Male", "Female", "Others" }));
+        comboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Male", "Female", "Other" }));
         comboBox.setFont(new Font("Tahoma", Font.BOLD, 14));
         contentPane.add(comboBox);
 
@@ -227,7 +227,7 @@ public class addNewDonor extends JFrame {
         lblNewLabel_11.setFont(new Font("Tahoma", Font.BOLD, 16));
         contentPane.add(lblNewLabel_11);
 
-        JLabel lblNewLabel_12 = new JLabel("Permant Address");
+        JLabel lblNewLabel_12 = new JLabel("Permanent Address");
         lblNewLabel_12.setBounds(480, 182, 165, 30);
         lblNewLabel_12.setFont(new Font("Tahoma", Font.BOLD, 16));
         contentPane.add(lblNewLabel_12);
@@ -238,10 +238,10 @@ public class addNewDonor extends JFrame {
         contentPane.add(textField_3);
         textField_3.setColumns(10);
 
-        comboBox_1 = new JComboBox<String>();
+        comboBox_1 = new JComboBox<>();
         comboBox_1.setBounds(640, 80, 184, 22);
         comboBox_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-        comboBox_1.setModel(new DefaultComboBoxModel<String>(new String[] { "A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-" }));
+        comboBox_1.setModel(new DefaultComboBoxModel<>(new String[] { "A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-" }));
         contentPane.add(comboBox_1);
 
         textField_4 = new JTextField();
@@ -267,20 +267,16 @@ public class addNewDonor extends JFrame {
         contentPane.add(textField_6);
         textField_6.setColumns(10);
 
-        //JSeparator separator_1 = new JSeparator();
-        //separator_1.setBounds(10, 355, 1339, 9);
-        //contentPane.add(separator_1);
+        /*JSeparator separator_1 = new JSeparator();
+        separator_1.setBounds(10, 355, 1339, 9);
+        contentPane.add(separator_1);*/
 
         JButton btnSave = new JButton("Save");
         btnSave.setBounds(56, 393, 111, 30);
         Image img2 = new ImageIcon(this.getClass().getResource("/save.png")).getImage();
         btnSave.setIcon(new ImageIcon(img2));
         btnSave.setFont(new Font("Tahoma", Font.BOLD, 16));
-        btnSave.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                saveDonor();
-            }
-        });
+        btnSave.addActionListener(e -> savePatient());
         contentPane.add(btnSave);
 
         JButton btnReset = new JButton("Reset");
@@ -288,11 +284,7 @@ public class addNewDonor extends JFrame {
         Image img3 = new ImageIcon(this.getClass().getResource("/reset-icon.png")).getImage();
         btnReset.setIcon(new ImageIcon(img3));
         btnReset.setFont(new Font("Tahoma", Font.BOLD, 16));
-        btnReset.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                resetForm();
-            }
-        });
+        btnReset.addActionListener(e -> resetForm());
         contentPane.add(btnReset);
 
         JButton btnClose = new JButton("Close");
@@ -300,11 +292,7 @@ public class addNewDonor extends JFrame {
         Image img1 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
         btnClose.setIcon(new ImageIcon(img1));
         btnClose.setFont(new Font("Tahoma", Font.BOLD, 16));
-        btnClose.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
+        btnClose.addActionListener(e -> dispose());
         contentPane.add(btnClose);
 
         JLabel lblNewLabel_14 = new JLabel("");
@@ -312,6 +300,9 @@ public class addNewDonor extends JFrame {
         Image img4 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
         lblNewLabel_14.setIcon(new ImageIcon(img4));
         contentPane.add(lblNewLabel_14);
+        
+       
+        
     }
 
     private void updateTime() {
@@ -321,20 +312,18 @@ public class addNewDonor extends JFrame {
 
     private void resetForm() {
         dispose();
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    addNewDonor frame = new addNewDonor();
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        EventQueue.invokeLater(() -> {
+            try {
+                addNewPatient frame = new addNewPatient();
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }
 
-    private void saveDonor() {
-    	// Validate form fields
+    private void savePatient() {
+        // Validate form fields
         if (textField.getText().trim().isEmpty() ||
             textField_1.getText().trim().isEmpty() ||
             textField_5.getText().trim().isEmpty() ||
@@ -347,30 +336,31 @@ public class addNewDonor extends JFrame {
             return;
         }
 
+       
         // Get current timestamp
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        
+
         // Retrieve form values
-        String DonorId = lblNewLabel_8.getText();
+        String PatientId = lblNewLabel_8.getText();
         String UserType = (String) comboBox_2.getSelectedItem();
-        String Name = textField.getText();
-        String FatherName = textField_1.getText();
-        String MotherName = textField_5.getText();
+        String Name = textField.getText().trim();
+        String FatherName = textField_1.getText().trim();
+        String MotherName = textField_5.getText().trim();
         SimpleDateFormat dFormat = new SimpleDateFormat("yyyy-MM-dd"); // Format for SQL DATE
         String DOB = dFormat.format(dateChooser.getDate());
-        String MobileNo = textField_2.getText();
+        String MobileNo = textField_2.getText().trim();
         String Gender = (String) comboBox.getSelectedItem();
-        String Email = textField_3.getText();
+        String Email = textField_3.getText().trim();
         String BloodGroup = (String) comboBox_1.getSelectedItem();
-        String BloodUnit = textField_6.getText();
-        String City = textField_4.getText();
-        String Address = textArea.getText();
+        String BloodUnit = textField_6.getText().trim();
+        String City = textField_4.getText().trim();
+        String Address = textArea.getText().trim();
 
         // Prepare SQL with column names
-        String sql = "INSERT INTO donor (DonorId, UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup, BloodUnit, City, Address, CreatedAt) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Patient (PatientId,UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup, BloodUnit, City, Address, CreatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pst = con.prepareStatement(sql)) {
-            pst.setInt(1, Integer.parseInt(DonorId));
+            pst.setInt(1, Integer.parseInt(PatientId));
             pst.setString(2, UserType);
             pst.setString(3, Name);
             pst.setString(4, FatherName);
@@ -384,16 +374,14 @@ public class addNewDonor extends JFrame {
             pst.setString(12, City);
             pst.setString(13, Address);
             pst.setTimestamp(14, now); // Set CreatedAt
-           
+
             pst.executeUpdate();
             JOptionPane.showMessageDialog(null, "Successfully Updated");
             resetForm();
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Database Error: " + e.getMessage());
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Invalid Donor ID format");
+            JOptionPane.showMessageDialog(null, "Invalid Patient ID format");
         }
     }
-
-    }
-
+}
