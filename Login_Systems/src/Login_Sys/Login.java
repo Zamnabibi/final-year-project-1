@@ -101,7 +101,7 @@ public class Login extends JFrame {
 					if (a==0)
 					{
 						setVisible(false);
-						new Login_S().setVisible(true);
+						new DonorSignupSystem().setVisible(true);
 					}
 				}
 			}

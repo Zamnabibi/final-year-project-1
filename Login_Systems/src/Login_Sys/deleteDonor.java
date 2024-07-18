@@ -162,7 +162,7 @@ public class deleteDonor extends JFrame {
         lblNewLabel_11.setBounds(30, 351, 58, 23);
         contentPane.add(lblNewLabel_11);
 
-        JLabel lblNewLabel_12 = new JLabel("Complete Address");
+        JLabel lblNewLabel_12 = new JLabel("Permanent Address");
         lblNewLabel_12.setFont(new Font("Tahoma", Font.BOLD, 14));
         lblNewLabel_12.setBounds(491, 221, 140, 20);
         contentPane.add(lblNewLabel_12);
@@ -244,6 +244,7 @@ public class deleteDonor extends JFrame {
 
                         st.executeUpdate("DELETE FROM donor WHERE DonorId=" + DonorId);
                         JOptionPane.showMessageDialog(null, "Deleted successfully");
+                        new deleteDonor().setVisible(true);
                         //clearFields();
                     } else {
                         JOptionPane.showMessageDialog(null, "DonorId does not exist");

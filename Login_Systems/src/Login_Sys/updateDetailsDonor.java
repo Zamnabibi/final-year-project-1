@@ -43,7 +43,7 @@ public class updateDetailsDonor extends JFrame {
         });
     }
 
-	public updateDetailsDonor() {
+    public updateDetailsDonor() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 850, 500);
         contentPane = new JPanel();
@@ -82,10 +82,6 @@ public class updateDetailsDonor extends JFrame {
         lblNewLabel.setBounds(130, 0, 666, 69);
         contentPane.add(lblNewLabel);
 
-       /* JSeparator separator = new JSeparator();
-        separator.setBounds(10, 67, 1339, 2);
-        contentPane.add(separator);*/
-
         JLabel lblNewLabel_1 = new JLabel("Donor ID");
         lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 16));
         lblNewLabel_1.setBounds(140, 86, 100, 23);
@@ -105,7 +101,7 @@ public class updateDetailsDonor extends JFrame {
                     Statement st = con.createStatement();
                     ResultSet rs = st.executeQuery("SELECT * FROM donor WHERE DonorId=" + DonorId);
                     if (rs.next()) {
-                    	textField_1.setText(rs.getString(3));
+                        textField_1.setText(rs.getString(3));
                         textField_2.setText(rs.getString(4));
                         textField_3.setText(rs.getString(5));
                         textField_9.setText(rs.getString(6));
@@ -133,21 +129,17 @@ public class updateDetailsDonor extends JFrame {
         btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 16));
         btnNewButton.setBounds(403, 80, 116, 35);
         contentPane.add(btnNewButton);
-        
+
         JLabel lblNewLabel_15 = new JLabel("UserType");
         lblNewLabel_15.setFont(new Font("Tahoma", Font.BOLD, 14));
         lblNewLabel_15.setBounds(540, 85, 73, 24);
         contentPane.add(lblNewLabel_15);
-        
+
         textField_11 = new JTextField();
         textField_11.setFont(new Font("Tahoma", Font.BOLD, 14));
         textField_11.setBounds(641, 87, 183, 20);
         contentPane.add(textField_11);
         textField_11.setColumns(10);
-        
-        /*JSeparator separator_1 = new JSeparator();
-        separator_1.setBounds(10, 120, 1339, 2);
-        contentPane.add(separator_1);*/
 
         JLabel lblNewLabel_2 = new JLabel("Full Name");
         lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -194,7 +186,7 @@ public class updateDetailsDonor extends JFrame {
         lblNewLabel_11.setBounds(30, 351, 58, 23);
         contentPane.add(lblNewLabel_11);
 
-        JLabel lblNewLabel_12 = new JLabel("Permant Address");
+        JLabel lblNewLabel_12 = new JLabel("Permanent Address");
         lblNewLabel_12.setFont(new Font("Tahoma", Font.BOLD, 14));
         lblNewLabel_12.setBounds(491, 221, 140, 20);
         contentPane.add(lblNewLabel_12);
@@ -244,10 +236,6 @@ public class updateDetailsDonor extends JFrame {
         textArea.setFont(new Font("Monospaced", Font.BOLD, 14));
         textArea.setBounds(641, 226, 183, 114);
         contentPane.add(textArea);
-
-        /*JSeparator separator_2 = new JSeparator();
-        separator_2.setBounds(10, 399, 1339, 2);
-        contentPane.add(separator_2);*/
 
         JButton btnNewButton_1 = new JButton("Update");
         btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 14));

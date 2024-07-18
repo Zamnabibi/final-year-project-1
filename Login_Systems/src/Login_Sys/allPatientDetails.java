@@ -68,7 +68,7 @@ public class allPatientDetails extends JFrame {
         table.setModel(new DefaultTableModel(
             new Object[][] {},
             new String[] {
-                "PatientId","UserType", "Name", "FatherName", "MotherName", "DOB", "MobileNo", "Gender", "Email", "BloodGroup","BloodUnit", "City", "Address", "CreatedAt", "UpdatedAt"
+                "PatientId","UserType", "Name", "FatherName", "MotherName", "DOB", "MobileNo", "Gender", "Email", "BloodGroup","BloodUnit", "City", "Permanent Address", "CreatedAt", "UpdatedAt"
             }
         ));
 
@@ -172,6 +172,7 @@ public class allPatientDetails extends JFrame {
                 String UpdatedAt = rs.getString(15);
                 String[] row = { PatientId,UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup,BloodUnit, City, Address, CreatedAt, UpdatedAt};
                 model.addRow(row);
+                new allPatientDetails().setVisible(true);
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());

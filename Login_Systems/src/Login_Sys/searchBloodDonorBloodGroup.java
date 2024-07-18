@@ -1,38 +1,33 @@
 package Login_Sys;
-
 import java.awt.EventQueue;
 import java.awt.Image;
-import java.awt.Font;
+import javax.swing.JTable;
+import javax.swing.Timer;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-//import javax.swing.JSeparator;
-import javax.swing.JTextField;
-import javax.swing.JTable;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.awt.Font;
+import javax.swing.JScrollPane;
+import java.awt.Color;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class searchBloodDonorBloodGroup extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
-    private JTextField textField;
     private JTable table;
+    private JLabel timeLabel;
     private Connection con;
-    private PreparedStatement pst;
 
     /**
      * Launch the application.
@@ -54,136 +49,221 @@ public class searchBloodDonorBloodGroup extends JFrame {
      * Create the frame.
      */
     public searchBloodDonorBloodGroup() {
+        setForeground(Color.PINK);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 850, 500);
+        setBounds(100, 100, 1180, 500);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        try {
-            // Establishing database connection
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bbms", "root", "zamna0");
-            System.out.println("Connection created");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Database connection error: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        JLabel lblNewLabel = new JLabel("Search Blood Donor (Blood Group)");
-        lblNewLabel.setFont(new Font("Trebuchet MS", Font.BOLD | Font.ITALIC, 34));
-        lblNewLabel.setBounds(111, 11, 951, 51);
+        JLabel lblNewLabel = new JLabel("Search Blood Donor(Blood Group)");
+        lblNewLabel.setFont(new Font("Sitka Text", Font.BOLD | Font.ITALIC, 40));
+        lblNewLabel.setBounds(138, 0, 701, 76);
         contentPane.add(lblNewLabel);
+        
+     // Add time label
+        timeLabel = new JLabel(); // Changed from JTextField to JLabel
+        timeLabel.setBounds(934, 57, 184, 20);
+        timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+        contentPane.add(timeLabel);
 
-        /*JSeparator separator = new JSeparator();
-        separator.setBounds(10, 73, 1323, 2);
-        contentPane.add(separator);*/
+        // Set the timer to update the JLabel every second
+        Timer timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTime();
+            }
+        });
+        timer.start();
 
-        JLabel lblNewLabel_1 = new JLabel("Blood Group");
-        lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblNewLabel_1.setBounds(134, 86, 110, 25);
-        contentPane.add(lblNewLabel_1);
-
-        textField = new JTextField();
-        textField.setFont(new Font("Tahoma", Font.BOLD, 14));
-        textField.setBounds(379, 85, 153, 28);
-        contentPane.add(textField);
-        textField.setColumns(10);
-
-        /*JSeparator separator_1 = new JSeparator();
-        separator_1.setBounds(10, 122, 1323, 2);
-        contentPane.add(separator_1);*/
-
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(26, 140, 798, 217);
-        contentPane.add(scrollPane);
+        // Initial time update
+        updateTime();
 
         table = new JTable();
-        scrollPane.setViewportView(table);
+        table.setFont(new Font("Tahoma", Font.BOLD, 14));
+        table.setModel(new DefaultTableModel(
+            new Object[][] {},
+            new String[] {
+                "DonorId","UserType", "Name", "FatherName", "MotherName", "DOB", "MobileNo", "Gender", "Email", "BloodGroup","BloodUnit", "City", "Permanent Address", "CreatedAt", "UpdatedAt"
+            }
+        ));
 
-        /*JSeparator separator_2 = new JSeparator();
-        separator_2.setBounds(10, 368, 1323, 2);
-        contentPane.add(separator_2);*/
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(10, 98, 1154, 284);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        contentPane.add(scrollPane);
 
-        JButton btnNewButton = new JButton("Print");
-        Image img3 = new ImageIcon(this.getClass().getResource("/print.png")).getImage();
-        btnNewButton.setIcon(new ImageIcon(img3));
-        btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 14));
-        btnNewButton.addActionListener(new ActionListener() {
+        JButton btnPrint = new JButton("Print");
+        btnPrint.setFont(new Font("Tahoma", Font.BOLD, 14));
+        Image img2 = new ImageIcon(this.getClass().getResource("/print.png")).getImage();
+        btnPrint.setIcon(new ImageIcon(img2));
+        btnPrint.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
                     table.print(JTable.PrintMode.NORMAL);
                 } catch (Exception t) {
-                    JOptionPane.showMessageDialog(null, "Error printing: " + t.getMessage());
+                    JOptionPane.showMessageDialog(null, t);
                 }
             }
         });
-        btnNewButton.setBounds(41, 392, 116, 23);
-        contentPane.add(btnNewButton);
+        btnPrint.setBounds(39, 406, 116, 31);
+        contentPane.add(btnPrint);
 
-        JButton btnNewButton_1 = new JButton("Display");
-        Image img2 = new ImageIcon(this.getClass().getResource("/display.png")).getImage();
-        btnNewButton_1.setIcon(new ImageIcon(img2));
-        btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-        btnNewButton_1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String bloodGroup = textField.getText();
-                try {
-                    String query = "SELECT * FROM donor WHERE BloodGroup LIKE ?";
-                    pst = con.prepareStatement(query);
-                    pst.setString(1, "%" + bloodGroup + "%");
-
-                    ResultSet rs = pst.executeQuery();
-                    ResultSetMetaData rsmd = rs.getMetaData();
-                    DefaultTableModel model = (DefaultTableModel) table.getModel();
-                    int cols = rsmd.getColumnCount();
-                    String[] colName = new String[cols];
-                    for (int i = 0; i < cols; i++)
-                        colName[i] = rsmd.getColumnName(i + 1);
-                    model.setColumnIdentifiers(colName);
-
-                    while (rs.next()) {
-                        String[] row = new String[cols];
-                        for (int i = 0; i < cols; i++) {
-                            row[i] = rs.getString(i + 1);
-                        }
-                        model.addRow(row);
-                    }
-
-                    pst.close();
-                    rs.close();
-                } catch (SQLException ex) {
-                    JOptionPane.showMessageDialog(null, "Error executing query: " + ex.getMessage());
-                    ex.printStackTrace();
-                }
-            }
-        });
-        btnNewButton_1.setBounds(337, 392, 110, 23);
-        contentPane.add(btnNewButton_1);
-
-        JButton btnNewButton_2 = new JButton("Close");
+        JButton btnClose = new JButton("Close");
+        btnClose.setFont(new Font("Tahoma", Font.BOLD, 14));
         Image img1 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
-        btnNewButton_2.setIcon(new ImageIcon(img1));
-        btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 14));
-        btnNewButton_2.addActionListener(new ActionListener() {
+        btnClose.setIcon(new ImageIcon(img1));
+        btnClose.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                try {
-                    con.close(); // Closing the connection when closing the frame
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
                 setVisible(false);
             }
         });
-        btnNewButton_2.setBounds(628, 392, 116, 23);
-        contentPane.add(btnNewButton_2);
+        btnClose.setBounds(690, 405, 106, 33);
+        contentPane.add(btnClose);
 
-        JLabel lblNewLabel_13 = new JLabel("");
+        JButton btnDisplay = new JButton("Search");
+        btnDisplay.setFont(new Font("Tahoma", Font.BOLD, 14));
+        Image img3 = new ImageIcon(this.getClass().getResource("/display.png")).getImage();
+        btnDisplay.setIcon(new ImageIcon(img3));
+        btnDisplay.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                loadData();
+            }
+        });
+        btnDisplay.setBounds(340, 405, 135, 33);
+        contentPane.add(btnDisplay);
+
+        // Add listener for row selection
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    int selectedRow = table.getSelectedRow();
+                    if (selectedRow != -1) {
+                        saveSelectedRowToBloodBank(selectedRow);
+                    }
+                }
+            }
+        });
+
+        JLabel lblBackground = new JLabel("");
         Image img4 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
-        lblNewLabel_13.setIcon(new ImageIcon(img4));
-        lblNewLabel_13.setBounds(0, -119, 1370, 749);
-        contentPane.add(lblNewLabel_13);
+        lblBackground.setIcon(new ImageIcon(img4));
+        lblBackground.setBounds(0, -137, 1370, 749);
+        contentPane.add(lblBackground);
+
+        JLabel lblNewLabel_11 = new JLabel("");
+        Image img5 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
+        lblNewLabel_11.setIcon(new ImageIcon(img5));
+        lblNewLabel_11.setBounds(840, 0, 324, 461);
+        contentPane.add(lblNewLabel_11);
+
+        // Initialize the database connection
+        initializeDatabaseConnection();
+    }
+
+    private void initializeDatabaseConnection() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bbms", "root", "zamna0");
+            System.out.println("Connection created");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+        }
+    }
+
+    private void loadData() {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0); // Clear existing rows
+
+        String bloodGroup = JOptionPane.showInputDialog(this, "Enter Blood Group to search:", "Enter Blood Group", JOptionPane.PLAIN_MESSAGE);
+        if (bloodGroup == null || bloodGroup.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Blood Group cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String query = "SELECT * FROM donor WHERE BloodGroup=?";
+        try (PreparedStatement stmt = con.prepareStatement(query)) {
+            stmt.setString(1, bloodGroup);
+            ResultSet rs = stmt.executeQuery();
+
+            if (!rs.isBeforeFirst()) {
+                JOptionPane.showMessageDialog(this, "No records found for the entered blood group.", "No Records", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                while (rs.next()) {
+                    String DonorId = rs.getString(1);
+                    String UserType = rs.getString(2);
+                    String Name = rs.getString(3);
+                    String FatherName = rs.getString(4);
+                    String MotherName = rs.getString(5);
+                    String DOB = rs.getString(6);
+                    String MobileNo = rs.getString(7);
+                    String Gender = rs.getString(8);
+                    String Email = rs.getString(9);
+                    String BloodGroup = rs.getString(10);
+                    String BloodUnit = rs.getString(11);
+                    String City = rs.getString(12);
+                    String Address = rs.getString(13);
+                    String CreatedAt = rs.getString(14);
+                    String UpdatedAt = rs.getString(15);
+                    String[] row = {DonorId, UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup, BloodUnit, City, Address, CreatedAt, UpdatedAt};
+                    model.addRow(row);
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    private void saveSelectedRowToBloodBank(int rowIndex) {
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        @SuppressWarnings("unused")
+		String DonorId = model.getValueAt(rowIndex, 0).toString();
+        String UserType = model.getValueAt(rowIndex, 1).toString();
+        String Name = model.getValueAt(rowIndex, 2).toString();
+        String FatherName = model.getValueAt(rowIndex, 3).toString();
+        String MotherName = model.getValueAt(rowIndex, 4).toString();
+        String DOB = model.getValueAt(rowIndex, 5).toString();
+        String MobileNo = model.getValueAt(rowIndex, 6).toString();
+        String Gender = model.getValueAt(rowIndex, 7).toString();
+        String Email = model.getValueAt(rowIndex, 8).toString();
+        String BloodGroup = model.getValueAt(rowIndex, 9).toString();
+        String BloodUnit = model.getValueAt(rowIndex, 10).toString();
+        String City = model.getValueAt(rowIndex, 11).toString();
+        String Address = model.getValueAt(rowIndex, 12).toString();
+        new searchBloodDonorBloodGroup().setVisible(true);
+        saveToBloodBank(UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup, BloodUnit, City, Address);
+    }
+
+    private void saveToBloodBank(String userType, String name, String fatherName, String motherName, String dob, String mobileNo, String gender, String email, String bloodGroup, String bloodUnit, String city, String address) {
+        try {
+            String sql = "INSERT INTO bloodbank (UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup, BloodUnit, City, Address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setString(1, userType);
+            stmt.setString(2, name);
+            stmt.setString(3, fatherName);
+            stmt.setString(4, motherName);
+            stmt.setString(5, dob);
+            stmt.setString(6, mobileNo);
+            stmt.setString(7, gender);
+            stmt.setString(8, email);
+            stmt.setString(9, bloodGroup);
+            stmt.setString(10, bloodUnit);
+            stmt.setString(11, city);
+            stmt.setString(12, address);
+
+            stmt.executeUpdate();
+            System.out.println("Data saved to bloodbank table.");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error saving data to blood bank: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    private void updateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        timeLabel.setText(sdf.format(new java.util.Date()));
     }
 }

@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+//import java.awt.event.ActionEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -24,7 +25,7 @@ public class stockDecrese extends JFrame {
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
-            	stockDecrese frame = new stockDecrese();
+                stockDecrese frame = new stockDecrese();
                 frame.setVisible(true);
                 frame.connectToDatabase();
 
@@ -79,6 +80,14 @@ public class stockDecrese extends JFrame {
         contentPane.add(textFieldUnits);
         textFieldUnits.setColumns(10);
 
+        JButton btnDisplay = new JButton("Display");
+        btnDisplay.setFont(new Font("Tahoma", Font.BOLD, 14));
+        Image img3 = new ImageIcon(this.getClass().getResource("/display.png")).getImage();
+        btnDisplay.setIcon(new ImageIcon(img3));
+        btnDisplay.addActionListener(e -> loadData());
+        btnDisplay.setBounds(440, 79, 135, 33);
+        contentPane.add(btnDisplay);
+
         JButton btnAddStock = new JButton("Delete to Stock");
         btnAddStock.setIcon(new ImageIcon(getClass().getResource("/delete.png"))); // Ensure this path is correct
         btnAddStock.addActionListener(e -> deleteStock());
@@ -93,7 +102,7 @@ public class stockDecrese extends JFrame {
         tableStock = new JTable();
         tableStock.setModel(new DefaultTableModel(
             new Object[][]{},
-            new String[]{"City", "BloodGroup", "Units", "RemoveDate"} // Add the AddDate column
+            new String[]{"City", "BloodGroup", "Units"} // Add the RemoveDate column
         ));
         scrollPaneStock.setViewportView(tableStock);
 
@@ -106,7 +115,7 @@ public class stockDecrese extends JFrame {
         lblBackground.setIcon(new ImageIcon(getClass().getResource("/back.jpg"))); // Ensure this path is correct
         lblBackground.setBounds(0, 200, 834, 461);
         contentPane.add(lblBackground);
-        
+
         JLabel lblBackground1 = new JLabel("");
         lblBackground1.setIcon(new ImageIcon(getClass().getResource("/back.jpg"))); // Ensure this path is correct
         lblBackground1.setBounds(0, 0, 834, 461);
@@ -139,9 +148,14 @@ public class stockDecrese extends JFrame {
                 ResultSet rs = checkPst.executeQuery();
 
                 if (rs.next()) {
-                    // Update existing record by adding the units
+                    // Update existing record by reducing the units
                     int existingUnits = rs.getInt("Units");
                     int newUnits = existingUnits - units;
+
+                    if (newUnits < 0) {
+                        JOptionPane.showMessageDialog(null, "Insufficient units in stock");
+                        return;
+                    }
 
                     String updateQuery = "UPDATE stock SET Units = ?, RemoveDate = NOW() WHERE BloodGroup = ? AND City = ?";
                     try (PreparedStatement updatePst = con.prepareStatement(updateQuery)) {
@@ -151,14 +165,8 @@ public class stockDecrese extends JFrame {
                         updatePst.executeUpdate();
                     }
                 } else {
-                    // Insert new record if no existing record is found
-                    String insertQuery = "INSERT INTO stock (City, BloodGroup, Units, RemoveDate) VALUES (?, ?, ?, NOW())";
-                    try (PreparedStatement insertPst = con.prepareStatement(insertQuery)) {
-                        insertPst.setString(1, city);
-                        insertPst.setString(2, bloodGroup);
-                        insertPst.setInt(3, -units);
-                        insertPst.executeUpdate();
-                    }
+                    JOptionPane.showMessageDialog(null, "No existing stock found for the specified city and blood group");
+                    return;
                 }
                 JOptionPane.showMessageDialog(null, "Stock successfully updated");
                 refreshStockTable();
@@ -171,7 +179,7 @@ public class stockDecrese extends JFrame {
     }
 
     private void refreshStockTable() {
-        try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery("SELECT City, BloodGroup, Units, RemoveDate FROM stock")) {
+        try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery("SELECT City, BloodGroup, Units FROM stock")) {
             DefaultTableModel model = (DefaultTableModel) tableStock.getModel();
             model.setRowCount(0); // Clear existing data
 
@@ -180,7 +188,7 @@ public class stockDecrese extends JFrame {
                     rs.getString("City"),
                     rs.getString("BloodGroup"),
                     rs.getString("Units"),
-                    rs.getString("RemoveDate") // Include AddDate
+                    //rs.getString("RemoveDate")
                 };
                 model.addRow(row);
             }
@@ -192,5 +200,24 @@ public class stockDecrese extends JFrame {
     private void updateTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         timeLabel.setText(sdf.format(new java.util.Date()));
+    }
+
+    private void loadData() {
+        DefaultTableModel model = (DefaultTableModel) tableStock.getModel();
+        model.setRowCount(0); // Clear existing rows
+        String query = "SELECT * FROM stock";
+        try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(query)) {
+            while (rs.next()) {
+                String city = rs.getString("City");
+                String bloodGroup = rs.getString("BloodGroup");
+                String units = rs.getString("Units");
+                //String removeDate = rs.getString("RemoveDate");
+
+                String[] row = { city, bloodGroup, units };
+                model.addRow(row);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+        }
     }
 }

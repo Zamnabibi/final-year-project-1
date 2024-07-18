@@ -55,7 +55,7 @@ public class UserHome extends JFrame {
 		JMenuItem mntmNewMenuItem = new JMenuItem("Add New Patient");
 		mntmNewMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new addNewDonor().setVisible(true);
+				new addNewPatient().setVisible(true);
 			}
 		});
 		Image img1=new ImageIcon(this.getClass().getResource("/add new.png")).getImage();
@@ -65,7 +65,7 @@ public class UserHome extends JFrame {
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Update Patient Details");
 		mntmNewMenuItem_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new updateDetailsDonor().setVisible(true);
+				new updateDetailsPatient().setVisible(true);
 			}
 		});
 		Image img2=new ImageIcon(this.getClass().getResource("/update.png")).getImage();
@@ -107,7 +107,7 @@ public class UserHome extends JFrame {
 		JMenuItem mntmNewMenuItem_9 = new JMenuItem("Delete Patient");
 		mntmNewMenuItem_9.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new deleteDonor().setVisible(true);
+				new deletePatient().setVisible(true);
 				
 			}
 		});
@@ -127,7 +127,7 @@ public class UserHome extends JFrame {
 					if (a==0)
 					{
 						setVisible(false);
-						new Login_S().setVisible(true);
+						new SignupSystem().setVisible(true);
 					}
 				}
 			}

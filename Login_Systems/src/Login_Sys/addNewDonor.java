@@ -227,7 +227,7 @@ public class addNewDonor extends JFrame {
         lblNewLabel_11.setFont(new Font("Tahoma", Font.BOLD, 16));
         contentPane.add(lblNewLabel_11);
 
-        JLabel lblNewLabel_12 = new JLabel("Permant Address");
+        JLabel lblNewLabel_12 = new JLabel("Permanent Address");
         lblNewLabel_12.setBounds(480, 182, 165, 30);
         lblNewLabel_12.setFont(new Font("Tahoma", Font.BOLD, 16));
         contentPane.add(lblNewLabel_12);
@@ -388,6 +388,7 @@ public class addNewDonor extends JFrame {
             pst.executeUpdate();
             JOptionPane.showMessageDialog(null, "Successfully Updated");
             resetForm();
+            new addNewDonor().setVisible(true);
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
         } catch (NumberFormatException e) {

@@ -1,133 +1,171 @@
 package Login_Sys;
 
-import java.awt.Font;
-import java.awt.Image;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.sql.*;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.event.*;
+//import javax.swing.JSeparator;
 
 public class UserSignUpUI extends JFrame {
+
     private static final long serialVersionUID = 1L;
-    private JTextField usernameField;
-    private JPasswordField passwordField;
-    private JTextField emailField;
-    private JTextField mobileNoField;
-    private JTextField addressField;
+    private JPanel contentPane;
+    private JTextField txtUsername;
+    private JPasswordField txtPassword;
+    private Connection con;
+    private PreparedStatement pst;
 
-    public UserSignUpUI() {
-        setTitle("User Sign Up");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(800, 500); // Adjusted size to fit all components
-        setLocationRelativeTo(null); // Center the frame on the screen
-
-        JPanel contentPane = new JPanel();
-        contentPane.setLayout(null);
-        setContentPane(contentPane);
-
-        JLabel titleLabel = new JLabel("Sign Up");
-        titleLabel.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 34));
-        titleLabel.setBounds(320, 20, 159, 47); // Adjusted position
-        contentPane.add(titleLabel);
-
-        JLabel usernameLabel = new JLabel("Username:");
-        usernameLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        usernameLabel.setBounds(79, 100, 100, 25); // Adjusted position
-        contentPane.add(usernameLabel);
-
-        usernameField = new JTextField();
-        usernameField.setFont(new Font("Arial", Font.PLAIN, 14));
-        usernameField.setBounds(300, 100, 203, 25); // Adjusted position
-        contentPane.add(usernameField);
-
-        JLabel passwordLabel = new JLabel("Password:");
-        passwordLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        passwordLabel.setBounds(79, 152, 100, 20); // Adjusted position
-        contentPane.add(passwordLabel);
-
-        passwordField = new JPasswordField();
-        passwordField.setFont(new Font("Arial", Font.PLAIN, 14));
-        passwordField.setBounds(300, 150, 203, 25); // Adjusted position
-        contentPane.add(passwordField);
-
-        JLabel emailLabel = new JLabel("Email:");
-        emailLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        emailLabel.setBounds(79, 202, 100, 20); // Adjusted position
-        contentPane.add(emailLabel);
-
-        emailField = new JTextField();
-        emailField.setFont(new Font("Arial", Font.PLAIN, 14));
-        emailField.setBounds(300, 200, 203, 25); // Adjusted position
-        contentPane.add(emailField);
-
-        JLabel mobileNoLabel = new JLabel("Mobile No:");
-        mobileNoLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        mobileNoLabel.setBounds(79, 252, 100, 20); // Adjusted position
-        contentPane.add(mobileNoLabel);
-
-        mobileNoField = new JTextField();
-        mobileNoField.setFont(new Font("Arial", Font.PLAIN, 14));
-        mobileNoField.setBounds(300, 250, 203, 25); // Adjusted position
-        contentPane.add(mobileNoField);
-
-        JLabel addressLabel = new JLabel("Address:");
-        addressLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        addressLabel.setBounds(79, 302, 100, 20); // Adjusted position
-        contentPane.add(addressLabel);
-
-        addressField = new JTextField();
-        addressField.setFont(new Font("Arial", Font.PLAIN, 14));
-        addressField.setBounds(300, 300, 203, 25); // Adjusted position
-        contentPane.add(addressField);
-
-        JButton submitButton = new JButton("Submit");
-        submitButton.setFont(new Font("Arial", Font.BOLD, 14));
-        submitButton.setBounds(320, 350, 100, 30); // Adjusted position
-        contentPane.add(submitButton);
-        
-        JLabel lblNewLabel = new JLabel("");
-        lblNewLabel.setBounds(0, 0, 784, 461);
-        Image img4 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
-        lblNewLabel.setIcon(new ImageIcon(img4));
-        contentPane.add(lblNewLabel);
-
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String username = usernameField.getText();
-                String password = new String(passwordField.getPassword());
-                String email = emailField.getText();
-                String mobileNo = mobileNoField.getText();
-                String address = addressField.getText();
-
-                if (username.isEmpty() || password.isEmpty() || email.isEmpty() || mobileNo.isEmpty() || address.isEmpty()) {
-                    JOptionPane.showMessageDialog(UserSignUpUI.this, "Please fill in all fields", "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    // Replace with actual sign up logic (e.g., database insertion)
-                    JOptionPane.showMessageDialog(UserSignUpUI.this, "Sign Up Successful!\nUsername: " + username + "\nEmail: " + email);
-                    usernameField.setText("");
-                    passwordField.setText("");
-                    emailField.setText("");
-                    mobileNoField.setText("");
-                    addressField.setText("");
-                }
+    public static void main(String[] args) {
+        EventQueue.invokeLater(() -> {
+            try {
+            	UserSignUpUI frame = new UserSignUpUI();
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new UserSignUpUI().setVisible(true);
+    public UserSignUpUI() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 1200, 600);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+
+        // Database connection setup
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bbms", "root", "zamna0");
+            System.out.println("Connection created");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        JLabel lblNewLabel = new JLabel("Login");
+        lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 60));
+        lblNewLabel.setBounds(193, 0, 445, 74);
+        contentPane.add(lblNewLabel);
+
+        JLabel lblUsername = new JLabel("Username");
+        lblUsername.setFont(new Font("Tahoma", Font.BOLD, 16));
+        lblUsername.setBounds(321, 110, 96, 17);
+        contentPane.add(lblUsername);
+
+        JLabel lblPassword = new JLabel("Password");
+        lblPassword.setFont(new Font("Tahoma", Font.BOLD, 16));
+        lblPassword.setBounds(321, 196, 89, 23);
+        contentPane.add(lblPassword);
+
+        txtUsername = new JTextField();
+        txtUsername.setFont(new Font("Tahoma", Font.BOLD, 16));
+        txtUsername.setBounds(682, 108, 131, 20);
+        contentPane.add(txtUsername);
+        txtUsername.setColumns(10);
+
+        txtPassword = new JPasswordField();
+        txtPassword.setFont(new Font("Tahoma", Font.BOLD, 16));
+        txtPassword.setBounds(682, 197, 131, 20);
+        contentPane.add(txtPassword);
+
+        JButton btnLogin = new JButton("Login");
+        Image img = new ImageIcon(getClass().getResource("/OK-icon.png")).getImage();
+        btnLogin.setIcon(new ImageIcon(img));
+        btnLogin.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btnLogin.addActionListener(e -> {
+            String username = txtUsername.getText();
+            String password = new String(txtPassword.getPassword());
+            if (validateLogin(username, password)) {
+                txtPassword.setText(null);
+                txtUsername.setText(null);
+                setVisible(false);
+                new UserHome().setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Invalid Login Details", "Login Error", JOptionPane.ERROR_MESSAGE);
+                txtPassword.setText(null);
+                txtUsername.setText(null);
             }
         });
+        btnLogin.setBounds(49, 286, 107, 34);
+        contentPane.add(btnLogin);
+
+        JButton btnClose = new JButton("Close");
+        Image img2 = new ImageIcon(getClass().getResource("/close.png")).getImage();
+        btnClose.setIcon(new ImageIcon(img2));
+        btnClose.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btnClose.addActionListener(e -> {
+            int response = JOptionPane.showConfirmDialog(this, "Confirm if you want to close", "Login System", JOptionPane.YES_NO_OPTION);
+            if (response == JOptionPane.YES_OPTION) {
+                closeResources();
+                System.exit(0);
+            }
+        });
+        btnClose.setBounds(355, 286, 119, 34);
+        contentPane.add(btnClose);
+
+        JButton btnReset = new JButton("Reset");
+        Image img3 = new ImageIcon(getClass().getResource("/reset-icon.png")).getImage();
+        btnReset.setIcon(new ImageIcon(img3));
+        btnReset.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btnReset.addActionListener(e -> {
+            txtUsername.setText(null);
+            txtPassword.setText(null);
+        });
+        btnReset.setBounds(689, 286, 124, 34);
+        contentPane.add(btnReset);
+
+       // JSeparator separator = new JSeparator();
+        //separator.setBounds(23, 85, 1300, 2);
+       // contentPane.add(separator);
+
+       // JSeparator separator_1 = new JSeparator();
+       // separator_1.setBounds(23, 248, 1300, 2);
+        //contentPane.add(separator_1);
+
+        JLabel lblCreateAccount = new JLabel("Create Account");
+        lblCreateAccount.setFont(new Font("Tahoma", Font.BOLD, 14));
+        lblCreateAccount.setBounds(1004, 354, 131, 34);
+        lblCreateAccount.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new SignupSystem().setVisible(true);
+            }
+        });
+        contentPane.add(lblCreateAccount);
+
+        // Background Image
+        JLabel lblBackground = new JLabel("");
+        Image img1 = new ImageIcon(getClass().getResource("/image.jpeg")).getImage();
+        lblBackground.setIcon(new ImageIcon(img1));
+        lblBackground.setBounds(0, 0, 1200, 600); // Adjusted bounds
+        contentPane.add(lblBackground);
+    }
+
+    private boolean validateLogin(String username, String password) {
+        try {
+            String query = "SELECT * FROM users WHERE Username = ? AND Password = ?";
+            pst = con.prepareStatement(query);
+            pst.setString(1, username);
+            pst.setString(2, password);
+            ResultSet rs = pst.executeQuery();
+            boolean valid = rs.next();
+            rs.close();
+            pst.close();
+            return valid;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void closeResources() {
+        try {
+            if (pst != null) pst.close();
+            if (con != null) con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

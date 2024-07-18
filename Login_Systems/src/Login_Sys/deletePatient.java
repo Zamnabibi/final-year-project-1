@@ -162,7 +162,7 @@ public class deletePatient extends JFrame {
         lblNewLabel_11.setBounds(30, 351, 58, 23);
         contentPane.add(lblNewLabel_11);
 
-        JLabel lblNewLabel_12 = new JLabel("Permant Address");
+        JLabel lblNewLabel_12 = new JLabel("Permanent Address");
         lblNewLabel_12.setFont(new Font("Tahoma", Font.BOLD, 14));
         lblNewLabel_12.setBounds(491, 221, 140, 20);
         contentPane.add(lblNewLabel_12);
@@ -250,6 +250,7 @@ public class deletePatient extends JFrame {
                         psDelete.executeUpdate();
 
                         JOptionPane.showMessageDialog(null, "Deleted successfully");
+                        new deletePatient().setVisible(true);
                         // Optionally, clearFields();
                     } else {
                         JOptionPane.showMessageDialog(null, "PatientId does not exist");
@@ -267,7 +268,7 @@ public class deletePatient extends JFrame {
         btnNewButton_2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
-                new deleteDonor().setVisible(true);
+                new deletePatient().setVisible(true);
             }
         });
         Image img3 = new ImageIcon(this.getClass().getResource("/reset-icon.png")).getImage();

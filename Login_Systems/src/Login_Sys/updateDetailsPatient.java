@@ -194,7 +194,7 @@ public class updateDetailsPatient extends JFrame {
         lblNewLabel_11.setBounds(30, 351, 58, 23);
         contentPane.add(lblNewLabel_11);
 
-        JLabel lblNewLabel_12 = new JLabel("Permant Address");
+        JLabel lblNewLabel_12 = new JLabel("Permanent Address");
         lblNewLabel_12.setFont(new Font("Tahoma", Font.BOLD, 14));
         lblNewLabel_12.setBounds(491, 221, 140, 20);
         contentPane.add(lblNewLabel_12);
@@ -287,7 +287,7 @@ public class updateDetailsPatient extends JFrame {
                     pst.close();
                     con.close();
                     setVisible(false);
-                    new updateDetailsDonor().setVisible(true);
+                    new updateDetailsPatient().setVisible(true);
                 } catch (Exception b) {
                     JOptionPane.showMessageDialog(null, "Error occurred while updating data.");
                     b.printStackTrace();
@@ -302,7 +302,7 @@ public class updateDetailsPatient extends JFrame {
         btnNewButton_2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
-                new updateDetailsDonor().setVisible(true);
+                new updateDetailsPatient().setVisible(true);
             }
         });
         Image img3 = new ImageIcon(this.getClass().getResource("/reset-icon.png")).getImage();

@@ -1,18 +1,17 @@
 package Login_Sys;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JMenuBar;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JLabel;
-import java.awt.Color;
-
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 public class home extends JFrame {
 
@@ -55,35 +54,17 @@ public class home extends JFrame {
         addNewDonorItem.setIcon(new ImageIcon(imgAddDonor));
         donorMenu.add(addNewDonorItem);
         
-        JMenuItem addNewPatientItem = new JMenuItem("Add New Patient");
-        addNewPatientItem.addActionListener(e -> new addNewPatient().setVisible(true));
-        Image imgAddPatient = loadImage("/add new.png");
-        addNewPatientItem.setIcon(new ImageIcon(imgAddPatient));
-        donorMenu.add(addNewPatientItem);
-        
         JMenuItem updateDonorItem = new JMenuItem("Update Donor Details");
         updateDonorItem.addActionListener(e -> new updateDetailsDonor().setVisible(true));
         Image imgUpdateDonor = loadImage("/update.png");
         updateDonorItem.setIcon(new ImageIcon(imgUpdateDonor));
         donorMenu.add(updateDonorItem);
         
-        JMenuItem updatePatientItem = new JMenuItem("Update Patient Details");
-        updatePatientItem.addActionListener(e -> new updateDetailsPatient().setVisible(true));
-        Image imgUpdatePatient = loadImage("/update.png");
-        updatePatientItem.setIcon(new ImageIcon(imgUpdatePatient));
-        donorMenu.add(updatePatientItem);
-        
         JMenuItem donorDetailsItem = new JMenuItem("Donor Details");
         donorDetailsItem.addActionListener(e -> new allDonorDetails().setVisible(true));
         Image imgDonorDetails = loadImage("/details.png");
         donorDetailsItem.setIcon(new ImageIcon(imgDonorDetails));
         donorMenu.add(donorDetailsItem);
-        
-        JMenuItem patientDetailsItem = new JMenuItem("Patient Details");
-        patientDetailsItem.addActionListener(e -> new allPatientDetails().setVisible(true));
-        Image imgPatientDetails = loadImage("/details.png");
-        patientDetailsItem.setIcon(new ImageIcon(imgPatientDetails));
-        donorMenu.add(patientDetailsItem);
         
         // Search Blood Menu
         JMenu searchBloodMenu = new JMenu("Search Blood");
@@ -104,22 +85,28 @@ public class home extends JFrame {
         searchBloodMenu.add(searchByBloodGroupItem);
         
         // Giving Blood Menu
-        JMenu givingBloodMenu = new JMenu("Giving Blood");
+        JMenu givingBloodMenu = new JMenu("Patient");
         //Image imgGivingBlood = loadImage("/giving blood.png");
-        //givingBloodMenu.setIcon(new ImageIcon(imgGivingBlood));
+       // givingBloodMenu.setIcon(new ImageIcon(imgGivingBlood));
         menuBar.add(givingBloodMenu);
         
-        JMenuItem giveBloodLocationItem = new JMenuItem("Location");
-        giveBloodLocationItem.addActionListener(e -> new searchBloodDonorLocation().setVisible(true));
-        Image imgGiveLocation = loadImage("/location.jpg");
-        giveBloodLocationItem.setIcon(new ImageIcon(imgGiveLocation));
-        givingBloodMenu.add(giveBloodLocationItem);
+        JMenuItem addNewPatientItem = new JMenuItem("Add New Patient");
+        addNewPatientItem.addActionListener(e -> new addNewPatient().setVisible(true));
+        Image imgAddPatient = loadImage("/add new.png");
+        addNewPatientItem.setIcon(new ImageIcon(imgAddPatient));
+        givingBloodMenu.add(addNewPatientItem);
         
-        JMenuItem giveBloodGroupItem = new JMenuItem("Blood Group");
-        giveBloodGroupItem.addActionListener(e -> new searchBloodDonorBloodGroup().setVisible(true));
-        Image imgGiveBloodGroup = loadImage("/blood group.png");
-        giveBloodGroupItem.setIcon(new ImageIcon(imgGiveBloodGroup));
-        givingBloodMenu.add(giveBloodGroupItem);
+        JMenuItem updatePatientItem = new JMenuItem("Update Patient Details");
+        updatePatientItem.addActionListener(e -> new updateDetailsPatient().setVisible(true));
+        Image imgUpdatePatient = loadImage("/update.png");
+        updatePatientItem.setIcon(new ImageIcon(imgUpdatePatient));
+        givingBloodMenu.add(updatePatientItem);
+        
+        JMenuItem patientDetailsItem = new JMenuItem("Patient Details");
+        patientDetailsItem.addActionListener(e -> new allPatientDetails().setVisible(true));
+        Image imgPatientDetails = loadImage("/details.png");
+        patientDetailsItem.setIcon(new ImageIcon(imgPatientDetails));
+        givingBloodMenu.add(patientDetailsItem);
         
         // Stock Menu
         JMenu stockMenu = new JMenu("Stock");
@@ -169,23 +156,23 @@ public class home extends JFrame {
         exitMenu.setIcon(new ImageIcon(imgExit));
         menuBar.add(exitMenu);
         
+        JMenuItem historyItem = new JMenuItem("History");
+        Image imgHistory = loadImage("/close application.png");
+        historyItem.addActionListener(e -> new RecordManager().setVisible(true));
+        historyItem.setIcon(new ImageIcon(imgHistory));
+        exitMenu.add(historyItem);
+        
         JMenuItem logoutItem = new JMenuItem("Logout");
         logoutItem.addActionListener(e -> {
             int a = JOptionPane.showConfirmDialog(null, "Confirm if you want to close", "Login System", JOptionPane.YES_NO_OPTION);
             if (a == 0) {
                 setVisible(false);
-                new Login_S().setVisible(true);
+                new AddAdmin().setVisible(true);
             }
         });
         Image imgLogout = loadImage("/logout.jpg");
         logoutItem.setIcon(new ImageIcon(imgLogout));
         exitMenu.add(logoutItem);
-        
-        JMenuItem historyItem = new JMenuItem("History");
-        historyItem.addActionListener(e -> new RecordManager().setVisible(true));
-        Image imgHistory = loadImage("/close application.png");
-        historyItem.setIcon(new ImageIcon(imgHistory));
-        exitMenu.add(historyItem);
         
         contentPane = new JPanel();
         contentPane.setBackground(new Color(255, 255, 255));

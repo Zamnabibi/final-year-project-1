@@ -78,6 +78,14 @@ public class stockIncrease extends JFrame {
         textFieldUnits.setBounds(344, 126, 86, 20);
         contentPane.add(textFieldUnits);
         textFieldUnits.setColumns(10);
+        
+        JButton btnDisplay = new JButton("Display");
+        btnDisplay.setFont(new Font("Tahoma", Font.BOLD, 14));
+        Image img3 = new ImageIcon(this.getClass().getResource("/display.png")).getImage();
+        btnDisplay.setIcon(new ImageIcon(img3));
+        btnDisplay.addActionListener(e -> loadData());
+        btnDisplay.setBounds(440, 79, 135, 33);
+        contentPane.add(btnDisplay);
 
         JButton btnAddStock = new JButton("Add to Stock");
         btnAddStock.setIcon(new ImageIcon(getClass().getResource("/add donor.png"))); // Ensure this path is correct
@@ -93,7 +101,7 @@ public class stockIncrease extends JFrame {
         tableStock = new JTable();
         tableStock.setModel(new DefaultTableModel(
             new Object[][]{},
-            new String[]{"City", "BloodGroup", "Units", "AddDate"} // Add the AddDate column
+            new String[]{"City", "BloodGroup", "Units"} // Add the AddDate column
         ));
         scrollPaneStock.setViewportView(tableStock);
 
@@ -171,7 +179,7 @@ public class stockIncrease extends JFrame {
     }
 
     private void refreshStockTable() {
-        try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery("SELECT City, BloodGroup, Units, AddDate FROM stock")) {
+        try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery("SELECT City, BloodGroup, Units FROM stock")) {
             DefaultTableModel model = (DefaultTableModel) tableStock.getModel();
             model.setRowCount(0); // Clear existing data
 
@@ -180,7 +188,7 @@ public class stockIncrease extends JFrame {
                     rs.getString("City"),
                     rs.getString("BloodGroup"),
                     rs.getString("Units"),
-                    rs.getString("AddDate") // Include AddDate
+                   
                 };
                 model.addRow(row);
             }
@@ -192,5 +200,23 @@ public class stockIncrease extends JFrame {
     private void updateTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         timeLabel.setText(sdf.format(new java.util.Date()));
+    }
+    private void loadData() {
+        DefaultTableModel model = (DefaultTableModel) tableStock.getModel();
+        model.setRowCount(0); // Clear existing rows
+        String query = "SELECT * FROM stock";
+        try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(query)) {
+            while (rs.next()) {
+                String city = rs.getString("City");
+                String bloodGroup = rs.getString("BloodGroup");
+                String units = rs.getString("Units");
+                
+
+                String[] row = { city, bloodGroup, units };
+                model.addRow(row);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+        }
     }
 }
