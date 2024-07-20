@@ -260,6 +260,8 @@ public class deletePatient extends JFrame {
                 }
             }
         });
+        Image img5 = new ImageIcon(this.getClass().getResource("/delete donor.jpg")).getImage();
+        btnNewButton_1.setIcon(new ImageIcon(img5));
         btnNewButton_1.setBounds(49, 412, 165, 33);
         contentPane.add(btnNewButton_1);
 

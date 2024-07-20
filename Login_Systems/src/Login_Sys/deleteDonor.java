@@ -254,6 +254,8 @@ public class deleteDonor extends JFrame {
                 }
             }
         });
+        Image img3 = new ImageIcon(this.getClass().getResource("/delete donor.jpg")).getImage();
+        btnNewButton_1.setIcon(new ImageIcon(img3));
         btnNewButton_1.setBounds(49, 412, 165, 33);
         contentPane.add(btnNewButton_1);
 
@@ -265,8 +267,8 @@ public class deleteDonor extends JFrame {
                 new deleteDonor().setVisible(true);
             }
         });
-        Image img3 = new ImageIcon(this.getClass().getResource("/reset-icon.png")).getImage();
-        btnNewButton_2.setIcon(new ImageIcon(img3));
+        Image img5 = new ImageIcon(this.getClass().getResource("/reset-icon.png")).getImage();
+        btnNewButton_2.setIcon(new ImageIcon(img5));
         btnNewButton_2.setBounds(355, 412, 109, 33);
         contentPane.add(btnNewButton_2);
 

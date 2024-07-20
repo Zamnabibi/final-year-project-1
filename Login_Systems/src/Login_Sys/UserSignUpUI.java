@@ -29,7 +29,7 @@ public class UserSignUpUI extends JFrame {
 
     public UserSignUpUI() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 1200, 600);
+        setBounds(100, 100, 859, 533);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -46,28 +46,28 @@ public class UserSignUpUI extends JFrame {
 
         JLabel lblNewLabel = new JLabel("Login");
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 60));
-        lblNewLabel.setBounds(193, 0, 445, 74);
+        lblNewLabel.setBounds(198, 0, 445, 74);
         contentPane.add(lblNewLabel);
 
         JLabel lblUsername = new JLabel("Username");
         lblUsername.setFont(new Font("Tahoma", Font.BOLD, 16));
-        lblUsername.setBounds(321, 110, 96, 17);
+        lblUsername.setBounds(198, 110, 96, 17);
         contentPane.add(lblUsername);
 
         JLabel lblPassword = new JLabel("Password");
         lblPassword.setFont(new Font("Tahoma", Font.BOLD, 16));
-        lblPassword.setBounds(321, 196, 89, 23);
+        lblPassword.setBounds(198, 196, 89, 23);
         contentPane.add(lblPassword);
 
         txtUsername = new JTextField();
         txtUsername.setFont(new Font("Tahoma", Font.BOLD, 16));
-        txtUsername.setBounds(682, 108, 131, 20);
+        txtUsername.setBounds(550, 108, 131, 20);
         contentPane.add(txtUsername);
         txtUsername.setColumns(10);
 
         txtPassword = new JPasswordField();
         txtPassword.setFont(new Font("Tahoma", Font.BOLD, 16));
-        txtPassword.setBounds(682, 197, 131, 20);
+        txtPassword.setBounds(550, 197, 131, 20);
         contentPane.add(txtPassword);
 
         JButton btnLogin = new JButton("Login");
@@ -88,7 +88,7 @@ public class UserSignUpUI extends JFrame {
                 txtUsername.setText(null);
             }
         });
-        btnLogin.setBounds(49, 286, 107, 34);
+        btnLogin.setBounds(47, 336, 107, 34);
         contentPane.add(btnLogin);
 
         JButton btnClose = new JButton("Close");
@@ -102,7 +102,7 @@ public class UserSignUpUI extends JFrame {
                 System.exit(0);
             }
         });
-        btnClose.setBounds(355, 286, 119, 34);
+        btnClose.setBounds(307, 336, 119, 34);
         contentPane.add(btnClose);
 
         JButton btnReset = new JButton("Reset");
@@ -113,7 +113,7 @@ public class UserSignUpUI extends JFrame {
             txtUsername.setText(null);
             txtPassword.setText(null);
         });
-        btnReset.setBounds(689, 286, 124, 34);
+        btnReset.setBounds(566, 336, 124, 34);
         contentPane.add(btnReset);
 
        // JSeparator separator = new JSeparator();
@@ -126,7 +126,7 @@ public class UserSignUpUI extends JFrame {
 
         JLabel lblCreateAccount = new JLabel("Create Account");
         lblCreateAccount.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblCreateAccount.setBounds(1004, 354, 131, 34);
+        lblCreateAccount.setBounds(682, 379, 131, 34);
         lblCreateAccount.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -137,9 +137,9 @@ public class UserSignUpUI extends JFrame {
 
         // Background Image
         JLabel lblBackground = new JLabel("");
-        Image img1 = new ImageIcon(getClass().getResource("/image.jpeg")).getImage();
+        Image img1 = new ImageIcon(getClass().getResource("/back.jpg")).getImage();
         lblBackground.setIcon(new ImageIcon(img1));
-        lblBackground.setBounds(0, 0, 1200, 600); // Adjusted bounds
+        lblBackground.setBounds(0, 0, 843, 500); // Adjusted bounds
         contentPane.add(lblBackground);
     }
 

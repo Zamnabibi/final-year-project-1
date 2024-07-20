@@ -155,7 +155,7 @@ public class allPatientDetails extends JFrame {
         try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(query)) {
             while (rs.next()) {
                 String PatientId = rs.getString(1);
-                @SuppressWarnings("unused")
+               
 				String UserType = rs.getString(2);
                 String Name = rs.getString(3);
                 String FatherName = rs.getString(4);
@@ -172,7 +172,7 @@ public class allPatientDetails extends JFrame {
                 String UpdatedAt = rs.getString(15);
                 String[] row = { PatientId,UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup,BloodUnit, City, Address, CreatedAt, UpdatedAt};
                 model.addRow(row);
-                new allPatientDetails().setVisible(true);
+                
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());

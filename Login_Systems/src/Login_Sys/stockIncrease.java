@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -26,12 +28,11 @@ public class stockIncrease extends JFrame {
             try {
                 stockIncrease frame = new stockIncrease();
                 frame.setVisible(true);
+                // Initialize database connection
                 frame.connectToDatabase();
-
                 // Set the timer to update the JLabel every second
                 Timer timer = new Timer(1000, e -> frame.updateTime());
                 timer.start();
-
                 // Initial time update
                 frame.updateTime();
             } catch (Exception e) {
@@ -47,7 +48,8 @@ public class stockIncrease extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
-
+        connectToDatabase();
+        
         JLabel lblTitle = new JLabel("Add Blood Units to Stock");
         lblTitle.setFont(new Font("Tahoma", Font.BOLD, 34));
         lblTitle.setBounds(138, 11, 500, 47);
@@ -67,30 +69,42 @@ public class stockIncrease extends JFrame {
         contentPane.add(lblBloodGroup);
 
         comboBoxBloodGroup = new JComboBox<>(new String[]{"A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"});
-        comboBoxBloodGroup.setBounds(152, 126, 100, 22);
+        comboBoxBloodGroup.setBounds(152, 126, 150, 22);
         contentPane.add(comboBoxBloodGroup);
 
         JLabel lblUnits = new JLabel("Units");
-        lblUnits.setBounds(271, 122, 63, 23);
+        lblUnits.setBounds(34, 164, 63, 23);
         contentPane.add(lblUnits);
 
         textFieldUnits = new JTextField();
-        textFieldUnits.setBounds(344, 126, 86, 20);
+        textFieldUnits.setBounds(152, 165, 150, 20);
         contentPane.add(textFieldUnits);
         textFieldUnits.setColumns(10);
-        
+
         JButton btnDisplay = new JButton("Display");
         btnDisplay.setFont(new Font("Tahoma", Font.BOLD, 14));
         Image img3 = new ImageIcon(this.getClass().getResource("/display.png")).getImage();
         btnDisplay.setIcon(new ImageIcon(img3));
         btnDisplay.addActionListener(e -> loadData());
-        btnDisplay.setBounds(440, 79, 135, 33);
+        btnDisplay.setBounds(513, 157, 121, 33);
         contentPane.add(btnDisplay);
+        
+        JButton btnClose = new JButton("Close");
+        btnClose.setFont(new Font("Tahoma", Font.BOLD, 14));
+        Image img1 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
+        btnClose.setIcon(new ImageIcon(img1));
+        btnClose.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+            }
+        });
+        btnClose.setBounds(703, 156, 121, 33);
+        contentPane.add(btnClose);
 
         JButton btnAddStock = new JButton("Add to Stock");
         btnAddStock.setIcon(new ImageIcon(getClass().getResource("/add donor.png"))); // Ensure this path is correct
         btnAddStock.addActionListener(e -> addStock());
-        btnAddStock.setBounds(440, 125, 150, 23);
+        btnAddStock.setBounds(329, 156, 130, 35);
         contentPane.add(btnAddStock);
 
         JScrollPane scrollPaneStock = new JScrollPane();
@@ -106,7 +120,7 @@ public class stockIncrease extends JFrame {
         scrollPaneStock.setViewportView(tableStock);
 
         timeLabel = new JLabel();
-        timeLabel.setBounds(640, 10, 184, 20);
+        timeLabel.setBounds(617, 51, 184, 20);
         timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
         contentPane.add(timeLabel);
 
@@ -114,7 +128,7 @@ public class stockIncrease extends JFrame {
         lblBackground.setIcon(new ImageIcon(getClass().getResource("/back.jpg"))); // Ensure this path is correct
         lblBackground.setBounds(0, 200, 834, 461);
         contentPane.add(lblBackground);
-        
+
         JLabel lblBackground1 = new JLabel("");
         lblBackground1.setIcon(new ImageIcon(getClass().getResource("/back.jpg"))); // Ensure this path is correct
         lblBackground1.setBounds(0, 0, 834, 461);
@@ -164,7 +178,7 @@ public class stockIncrease extends JFrame {
                     try (PreparedStatement insertPst = con.prepareStatement(insertQuery)) {
                         insertPst.setString(1, city);
                         insertPst.setString(2, bloodGroup);
-                        insertPst.setInt(3, +units);
+                        insertPst.setInt(3, units);
                         insertPst.executeUpdate();
                     }
                 }
@@ -179,6 +193,11 @@ public class stockIncrease extends JFrame {
     }
 
     private void refreshStockTable() {
+        if (con == null) {
+            JOptionPane.showMessageDialog(null, "Database connection is not established.");
+            return;
+        }
+
         try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery("SELECT City, BloodGroup, Units FROM stock")) {
             DefaultTableModel model = (DefaultTableModel) tableStock.getModel();
             model.setRowCount(0); // Clear existing data
@@ -188,7 +207,6 @@ public class stockIncrease extends JFrame {
                     rs.getString("City"),
                     rs.getString("BloodGroup"),
                     rs.getString("Units"),
-                   
                 };
                 model.addRow(row);
             }
@@ -201,7 +219,13 @@ public class stockIncrease extends JFrame {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         timeLabel.setText(sdf.format(new java.util.Date()));
     }
+
     private void loadData() {
+        if (con == null) {
+            JOptionPane.showMessageDialog(null, "Database connection is not established.");
+            return;
+        }
+
         DefaultTableModel model = (DefaultTableModel) tableStock.getModel();
         model.setRowCount(0); // Clear existing rows
         String query = "SELECT * FROM stock";
@@ -210,7 +234,6 @@ public class stockIncrease extends JFrame {
                 String city = rs.getString("City");
                 String bloodGroup = rs.getString("BloodGroup");
                 String units = rs.getString("Units");
-                
 
                 String[] row = { city, bloodGroup, units };
                 model.addRow(row);

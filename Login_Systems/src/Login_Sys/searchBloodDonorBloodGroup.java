@@ -38,6 +38,7 @@ public class searchBloodDonorBloodGroup extends JFrame {
                 try {
                     searchBloodDonorBloodGroup frame = new searchBloodDonorBloodGroup();
                     frame.setVisible(true);
+                    
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

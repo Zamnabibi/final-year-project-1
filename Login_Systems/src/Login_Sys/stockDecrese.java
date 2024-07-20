@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 //import java.awt.event.ActionEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -48,6 +50,7 @@ public class stockDecrese extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
+        connectToDatabase();
 
         JLabel lblTitle = new JLabel("Delete Blood Units to Stock");
         lblTitle.setFont(new Font("Tahoma", Font.BOLD, 34));
@@ -68,15 +71,15 @@ public class stockDecrese extends JFrame {
         contentPane.add(lblBloodGroup);
 
         comboBoxBloodGroup = new JComboBox<>(new String[]{"A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"});
-        comboBoxBloodGroup.setBounds(152, 126, 100, 22);
+        comboBoxBloodGroup.setBounds(152, 126, 150, 22);
         contentPane.add(comboBoxBloodGroup);
 
         JLabel lblUnits = new JLabel("Units");
-        lblUnits.setBounds(271, 122, 63, 23);
+        lblUnits.setBounds(34, 164, 63, 23);
         contentPane.add(lblUnits);
 
         textFieldUnits = new JTextField();
-        textFieldUnits.setBounds(344, 126, 86, 20);
+        textFieldUnits.setBounds(152, 165, 150, 20);
         contentPane.add(textFieldUnits);
         textFieldUnits.setColumns(10);
 
@@ -85,13 +88,25 @@ public class stockDecrese extends JFrame {
         Image img3 = new ImageIcon(this.getClass().getResource("/display.png")).getImage();
         btnDisplay.setIcon(new ImageIcon(img3));
         btnDisplay.addActionListener(e -> loadData());
-        btnDisplay.setBounds(440, 79, 135, 33);
+        btnDisplay.setBounds(537, 157, 120, 33);
         contentPane.add(btnDisplay);
+        
+        JButton btnClose = new JButton("Close");
+        btnClose.setFont(new Font("Tahoma", Font.BOLD, 14));
+        Image img1 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
+        btnClose.setIcon(new ImageIcon(img1));
+        btnClose.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+            }
+        });
+        btnClose.setBounds(703, 157, 121, 33);
+        contentPane.add(btnClose);
 
         JButton btnAddStock = new JButton("Delete to Stock");
         btnAddStock.setIcon(new ImageIcon(getClass().getResource("/delete.png"))); // Ensure this path is correct
         btnAddStock.addActionListener(e -> deleteStock());
-        btnAddStock.setBounds(440, 125, 150, 23);
+        btnAddStock.setBounds(349, 160, 147, 31);
         contentPane.add(btnAddStock);
 
         JScrollPane scrollPaneStock = new JScrollPane();

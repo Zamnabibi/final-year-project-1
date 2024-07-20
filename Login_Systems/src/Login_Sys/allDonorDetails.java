@@ -171,7 +171,7 @@ public class allDonorDetails extends JFrame {
                 String UpdatedAt = rs.getString(15);
                 String[] row = { DonorId,UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup,BloodUnit, City, Address, CreatedAt, UpdatedAt};
                 model.addRow(row);
-                new allDonorDetails().setVisible(true);
+                
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());

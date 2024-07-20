@@ -1,6 +1,8 @@
 package Login_Sys;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,11 +12,13 @@ import java.sql.*;
 public class RecordManager extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
-    private JTable donorTable, patientTable, historyTable;
-    private JTextField searchField;
-    private JButton saveButton, deleteButton, displayButton, searchButton;
+    private JTable donorTable, patientTable, historyTable, stockTable;
+    private JTextField donorSearchField, patientSearchField;
+    private JButton donorRecordButton, patientRecordButton, historyRecordButton, stockRecordButton, deleteButton, donorSearchButton, patientSearchButton;
 
     private Connection con;
+    private String selectedDonorId;
+    private String selectedPatientId;
 
     public RecordManager() {
         setTitle("Record Manager");
@@ -26,43 +30,69 @@ public class RecordManager extends JFrame {
         contentPane = new JPanel();
         setContentPane(contentPane);
         contentPane.setLayout(null);
-
-        saveButton = new JButton("Donor Record");
-        deleteButton = new JButton("Patient Record");
-        displayButton = new JButton("Display");
-        searchButton = new JButton("Search");
+        historyRecordButton = new JButton("Display History Records");
 
         JPanel inputPanel = new JPanel();
-        inputPanel.setBounds(10, 11, 938, 40);
-        JLabel lblSearchDonorId = new JLabel("Search Donor/Patient ID: ");
-        inputPanel.add(lblSearchDonorId);
-        searchField = new JTextField(20);
-        inputPanel.add(searchField);
-        inputPanel.add(searchButton);
-        inputPanel.add(saveButton);
-        inputPanel.add(deleteButton);
-        inputPanel.add(displayButton);
+        inputPanel.setBounds(24, 11, 932, 33);
+        JLabel lblDonorSearch = new JLabel("Search Donor ID: ");
+        inputPanel.add(lblDonorSearch);
+        donorSearchField = new JTextField(10);
+        inputPanel.add(donorSearchField);
+        donorSearchButton = new JButton("Search Donor ID");
+        inputPanel.add(donorSearchButton);
+        
+                donorSearchButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        searchDonorRecord();
+                    }
+                });
+        
+                donorRecordButton = new JButton("Display Donor Records");
+                inputPanel.add(donorRecordButton);
+                
+                        donorRecordButton.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                displayDonorRecords();
+                            }
+                        });
+        inputPanel.add(historyRecordButton);
         contentPane.add(inputPanel);
+        deleteButton = new JButton("Delete Record");
+        inputPanel.add(deleteButton);
+        
+                deleteButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        deleteRecord();
+                    }
+                });
 
         donorTable = new JTable();
         JScrollPane donorScrollPane = new JScrollPane(donorTable);
-        donorScrollPane.setBounds(20, 107, 614, 322);
+        donorScrollPane.setBounds(20, 107, 635, 322);
         contentPane.add(donorScrollPane);
 
         patientTable = new JTable();
         JScrollPane patientScrollPane = new JScrollPane(patientTable);
-        patientScrollPane.setBounds(652, 107, 708, 322);
+        patientScrollPane.setBounds(674, 107, 653, 322);
         contentPane.add(patientScrollPane);
 
         historyTable = new JTable();
         JScrollPane historyScrollPane = new JScrollPane(historyTable);
-        historyScrollPane.setBounds(10, 489, 1350, 262);
+        historyScrollPane.setBounds(10, 489, 645, 262);
         contentPane.add(historyScrollPane);
         
-        JLabel lblNewLabel = new JLabel("History");
-        lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 24));
-        lblNewLabel.setBounds(10, 440, 105, 38);
-        contentPane.add(lblNewLabel);
+        stockTable = new JTable();
+        JScrollPane stockScrollPane = new JScrollPane(stockTable);
+        stockScrollPane.setBounds(674, 489, 653, 262);
+        contentPane.add(stockScrollPane);
+        
+        JLabel lblHistory = new JLabel("History");
+        lblHistory.setFont(new Font("Tahoma", Font.BOLD, 24));
+        lblHistory.setBounds(10, 440, 105, 38);
+        contentPane.add(lblHistory);
         
         JLabel lblDonor = new JLabel("Donor");
         lblDonor.setFont(new Font("Tahoma", Font.BOLD, 24));
@@ -71,36 +101,89 @@ public class RecordManager extends JFrame {
         
         JLabel lblPatient = new JLabel("Patient");
         lblPatient.setFont(new Font("Tahoma", Font.BOLD, 24));
-        lblPatient.setBounds(650, 62, 105, 38);
+        lblPatient.setBounds(928, 58, 105, 38);
         contentPane.add(lblPatient);
-
-        saveButton.addActionListener(new ActionListener() {
-            @Override
+        Image img2 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
+        
+        JLabel lblStock = new JLabel("Stock");
+        lblStock.setFont(new Font("Tahoma", Font.BOLD, 24));
+        lblStock.setBounds(928, 440, 105, 38);
+        contentPane.add(lblStock);
+        patientRecordButton = new JButton("Display Patient Records");
+        patientRecordButton.setBounds(464, 43, 173, 23);
+        contentPane.add(patientRecordButton);
+        stockRecordButton = new JButton("Display Stock Records");
+        stockRecordButton.setBounds(657, 43, 164, 23);
+        contentPane.add(stockRecordButton);
+        
+        JLabel lblPatientSearch = new JLabel("Search Patient ID: ");
+        lblPatientSearch.setBounds(85, 47, 125, 14);
+        contentPane.add(lblPatientSearch);
+        patientSearchField = new JTextField(10);
+        patientSearchField.setBounds(201, 44, 105, 20);
+        contentPane.add(patientSearchField);
+        patientSearchButton = new JButton("Search Patient ID");
+        patientSearchButton.setBounds(316, 43, 138, 23);
+        contentPane.add(patientSearchButton);
+        
+        JButton btnNewButton_3 = new JButton("Close");
+        btnNewButton_3.setBounds(509, 74, 111, 23);
+        contentPane.add(btnNewButton_3);
+        btnNewButton_3.setFont(new Font("Tahoma", Font.BOLD, 14));
+        btnNewButton_3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Implement the logic for saving records
+                setVisible(false);
             }
         });
+        btnNewButton_3.setIcon(new ImageIcon(img2));
+        
+                patientSearchButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        searchPatientRecord();
+                    }
+                });
+        
+                stockRecordButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        displayStockRecords();
+                    }
+                });
+        
+                patientRecordButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        displayPatientRecords();
+                    }
+                });
 
-        deleteButton.addActionListener(new ActionListener() {
+        historyRecordButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Implement the logic for deleting records
-            }
-        });
-
-        displayButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayDonorRecords();
-                displayPatientRecords();
                 displayHistoryRecords();
             }
         });
 
-        searchButton.addActionListener(new ActionListener() {
+        donorTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                searchRecord();
+            public void valueChanged(ListSelectionEvent e) {
+                int selectedRow = donorTable.getSelectedRow();
+                if (selectedRow != -1) {
+                    selectedDonorId = donorTable.getValueAt(selectedRow, 0).toString();
+                    selectedPatientId = null; // Clear patient selection
+                }
+            }
+        });
+
+        patientTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int selectedRow = patientTable.getSelectedRow();
+                if (selectedRow != -1) {
+                    selectedPatientId = patientTable.getValueAt(selectedRow, 0).toString();
+                    selectedDonorId = null; // Clear donor selection
+                }
             }
         });
     }
@@ -120,6 +203,10 @@ public class RecordManager extends JFrame {
 
     private void displayHistoryRecords() {
         displayRecords("history", historyTable);
+    }
+    
+    private void displayStockRecords() {
+        displayRecords("Stock", stockTable);
     }
 
     private void displayRecords(String tableName, JTable table) {
@@ -152,14 +239,22 @@ public class RecordManager extends JFrame {
         }
     }
 
-    private void searchRecord() {
-        String id = searchField.getText();
+    private void searchDonorRecord() {
+        String id = donorSearchField.getText();
+        searchRecord("donor", id);
+    }
+
+    private void searchPatientRecord() {
+        String id = patientSearchField.getText();
+        searchRecord("Patient", id);
+    }
+
+    private void searchRecord(String tableName, String id) {
         try {
             con = getConnection();
-            String query = "SELECT * FROM donor WHERE DonorId = ? UNION SELECT * FROM Patient WHERE PatientId = ?";
+            String query = "SELECT * FROM " + tableName + " WHERE " + tableName + "Id = ?";
             PreparedStatement pst = con.prepareStatement(query);
             pst.setString(1, id);
-            pst.setString(2, id);
             ResultSet rs = pst.executeQuery();
 
             if (rs.next()) {
@@ -183,6 +278,55 @@ public class RecordManager extends JFrame {
             con.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error fetching record", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteRecord() {
+        if (selectedDonorId != null) {
+            moveRecordToHistory("donor", selectedDonorId);
+            deleteRecordFromTable("donor", selectedDonorId);
+            selectedDonorId = null;
+        } else if (selectedPatientId != null) {
+            moveRecordToHistory("Patient", selectedPatientId);
+            deleteRecordFromTable("Patient", selectedPatientId);
+            selectedPatientId = null;
+        } else {
+            JOptionPane.showMessageDialog(this, "No record selected for deletion", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void moveRecordToHistory(String tableName, String id) {
+        try {
+            con = getConnection();
+            // Insert record into History
+            PreparedStatement psHistory = con.prepareStatement("INSERT INTO History (UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, BloodGroup, BloodUnit, City, Email, Address) SELECT UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, BloodGroup, BloodUnit, City, Email, Address FROM " + tableName + " WHERE " + tableName + "Id = ?");
+            psHistory.setString(1, id);
+            psHistory.executeUpdate();
+            psHistory.close();
+            con.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error moving record to history", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteRecordFromTable(String tableName, String id) {
+        try {
+            con = getConnection();
+            String query = "DELETE FROM " + tableName + " WHERE " + tableName + "Id = ?";
+            PreparedStatement pst = con.prepareStatement(query);
+            pst.setString(1, id);
+            pst.executeUpdate();
+            pst.close();
+            con.close();
+            // Refresh tables after deletion
+            displayDonorRecords();
+            displayPatientRecords();
+            displayHistoryRecords();
+            displayStockRecords();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error deleting record", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
