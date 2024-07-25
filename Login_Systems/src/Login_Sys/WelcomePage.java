@@ -60,7 +60,7 @@ public class WelcomePage extends JFrame {
         JButton btnNewButton_1 = new JButton("Donor");
         btnNewButton_1.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		new DonorSignupSystem().setVisible(true);
+        		new BloodDonationRequest().setVisible(true);
         	}
         });
         btnNewButton_1.setBounds(850, 151, 89, 23);
@@ -69,7 +69,7 @@ public class WelcomePage extends JFrame {
         JButton btnNewButton_1_1 = new JButton("Patient");
         btnNewButton_1_1.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		new SignupSystem().setVisible(true);
+        		new bloodRequest().setVisible(true);
         	}
         });
         btnNewButton_1_1.setBounds(850, 185, 89, 23);

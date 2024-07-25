@@ -145,12 +145,13 @@ public class SignUpUI extends JFrame {
 
     private boolean validateLogin(String username, String password) {
         try {
-            String query = "SELECT * FROM donors WHERE UserName = ? AND Password = ?";
+            // Assuming there is a 'Status' field in the 'users' table
+            String query = "SELECT * FROM donors WHERE Username = ? AND Password = ? AND Status = 'Accepted'";
             pst = con.prepareStatement(query);
             pst.setString(1, username);
             pst.setString(2, password);
             ResultSet rs = pst.executeQuery();
-            boolean valid = rs.next();
+            boolean valid = rs.next(); // Check if any record is returned
             rs.close();
             pst.close();
             return valid;

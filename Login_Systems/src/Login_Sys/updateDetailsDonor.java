@@ -45,7 +45,7 @@ public class updateDetailsDonor extends JFrame {
 
     public updateDetailsDonor() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 850, 500);
+        setBounds(100, 100, 850, 550); // Increased height to accommodate the footer
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -173,12 +173,12 @@ public class updateDetailsDonor extends JFrame {
 
         JLabel lblNewLabel_9 = new JLabel("Blood Group");
         lblNewLabel_9.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblNewLabel_9.setBounds(500, 135, 93, 19);
+        lblNewLabel_9.setBounds(491, 135, 93, 19);
         contentPane.add(lblNewLabel_9);
 
         JLabel lblNewLabel_10 = new JLabel("City");
         lblNewLabel_10.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblNewLabel_10.setBounds(512, 201, 58, 19);
+        lblNewLabel_10.setBounds(510, 201, 58, 19);
         contentPane.add(lblNewLabel_10);
 
         JLabel lblNewLabel_11 = new JLabel("Email");
@@ -193,52 +193,64 @@ public class updateDetailsDonor extends JFrame {
 
         JLabel lblNewLabel_9_1 = new JLabel("Blood Unit");
         lblNewLabel_9_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblNewLabel_9_1.setBounds(500, 167, 93, 19);
+        lblNewLabel_9_1.setBounds(500, 169, 73, 19);
         contentPane.add(lblNewLabel_9_1);
 
-        textField_10 = new JTextField();
-        textField_10.setFont(new Font("Tahoma", Font.BOLD, 14));
-        textField_10.setColumns(10);
-        textField_10.setBounds(641, 170, 183, 20);
-        contentPane.add(textField_10);
-
         textField_1 = new JTextField();
-        textField_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-        textField_1.setBounds(130, 133, 183, 20);
+        textField_1.setBounds(130, 134, 243, 20);
         contentPane.add(textField_1);
         textField_1.setColumns(10);
 
         textField_2 = new JTextField();
-        textField_2.setFont(new Font("Tahoma", Font.BOLD, 14));
-        textField_2.setBounds(130, 168, 183, 20);
+        textField_2.setBounds(130, 168, 243, 20);
         contentPane.add(textField_2);
         textField_2.setColumns(10);
 
         textField_3 = new JTextField();
-        textField_3.setFont(new Font("Tahoma", Font.BOLD, 14));
-        textField_3.setBounds(130, 202, 183, 20);
+        textField_3.setBounds(130, 202, 243, 20);
         contentPane.add(textField_3);
         textField_3.setColumns(10);
 
         textField_4 = new JTextField();
-        textField_4.setFont(new Font("Tahoma", Font.BOLD, 14));
-        textField_4.setBounds(130, 357, 183, 20);
+        textField_4.setBounds(130, 351, 243, 20);
         contentPane.add(textField_4);
         textField_4.setColumns(10);
 
         textField_5 = new JTextField();
-        textField_5.setFont(new Font("Tahoma", Font.BOLD, 14));
-        textField_5.setBounds(641, 200, 183, 20);
+        textField_5.setBounds(640, 201, 184, 20);
         contentPane.add(textField_5);
         textField_5.setColumns(10);
 
+        textField_6 = new JTextField();
+        textField_6.setBounds(130, 272, 243, 20);
+        contentPane.add(textField_6);
+        textField_6.setColumns(10);
+
+        textField_7 = new JTextField();
+        textField_7.setBounds(640, 136, 184, 20);
+        contentPane.add(textField_7);
+        textField_7.setColumns(10);
+
+        textField_8 = new JTextField();
+        textField_8.setBounds(130, 308, 243, 20);
+        contentPane.add(textField_8);
+        textField_8.setColumns(10);
+
+        textField_9 = new JTextField();
+        textField_9.setBounds(130, 235, 243, 20);
+        contentPane.add(textField_9);
+        textField_9.setColumns(10);
+
         textArea = new JTextArea();
-        textArea.setFont(new Font("Monospaced", Font.BOLD, 14));
-        textArea.setBounds(641, 226, 183, 114);
+        textArea.setBounds(641, 225, 183, 80);
         contentPane.add(textArea);
 
+        textField_10 = new JTextField();
+        textField_10.setBounds(641, 170, 183, 20);
+        contentPane.add(textField_10);
+        textField_10.setColumns(10);
+
         JButton btnNewButton_1 = new JButton("Update");
-        btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 14));
         btnNewButton_1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -282,69 +294,57 @@ public class updateDetailsDonor extends JFrame {
                 }
             }
         });
-        Image img5 = new ImageIcon(this.getClass().getResource("/update.png")).getImage();
-        btnNewButton_1.setIcon(new ImageIcon(img5));
-        btnNewButton_1.setBounds(49, 412, 165, 33);
-        contentPane.add(btnNewButton_1);
 
+        Image img2 = new ImageIcon(this.getClass().getResource("/update.png")).getImage();
+        btnNewButton_1.setIcon(new ImageIcon(img2));
+        btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btnNewButton_1.setBounds(30, 417, 140, 30);
+        contentPane.add(btnNewButton_1);
+        
         JButton btnNewButton_2 = new JButton("Reset");
         btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 14));
         btnNewButton_2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
-                new updateDetailsDonor().setVisible(true);
+                new updateDetailsPatient().setVisible(true);
             }
         });
         Image img3 = new ImageIcon(this.getClass().getResource("/reset-icon.png")).getImage();
         btnNewButton_2.setIcon(new ImageIcon(img3));
-        btnNewButton_2.setBounds(355, 412, 109, 33);
+        btnNewButton_2.setBounds(324, 416, 140, 33);
         contentPane.add(btnNewButton_2);
 
         JButton btnNewButton_3 = new JButton("Close");
-        btnNewButton_3.setFont(new Font("Tahoma", Font.BOLD, 14));
         btnNewButton_3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
+                new home().setVisible(true);
             }
         });
-        Image img2 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
-        btnNewButton_3.setIcon(new ImageIcon(img2));
-        btnNewButton_3.setBounds(672, 412, 102, 33);
+
+        Image img4 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
+        btnNewButton_3.setIcon(new ImageIcon(img4));
+        btnNewButton_3.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btnNewButton_3.setBounds(666, 416, 140, 33);
         contentPane.add(btnNewButton_3);
 
-        textField_6 = new JTextField();
-        textField_6.setFont(new Font("Tahoma", Font.BOLD, 14));
-        textField_6.setBounds(130, 272, 183, 20);
-        contentPane.add(textField_6);
-        textField_6.setColumns(10);
-
-        textField_7 = new JTextField();
-        textField_7.setFont(new Font("Tahoma", Font.BOLD, 14));
-        textField_7.setBounds(641, 133, 183, 20);
-        contentPane.add(textField_7);
-        textField_7.setColumns(10);
-
-        textField_8 = new JTextField();
-        textField_8.setFont(new Font("Tahoma", Font.BOLD, 14));
-        textField_8.setBounds(130, 318, 183, 20);
-        contentPane.add(textField_8);
-        textField_8.setColumns(10);
-
-        textField_9 = new JTextField();
-        textField_9.setBounds(130, 240, 183, 20);
-        contentPane.add(textField_9);
-        textField_9.setColumns(10);
-
+        // Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        footerPanel.setBounds(0, 475, 850, 50); // Adjust size and position as needed
+        contentPane.add(footerPanel);
+        
         JLabel lblNewLabel_8 = new JLabel("");
-        lblNewLabel_8.setFont(new Font("Tahoma", Font.BOLD, 14));
-        Image img4 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
-        lblNewLabel_8.setIcon(new ImageIcon(img4));
+        Image img5 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
+        lblNewLabel_8.setIcon(new ImageIcon(img5));
         lblNewLabel_8.setBounds(-21, -121, 1370, 749);
         contentPane.add(lblNewLabel_8);
     }
+    
+    
 
     private void updateTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        timeLabel.setText(sdf.format(new java.util.Date()));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(new java.util.Date());
+        timeLabel.setText(currentTime);
     }
 }

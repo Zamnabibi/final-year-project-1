@@ -45,7 +45,7 @@ public class updateDetailsPatient extends JFrame {
 
 	public updateDetailsPatient() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 850, 500);
+        setBounds(100, 100, 850, 550);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -296,7 +296,7 @@ public class updateDetailsPatient extends JFrame {
         });
         Image img5 = new ImageIcon(this.getClass().getResource("/update.png")).getImage();
         btnNewButton_1.setIcon(new ImageIcon(img5));
-        btnNewButton_1.setBounds(49, 412, 165, 33);
+        btnNewButton_1.setBounds(49, 399, 140, 33);
         contentPane.add(btnNewButton_1);
 
         JButton btnNewButton_2 = new JButton("Reset");
@@ -309,7 +309,7 @@ public class updateDetailsPatient extends JFrame {
         });
         Image img3 = new ImageIcon(this.getClass().getResource("/reset-icon.png")).getImage();
         btnNewButton_2.setIcon(new ImageIcon(img3));
-        btnNewButton_2.setBounds(355, 412, 109, 33);
+        btnNewButton_2.setBounds(324, 399, 140, 33);
         contentPane.add(btnNewButton_2);
 
         JButton btnNewButton_3 = new JButton("Close");
@@ -321,7 +321,7 @@ public class updateDetailsPatient extends JFrame {
         });
         Image img2 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
         btnNewButton_3.setIcon(new ImageIcon(img2));
-        btnNewButton_3.setBounds(672, 412, 102, 33);
+        btnNewButton_3.setBounds(656, 399, 140, 33);
         contentPane.add(btnNewButton_3);
 
         textField_6 = new JTextField();
@@ -346,8 +346,13 @@ public class updateDetailsPatient extends JFrame {
         textField_9.setBounds(130, 240, 183, 20);
         contentPane.add(textField_9);
         textField_9.setColumns(10);
+        
+     // Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        footerPanel.setBounds(0, 467, 850, 44); // Adjust size and position as needed
+        contentPane.add(footerPanel);
 
-        JLabel lblNewLabel_8 = new JLabel("");
+       JLabel lblNewLabel_8 = new JLabel("");
         lblNewLabel_8.setFont(new Font("Tahoma", Font.BOLD, 14));
         Image img4 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
         lblNewLabel_8.setIcon(new ImageIcon(img4));
@@ -356,7 +361,8 @@ public class updateDetailsPatient extends JFrame {
     }
 
     private void updateTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        timeLabel.setText(sdf.format(new java.util.Date()));
+    	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+         String currentTime = sdf.format(new java.util.Date());
+         timeLabel.setText(currentTime);
     }
 }

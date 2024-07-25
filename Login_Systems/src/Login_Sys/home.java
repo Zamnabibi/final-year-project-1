@@ -157,6 +157,20 @@ public class home extends JFrame {
         deletePatientItem.setIcon(new ImageIcon(imgDeletePatientItem));
         deleteDonorMenu.add(deletePatientItem);
         
+        JMenu stockMenu_1 = new JMenu("Request");
+        stockMenu_1.setIcon(new ImageIcon(imgDonorDetails));
+        menuBar.add(stockMenu_1);
+        
+        JMenuItem mntmDonorRequest = new JMenuItem("Donor request");
+        mntmDonorRequest.addActionListener(e -> new DonorHomePage().setVisible(true));
+        mntmDonorRequest.setIcon(new ImageIcon(imgDonorDetails));
+        stockMenu_1.add(mntmDonorRequest);
+        
+        JMenuItem mntmPatientRequest = new JMenuItem("Patient Request");
+        mntmPatientRequest.addActionListener(e -> new PatientHomePage().setVisible(true));
+        mntmPatientRequest.setIcon(new ImageIcon(imgDonorDetails));
+        stockMenu_1.add(mntmPatientRequest);
+        
         // Exit Menu
         JMenu exitMenu = new JMenu("Exit");
         exitMenu.setIcon(new ImageIcon(imgExit));

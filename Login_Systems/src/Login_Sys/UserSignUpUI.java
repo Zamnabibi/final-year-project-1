@@ -116,13 +116,7 @@ public class UserSignUpUI extends JFrame {
         btnReset.setBounds(566, 336, 124, 34);
         contentPane.add(btnReset);
 
-       // JSeparator separator = new JSeparator();
-        //separator.setBounds(23, 85, 1300, 2);
-       // contentPane.add(separator);
-
-       // JSeparator separator_1 = new JSeparator();
-       // separator_1.setBounds(23, 248, 1300, 2);
-        //contentPane.add(separator_1);
+     
 
         JLabel lblCreateAccount = new JLabel("Create Account");
         lblCreateAccount.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -145,12 +139,13 @@ public class UserSignUpUI extends JFrame {
 
     private boolean validateLogin(String username, String password) {
         try {
-            String query = "SELECT * FROM users WHERE Username = ? AND Password = ?";
+            // Assuming there is a 'Status' field in the 'users' table
+            String query = "SELECT * FROM users WHERE Username = ? AND Password = ? AND Status = 'Accepted'";
             pst = con.prepareStatement(query);
             pst.setString(1, username);
             pst.setString(2, password);
             ResultSet rs = pst.executeQuery();
-            boolean valid = rs.next();
+            boolean valid = rs.next(); // Check if any record is returned
             rs.close();
             pst.close();
             return valid;
@@ -159,6 +154,7 @@ public class UserSignUpUI extends JFrame {
         }
         return false;
     }
+
 
     private void closeResources() {
         try {
