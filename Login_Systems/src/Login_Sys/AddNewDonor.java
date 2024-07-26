@@ -24,7 +24,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.Timer;
 
-public class addNewDonor extends JFrame {
+public class AddNewDonor extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
@@ -52,7 +52,7 @@ public class addNewDonor extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    addNewDonor frame = new addNewDonor();
+                    AddNewDonor frame = new AddNewDonor();
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -65,9 +65,9 @@ public class addNewDonor extends JFrame {
      * Create the frame.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-	public addNewDonor() {
+	public AddNewDonor() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 850, 500);
+        setBounds(100, 100, 850, 550);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -279,6 +279,7 @@ public class addNewDonor extends JFrame {
         btnSave.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 saveDonor();
+              
             }
         });
         contentPane.add(btnSave);
@@ -291,6 +292,7 @@ public class addNewDonor extends JFrame {
         btnReset.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 resetForm();
+                //new addNewDonor().setVisible(true);
             }
         });
         contentPane.add(btnReset);
@@ -303,9 +305,15 @@ public class addNewDonor extends JFrame {
         btnClose.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
+              
             }
         });
         contentPane.add(btnClose);
+        
+        // Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        footerPanel.setBounds(0, 475, 850, 50); // Adjust size and position as needed
+        contentPane.add(footerPanel);
 
         JLabel lblNewLabel_14 = new JLabel("");
         lblNewLabel_14.setBounds(-21, -145, 1370, 749);
@@ -315,8 +323,9 @@ public class addNewDonor extends JFrame {
     }
 
     private void updateTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        timeLabel.setText(sdf.format(new java.util.Date()));
+    	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+         String currentTime = sdf.format(new java.util.Date());
+         timeLabel.setText(currentTime);
     }
 
     private void resetForm() {
@@ -324,7 +333,7 @@ public class addNewDonor extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    addNewDonor frame = new addNewDonor();
+                    AddNewDonor frame = new AddNewDonor();
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -388,7 +397,7 @@ public class addNewDonor extends JFrame {
             pst.executeUpdate();
             JOptionPane.showMessageDialog(null, "Successfully Updated");
             resetForm();
-            new addNewDonor().setVisible(true);
+            
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
         } catch (NumberFormatException e) {

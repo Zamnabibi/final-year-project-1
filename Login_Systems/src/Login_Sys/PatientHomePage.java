@@ -1,8 +1,8 @@
 package Login_Sys;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+
 import java.sql.*;
 
 @SuppressWarnings("serial")
@@ -13,31 +13,70 @@ public class PatientHomePage extends AdminHomePage {
     }
 
     @Override
+    protected void initializeUI() {
+        contentPane = getContentPane();
+        contentPane.setLayout(new BorderLayout());
+
+        // Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        contentPane.add(footerPanel, BorderLayout.SOUTH);
+
+        // Set up layout
+        setLayout(new BorderLayout());
+
+        // Set up the table
+        JScrollPane scrollPane = new JScrollPane(requestsTable);
+        contentPane.add(scrollPane, BorderLayout.CENTER);
+
+        // Add time label
+        JPanel timePanel = new JPanel();
+        timePanel.add(timeLabel);
+        contentPane.add(timePanel, BorderLayout.NORTH);
+
+        // Set up the buttons
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(acceptButton);
+        buttonPanel.add(rejectButton);
+        contentPane.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Set the timer to update the JLabel every second
+        Timer timer = new Timer(1000, e -> updateTime());
+        timer.start();
+
+        // Initial time update
+        updateTime();
+
+        // Load initial requests
+        loadRequests();
+
+        // Add action listeners
+        addListeners();
+    }
+
+    @Override
     protected void loadRequests() {
-        // Clear the existing rows
         tableModel.setRowCount(0);
 
-        // Fetch requests from the database and populate the table
         String url = "jdbc:mysql://localhost:3306/bbms";
         String user = "root";
         String password = "zamna0";
 
-        String query = "SELECT * FROM users WHERE type = 'Patient'";
+        String query = "SELECT * FROM Users WHERE type = 'Patient'";
 
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
-                int Userid = rs.getInt("userid");
-                String Username = rs.getString("username");
-                String Password = rs.getString("password"); // Renamed for clarity
+                int UserId = rs.getInt("userid");
+                String UserName = rs.getString("username");
+                String Password = rs.getString("password");
                 String Email = rs.getString("email");
                 String FullName = rs.getString("fullname");
                 String Status = rs.getString("status");
                 String Type = rs.getString("type");
 
-                tableModel.addRow(new Object[]{Userid, Username, Password, Email, FullName, Status, Type});
+                tableModel.addRow(new Object[]{UserId, UserName, Password, Email, FullName, Status, Type});
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -47,31 +86,25 @@ public class PatientHomePage extends AdminHomePage {
 
     @Override
     protected void addListeners() {
-        acceptButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = requestsTable.getSelectedRow();
-                if (selectedRow >= 0) {
-                    int UserId = (int) tableModel.getValueAt(selectedRow, 0);
-                    handleRequest(UserId, "Accepted");
-                    loadRequests(); // Reload requests after handling
-                } else {
-                    JOptionPane.showMessageDialog(PatientHomePage.this, "Please select a request to accept.", "Warning", JOptionPane.WARNING_MESSAGE);
-                }
+        acceptButton.addActionListener(e -> {
+            int selectedRow = requestsTable.getSelectedRow();
+            if (selectedRow >= 0) {
+                int UserId = (int) tableModel.getValueAt(selectedRow, 0);
+                handleRequest(UserId, "Accepted");
+                loadRequests();
+            } else {
+                JOptionPane.showMessageDialog(PatientHomePage.this, "Please select a request to accept.", "Warning", JOptionPane.WARNING_MESSAGE);
             }
         });
 
-        rejectButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = requestsTable.getSelectedRow();
-                if (selectedRow >= 0) {
-                    int UserId = (int) tableModel.getValueAt(selectedRow, 0);
-                    handleRequest(UserId, "Rejected");
-                    loadRequests(); // Reload requests after handling
-                } else {
-                    JOptionPane.showMessageDialog(PatientHomePage.this, "Please select a request to reject.", "Warning", JOptionPane.WARNING_MESSAGE);
-                }
+        rejectButton.addActionListener(e -> {
+            int selectedRow = requestsTable.getSelectedRow();
+            if (selectedRow >= 0) {
+                int UserId = (int) tableModel.getValueAt(selectedRow, 0);
+                handleRequest(UserId, "Rejected");
+                loadRequests();
+            } else {
+                JOptionPane.showMessageDialog(PatientHomePage.this, "Please select a request to reject.", "Warning", JOptionPane.WARNING_MESSAGE);
             }
         });
     }
@@ -81,7 +114,7 @@ public class PatientHomePage extends AdminHomePage {
         String user = "root";
         String password = "zamna0";
 
-        String query = "UPDATE users SET Status = ? WHERE UserId = ?";
+        String query = "UPDATE Users SET Status = ? WHERE UserId = ?";
 
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement stmt = conn.prepareStatement(query)) {

@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.text.SimpleDateFormat;
 
 public class DonorSignupSystem extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -20,6 +21,7 @@ public class DonorSignupSystem extends JFrame {
     private JTextField textFieldFullName;
     private JPasswordField confirmPasswordField;
     private Connection con;
+    private JLabel timeLabel;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -35,12 +37,29 @@ public class DonorSignupSystem extends JFrame {
 
     public DonorSignupSystem() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 850, 500);
+        setBounds(100, 100, 850, 550);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
         
+     // Add time label
+        timeLabel = new JLabel(); // Changed from JTextField to JLabel
+        timeLabel.setBounds(640, 10, 184, 20);
+        timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+        contentPane.add(timeLabel);
+
+        // Set the timer to update the JLabel every second
+        Timer timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTime();
+            }
+        });
+        timer.start();
+
+        // Initial time update
+        updateTime();
         
         JLabel lblTitle = new JLabel("Add New Donor");
         lblTitle.setFont(new Font("Tahoma", Font.BOLD, 34));
@@ -136,6 +155,11 @@ public class DonorSignupSystem extends JFrame {
         lblNewLabel.setBounds(694, 387, 130, 25);
         contentPane.add(lblNewLabel);
 
+        // Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        footerPanel.setBounds(0, 475, 850, 50); // Adjust size and position as needed
+        contentPane.add(footerPanel);
+        
         // Background Image
         JLabel lblBackground = new JLabel("");
         lblBackground.setBounds(0, 0, 850, 500);
@@ -164,7 +188,7 @@ public class DonorSignupSystem extends JFrame {
 
         // Basic validation
         if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Username, Password, and Email are required", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "UserName, Password, and Email are required", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -175,7 +199,7 @@ public class DonorSignupSystem extends JFrame {
 
         // Insert into database
         try {
-            String query = "INSERT INTO donors (Username, Password, Email, FullName) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO donors (UserName, Password, Email, FullName) VALUES (?, ?, ?, ?)";
             PreparedStatement pst = con.prepareStatement(query);
             pst.setString(1, username);
             pst.setString(2, password); // Consider hashing the password before storing it
@@ -199,4 +223,11 @@ public class DonorSignupSystem extends JFrame {
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    private void updateTime() {
+   	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(new java.util.Date());
+        timeLabel.setText(currentTime);
+   }
+
 }

@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.text.SimpleDateFormat;
 
 public class SignupSystem extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -20,6 +21,7 @@ public class SignupSystem extends JFrame {
     private JTextField textFieldFullName;
     private JPasswordField confirmPasswordField;
     private Connection con;
+    private JLabel timeLabel;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -32,14 +34,35 @@ public class SignupSystem extends JFrame {
             }
         });
     }
+    
+    
 
     public SignupSystem() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 850, 500);
+        setBounds(100, 100, 850, 550);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
+        
+     // Add time label
+        timeLabel = new JLabel(); // Changed from JTextField to JLabel
+        timeLabel.setBounds(640, 10, 184, 20);
+        timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+        contentPane.add(timeLabel);
+
+        // Set the timer to update the JLabel every second
+        Timer timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTime();
+            }
+        });
+        timer.start();
+
+        // Initial time update
+        updateTime();
+
         
         
         JLabel lblTitle = new JLabel("Add New Patient");
@@ -105,6 +128,14 @@ public class SignupSystem extends JFrame {
         btnSignup.setBounds(455, 347, 122, 23);
         contentPane.add(btnSignup);
         
+        
+        
+        // Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        footerPanel.setBounds(0, 475, 850, 50); // Adjust size and position as needed
+        contentPane.add(footerPanel);
+
+        
         JButton resetButton = new JButton("Reset");
         Image img3 = new ImageIcon(this.getClass().getResource("/reset-icon.png")).getImage();
         resetButton.setIcon(new ImageIcon(img3));
@@ -164,7 +195,7 @@ public class SignupSystem extends JFrame {
 
         // Basic validation
         if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Username, Password, and Email are required", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "UserName, Password, and Email are required", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -175,7 +206,7 @@ public class SignupSystem extends JFrame {
 
         // Insert into database
         try {
-            String query = "INSERT INTO users (Username, Password, Email, FullName) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO users (UserName, Password, Email, FullName) VALUES (?, ?, ?, ?)";
             PreparedStatement pst = con.prepareStatement(query);
             pst.setString(1, username);
             pst.setString(2, password); // Consider hashing the password before storing it
@@ -199,4 +230,11 @@ public class SignupSystem extends JFrame {
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    private void updateTime() {
+   	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(new java.util.Date());
+        timeLabel.setText(currentTime);
+   }
+
 }

@@ -2,6 +2,9 @@ package Login_Sys;
 
 import java.awt.EventQueue;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -10,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 //import javax.swing.JSeparator; // Ensure this import is present
 import javax.swing.JTable;
+import javax.swing.Timer;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.sql.Connection;
@@ -17,14 +21,16 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.awt.Font;
 
-public class stockDetails extends JFrame {
+public class StockDetails extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
     private JTable table;
     private Connection con;
+    private JLabel timeLabel;
 
     /**
      * Launch the application.
@@ -32,7 +38,7 @@ public class stockDetails extends JFrame {
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
-                stockDetails frame = new stockDetails();
+                StockDetails frame = new StockDetails();
                 frame.setVisible(true);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -43,9 +49,9 @@ public class stockDetails extends JFrame {
     /**
      * Create the frame.
      */
-    public stockDetails() {
+    public StockDetails() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 850, 500);
+        setBounds(100, 100, 850, 550);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -55,6 +61,24 @@ public class stockDetails extends JFrame {
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 34));
         lblNewLabel.setBounds(151, 22, 280, 41);
         contentPane.add(lblNewLabel);
+        
+        // Add time label
+        timeLabel = new JLabel(); // Changed from JTextField to JLabel
+        timeLabel.setBounds(640, 10, 184, 20);
+        timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+        contentPane.add(timeLabel);
+
+        // Set the timer to update the JLabel every second
+        Timer timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTime();
+            }
+        });
+        timer.start();
+
+        // Initial time update
+        updateTime();
 
         // Adding JSeparator
         /*JSeparator separator = new JSeparator();
@@ -96,6 +120,11 @@ public class stockDetails extends JFrame {
         /*JSeparator separator_1 = new JSeparator();
         separator_1.setBounds(10, 336, 824, 4);
         contentPane.add(separator_1);*/
+        
+     // Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        footerPanel.setBounds(0, 475, 850, 50); // Adjust size and position as needed
+        contentPane.add(footerPanel);
 
         JLabel lblBackground = new JLabel("");
         Image imgBackground = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
@@ -145,5 +174,12 @@ public class stockDetails extends JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Error displaying stock details: " + ex.getMessage());
         }
+    }
+    
+
+    private void updateTime() {
+    	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+         String currentTime = sdf.format(new java.util.Date());
+         timeLabel.setText(currentTime);
     }
 }

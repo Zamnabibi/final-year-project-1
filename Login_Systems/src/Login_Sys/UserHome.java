@@ -55,7 +55,7 @@ public class UserHome extends JFrame {
 		JMenuItem mntmNewMenuItem = new JMenuItem("Add New Patient");
 		mntmNewMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new addNewPatient().setVisible(true);
+				new AddNewPatient().setVisible(true);
 			}
 		});
 		Image img1=new ImageIcon(this.getClass().getResource("/add new.png")).getImage();
@@ -65,7 +65,7 @@ public class UserHome extends JFrame {
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Update Patient Details");
 		mntmNewMenuItem_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new updateDetailsPatient().setVisible(true);
+				new UpdateDetailsPatient().setVisible(true);
 			}
 		});
 		Image img2=new ImageIcon(this.getClass().getResource("/update.png")).getImage();
@@ -81,7 +81,7 @@ public class UserHome extends JFrame {
 		JMenuItem mntmNewMenuItem_3 = new JMenuItem("Location");
 		mntmNewMenuItem_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new searchBloodDonorLocation().setVisible(true);
+				new SearchBloodDonorLocation().setVisible(true);
 			}
 		});
 		Image img5=new ImageIcon(this.getClass().getResource("/location.jpg")).getImage();
@@ -91,7 +91,7 @@ public class UserHome extends JFrame {
 		JMenuItem mntmNewMenuItem_4 = new JMenuItem("Blood Group");
 		mntmNewMenuItem_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new searchBloodDonorBloodGroup().setVisible(true);
+				new SearchBloodDonorBloodGroup().setVisible(true);
 			}
 		});
 		Image img6=new ImageIcon(this.getClass().getResource("/blood group.png")).getImage();
@@ -107,7 +107,7 @@ public class UserHome extends JFrame {
 		JMenuItem mntmNewMenuItem_9 = new JMenuItem("Delete Patient");
 		mntmNewMenuItem_9.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new deletePatient().setVisible(true);
+				new DeletePatient().setVisible(true);
 				
 			}
 		});
@@ -143,6 +143,11 @@ public class UserHome extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+		// Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        footerPanel.setBounds(0, 426, 850, 51); // Adjust size and position as needed
+        contentPane.add(footerPanel);
+        
 		JLabel lblNewLabel = new JLabel("");
 		Image img145=new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
 		lblNewLabel.setIcon(new ImageIcon(img145));

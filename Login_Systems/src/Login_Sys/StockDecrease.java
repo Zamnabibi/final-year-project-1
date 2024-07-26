@@ -14,7 +14,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 
-public class stockDecrese extends JFrame {
+public class StockDecrease extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
     private JTextField textFieldCity;
@@ -27,7 +27,7 @@ public class stockDecrese extends JFrame {
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
-                stockDecrese frame = new stockDecrese();
+            	StockDecrease frame = new StockDecrease();
                 frame.setVisible(true);
                 frame.connectToDatabase();
 
@@ -43,9 +43,9 @@ public class stockDecrese extends JFrame {
         });
     }
 
-    public stockDecrese() {
+    public StockDecrease() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 850, 700);
+        setBounds(100, 100, 850, 750);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -125,6 +125,11 @@ public class stockDecrese extends JFrame {
         timeLabel.setBounds(640, 10, 184, 20);
         timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
         contentPane.add(timeLabel);
+        
+        // Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        footerPanel.setBounds(0, 661, 850, 50); // Adjust size and position as needed
+        contentPane.add(footerPanel);
 
         JLabel lblBackground = new JLabel("");
         lblBackground.setIcon(new ImageIcon(getClass().getResource("/back.jpg"))); // Ensure this path is correct
@@ -213,8 +218,9 @@ public class stockDecrese extends JFrame {
     }
 
     private void updateTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        timeLabel.setText(sdf.format(new java.util.Date()));
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(new java.util.Date());
+        timeLabel.setText(currentTime);
     }
 
     private void loadData() {

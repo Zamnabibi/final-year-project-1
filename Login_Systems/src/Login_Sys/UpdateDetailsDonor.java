@@ -10,7 +10,7 @@ import java.awt.event.ActionEvent;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 
-public class updateDetailsDonor extends JFrame {
+public class UpdateDetailsDonor extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
@@ -34,7 +34,7 @@ public class updateDetailsDonor extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    updateDetailsDonor frame = new updateDetailsDonor();
+                    UpdateDetailsDonor frame = new UpdateDetailsDonor();
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -43,7 +43,7 @@ public class updateDetailsDonor extends JFrame {
         });
     }
 
-    public updateDetailsDonor() {
+    public UpdateDetailsDonor() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 850, 550); // Increased height to accommodate the footer
         contentPane = new JPanel();
@@ -287,7 +287,7 @@ public class updateDetailsDonor extends JFrame {
                     pst.close();
                     con.close();
                     setVisible(false);
-                    new updateDetailsDonor().setVisible(true);
+                    new UpdateDetailsDonor().setVisible(true);
                 } catch (Exception b) {
                     JOptionPane.showMessageDialog(null, "Error occurred while updating data.");
                     b.printStackTrace();
@@ -306,7 +306,7 @@ public class updateDetailsDonor extends JFrame {
         btnNewButton_2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
-                new updateDetailsPatient().setVisible(true);
+                new UpdateDetailsDonor().setVisible(true);
             }
         });
         Image img3 = new ImageIcon(this.getClass().getResource("/reset-icon.png")).getImage();
@@ -318,7 +318,6 @@ public class updateDetailsDonor extends JFrame {
         btnNewButton_3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
-                new home().setVisible(true);
             }
         });
 

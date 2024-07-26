@@ -13,16 +13,16 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
 @SuppressWarnings("serial")
-public class BloodDonationRequest extends JFrame {
+public class BloodRequest extends JFrame {
     private JTextField usernameField, emailField, fullNameField;
     private JPasswordField passwordField;
     private JComboBox<String> userTypeComboBox;
     private JButton submitButton;
     private JLabel timeLabel;
 
-    public BloodDonationRequest() {
+    public BloodRequest() {
         // Frame settings
-        setTitle("Blood Donation Request");
+        setTitle("Blood Request");
         setSize(846, 593);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
@@ -90,7 +90,7 @@ public class BloodDonationRequest extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 handleSubmit();
-                new SignUpUI().setVisible(true);
+                new UserSignUpUI().setVisible(true);
             }
         });
         
@@ -98,19 +98,17 @@ public class BloodDonationRequest extends JFrame {
         lblRequest.setFont(new Font("Times New Roman", Font.BOLD, 24));
         lblRequest.setBounds(29, 0, 278, 59);
         getContentPane().add(lblRequest);
-        
-
         JLabel lblNewLabel = new JLabel("Already Account");
         lblNewLabel.addMouseListener(new MouseAdapter() {
         	@Override
         	public void mouseClicked(MouseEvent e) {
-        		new SignUpUI().setVisible(true);
+        		new UserSignUpUI().setVisible(true);
         	}
         });
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
         lblNewLabel.setBounds(694, 387, 130, 25);
         getContentPane().add(lblNewLabel);
-
+        
         // Add footer panel
         FooterPanel footerPanel = new FooterPanel();
         footerPanel.setBounds(0, 504, 830, 50); // Adjust size and position as needed
@@ -149,7 +147,7 @@ public class BloodDonationRequest extends JFrame {
         String user = "root";
         String pass = "zamna0";
 
-        String query = "INSERT INTO Donors (UserName, Password, Email, FullName, Type, CreatedAt, UpdatedAt) VALUES (?, ?, ?, ?, ?, NOW(), NOW())";
+        String query = "INSERT INTO Users (UserName, Password, Email, FullName, Type, CreatedAt, UpdatedAt) VALUES (?, ?, ?, ?, ?, NOW(), NOW())";
 
         try (Connection con = DriverManager.getConnection(url, user, pass);
              PreparedStatement pst = con.prepareStatement(query)) {
@@ -176,6 +174,6 @@ public class BloodDonationRequest extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new BloodDonationRequest());
+        SwingUtilities.invokeLater(() -> new BloodRequest());
     }
 }

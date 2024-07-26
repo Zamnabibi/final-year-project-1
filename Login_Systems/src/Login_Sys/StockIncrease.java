@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 
-public class stockIncrease extends JFrame {
+public class StockIncrease extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
     private JTextField textFieldCity;
@@ -26,7 +26,7 @@ public class stockIncrease extends JFrame {
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
-                stockIncrease frame = new stockIncrease();
+                StockIncrease frame = new StockIncrease();
                 frame.setVisible(true);
                 // Initialize database connection
                 frame.connectToDatabase();
@@ -41,9 +41,9 @@ public class stockIncrease extends JFrame {
         });
     }
 
-    public stockIncrease() {
+    public StockIncrease() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 850, 700);
+        setBounds(100, 100, 850, 750);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -86,7 +86,7 @@ public class stockIncrease extends JFrame {
         Image img3 = new ImageIcon(this.getClass().getResource("/display.png")).getImage();
         btnDisplay.setIcon(new ImageIcon(img3));
         btnDisplay.addActionListener(e -> loadData());
-        btnDisplay.setBounds(513, 157, 121, 33);
+        btnDisplay.setBounds(536, 157, 121, 33);
         contentPane.add(btnDisplay);
         
         JButton btnClose = new JButton("Close");
@@ -104,7 +104,7 @@ public class stockIncrease extends JFrame {
         JButton btnAddStock = new JButton("Add to Stock");
         btnAddStock.setIcon(new ImageIcon(getClass().getResource("/add donor.png"))); // Ensure this path is correct
         btnAddStock.addActionListener(e -> addStock());
-        btnAddStock.setBounds(329, 156, 130, 35);
+        btnAddStock.setBounds(329, 156, 150, 35);
         contentPane.add(btnAddStock);
 
         JScrollPane scrollPaneStock = new JScrollPane();
@@ -123,6 +123,11 @@ public class stockIncrease extends JFrame {
         timeLabel.setBounds(617, 51, 184, 20);
         timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
         contentPane.add(timeLabel);
+        
+        // Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        footerPanel.setBounds(0, 661, 850, 50); // Adjust size and position as needed
+        contentPane.add(footerPanel);
 
         JLabel lblBackground = new JLabel("");
         lblBackground.setIcon(new ImageIcon(getClass().getResource("/back.jpg"))); // Ensure this path is correct
@@ -216,8 +221,9 @@ public class stockIncrease extends JFrame {
     }
 
     private void updateTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        timeLabel.setText(sdf.format(new java.util.Date()));
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(new java.util.Date());
+        timeLabel.setText(currentTime);
     }
 
     private void loadData() {

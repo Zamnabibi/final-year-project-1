@@ -2,6 +2,8 @@ package Login_Sys;
 
 import java.awt.*;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.*;
@@ -15,6 +17,7 @@ public class Login_S extends JFrame {
     private JPasswordField txtPassword;
     private Connection con;
     private PreparedStatement pst;
+    private JLabel timeLabel;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -29,12 +32,30 @@ public class Login_S extends JFrame {
 
     public Login_S() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 870, 549);
+        setBounds(100, 100, 870, 550);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
+     // Add time label
+        timeLabel = new JLabel(); // Changed from JTextField to JLabel
+        timeLabel.setBounds(640, 10, 184, 20);
+        timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+        contentPane.add(timeLabel);
+
+        // Set the timer to update the JLabel every second
+        Timer timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTime();
+            }
+        });
+        timer.start();
+
+        // Initial time update
+        updateTime();
+        
         // Database connection setup
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -44,7 +65,7 @@ public class Login_S extends JFrame {
             e.printStackTrace();
         }
 
-        JLabel lblNewLabel = new JLabel("Login");
+        JLabel lblNewLabel = new JLabel("Admin");
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 60));
         lblNewLabel.setBounds(193, 0, 445, 74);
         contentPane.add(lblNewLabel);
@@ -81,7 +102,7 @@ public class Login_S extends JFrame {
                 txtPassword.setText(null);
                 txtUsername.setText(null);
                 setVisible(false);
-                new home().setVisible(true);
+                new Home().setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid Login Details", "Login Error", JOptionPane.ERROR_MESSAGE);
                 txtPassword.setText(null);
@@ -135,6 +156,11 @@ public class Login_S extends JFrame {
         });
         contentPane.add(lblCreateAccount);
 
+        // Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        footerPanel.setBounds(0, 475, 854, 50); // Adjust size and position as needed
+        contentPane.add(footerPanel);
+        
         // Background Image
         JLabel lblBackground = new JLabel("");
         Image img1 = new ImageIcon(getClass().getResource("/back.jpg")).getImage();
@@ -168,4 +194,11 @@ public class Login_S extends JFrame {
             e.printStackTrace();
         }
     }
+    
+    private void updateTime() {
+   	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(new java.util.Date());
+        timeLabel.setText(currentTime);
+   }
+
 }

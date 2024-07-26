@@ -21,7 +21,7 @@ import java.awt.Color;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class searchBloodDonorBloodGroup extends JFrame {
+public class SearchBloodDonorLocation extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
@@ -36,9 +36,8 @@ public class searchBloodDonorBloodGroup extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    searchBloodDonorBloodGroup frame = new searchBloodDonorBloodGroup();
+                	SearchBloodDonorLocation frame = new SearchBloodDonorLocation();
                     frame.setVisible(true);
-                    
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -49,23 +48,23 @@ public class searchBloodDonorBloodGroup extends JFrame {
     /**
      * Create the frame.
      */
-    public searchBloodDonorBloodGroup() {
+    public SearchBloodDonorLocation() {
         setForeground(Color.PINK);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 1180, 500);
+        setBounds(100, 100, 1180, 550);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        JLabel lblNewLabel = new JLabel("Search Blood Donor(Blood Group)");
+        JLabel lblNewLabel = new JLabel("Search Blood Donor(Location)");
         lblNewLabel.setFont(new Font("Sitka Text", Font.BOLD | Font.ITALIC, 40));
-        lblNewLabel.setBounds(138, 0, 701, 76);
+        lblNewLabel.setBounds(99, 11, 608, 76);
         contentPane.add(lblNewLabel);
         
-     // Add time label
+        // Add time label
         timeLabel = new JLabel(); // Changed from JTextField to JLabel
-        timeLabel.setBounds(934, 57, 184, 20);
+        timeLabel.setBounds(799, 39, 184, 20);
         timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
         contentPane.add(timeLabel);
 
@@ -80,6 +79,7 @@ public class searchBloodDonorBloodGroup extends JFrame {
 
         // Initial time update
         updateTime();
+
 
         table = new JTable();
         table.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -111,6 +111,11 @@ public class searchBloodDonorBloodGroup extends JFrame {
         });
         btnPrint.setBounds(39, 406, 116, 31);
         contentPane.add(btnPrint);
+        
+     // Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        footerPanel.setBounds(0, 466, 1164, 45); // Adjust size and position as needed
+        contentPane.add(footerPanel);
 
         JButton btnClose = new JButton("Close");
         btnClose.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -158,7 +163,7 @@ public class searchBloodDonorBloodGroup extends JFrame {
         JLabel lblNewLabel_11 = new JLabel("");
         Image img5 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
         lblNewLabel_11.setIcon(new ImageIcon(img5));
-        lblNewLabel_11.setBounds(840, 0, 324, 461);
+        lblNewLabel_11.setBounds(840, 0, 324, 511);
         contentPane.add(lblNewLabel_11);
 
         // Initialize the database connection
@@ -179,19 +184,20 @@ public class searchBloodDonorBloodGroup extends JFrame {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0); // Clear existing rows
 
-        String bloodGroup = JOptionPane.showInputDialog(this, "Enter Blood Group to search:", "Enter Blood Group", JOptionPane.PLAIN_MESSAGE);
-        if (bloodGroup == null || bloodGroup.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Blood Group cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
+        String addressOrCity = JOptionPane.showInputDialog(this, "Enter Address/City to search:", "Enter Address/City", JOptionPane.PLAIN_MESSAGE);
+        if (addressOrCity == null || addressOrCity.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Address/City cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        String query = "SELECT * FROM donor WHERE BloodGroup=?";
+        String query = "SELECT * FROM donor WHERE City LIKE ? OR Address LIKE ?";
         try (PreparedStatement stmt = con.prepareStatement(query)) {
-            stmt.setString(1, bloodGroup);
+            stmt.setString(1, "%" + addressOrCity + "%");
+            stmt.setString(2, "%" + addressOrCity + "%");
             ResultSet rs = stmt.executeQuery();
 
             if (!rs.isBeforeFirst()) {
-                JOptionPane.showMessageDialog(this, "No records found for the entered blood group.", "No Records", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "No records found for the entered address/city.", "No Records", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 while (rs.next()) {
                     String DonorId = rs.getString(1);
@@ -235,13 +241,14 @@ public class searchBloodDonorBloodGroup extends JFrame {
         String BloodUnit = model.getValueAt(rowIndex, 10).toString();
         String City = model.getValueAt(rowIndex, 11).toString();
         String Address = model.getValueAt(rowIndex, 12).toString();
-        new searchBloodDonorBloodGroup().setVisible(true);
-        saveToBloodBank(UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup, BloodUnit, City, Address);
+        new SearchBloodDonorLocation().setVisible(true);
+
+        saveToLocation(UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup, BloodUnit, City, Address);
     }
 
-    private void saveToBloodBank(String userType, String name, String fatherName, String motherName, String dob, String mobileNo, String gender, String email, String bloodGroup, String bloodUnit, String city, String address) {
+    private void saveToLocation(String userType, String name, String fatherName, String motherName, String dob, String mobileNo, String gender, String email, String bloodGroup, String bloodUnit, String city, String address) {
         try {
-            String sql = "INSERT INTO bloodbank (UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup, BloodUnit, City, Address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO Location (UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup, BloodUnit, City, Address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setString(1, userType);
             stmt.setString(2, name);
@@ -257,14 +264,16 @@ public class searchBloodDonorBloodGroup extends JFrame {
             stmt.setString(12, address);
 
             stmt.executeUpdate();
-            System.out.println("Data saved to bloodbank table.");
+            System.out.println("Data saved to Location table.");
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error saving data to blood bank: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error saving data to location: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
     private void updateTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        timeLabel.setText(sdf.format(new java.util.Date()));
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(new java.util.Date());
+        timeLabel.setText(currentTime);
     }
+    
 }

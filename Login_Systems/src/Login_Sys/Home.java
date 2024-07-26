@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-public class home extends JFrame {
+public class Home extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
@@ -24,7 +24,7 @@ public class home extends JFrame {
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
-                home frame = new home();
+                Home frame = new Home();
                 frame.setVisible(true);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -36,7 +36,7 @@ public class home extends JFrame {
      * Create the frame.
      */
     @SuppressWarnings("unused")
-	public home() {
+	public Home() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 850, 550);
         
@@ -66,96 +66,6 @@ public class home extends JFrame {
         Image imgHistory = loadImage("/close application.png");
         Image imgLogout = loadImage("/logout.jpg");
         Image imgBackground = loadImage("/back.jpg");
-
-        // Donor Menu
-        JMenu donorMenu = new JMenu("Donor");
-        donorMenu.setIcon(new ImageIcon(imgDonor));
-        menuBar.add(donorMenu);
-        
-        JMenuItem addNewDonorItem = new JMenuItem("Add New Donor");
-        addNewDonorItem.addActionListener(e -> new addNewDonor().setVisible(true));
-        addNewDonorItem.setIcon(new ImageIcon(imgAddDonor));
-        donorMenu.add(addNewDonorItem);
-        
-        JMenuItem updateDonorItem = new JMenuItem("Update Donor Details");
-        updateDonorItem.addActionListener(e -> new updateDetailsDonor().setVisible(true));
-        updateDonorItem.setIcon(new ImageIcon(imgUpdateDonor));
-        donorMenu.add(updateDonorItem);
-        
-        JMenuItem donorDetailsItem = new JMenuItem("Donor Details");
-        donorDetailsItem.addActionListener(e -> new allDonorDetails().setVisible(true));
-        donorDetailsItem.setIcon(new ImageIcon(imgDonorDetails));
-        donorMenu.add(donorDetailsItem);
-        
-        // Search Blood Menu
-        JMenu searchBloodMenu = new JMenu("Search Blood");
-        searchBloodMenu.setIcon(new ImageIcon(imgSearchBlood));
-        menuBar.add(searchBloodMenu);
-        
-        JMenuItem searchByLocationItem = new JMenuItem("Location");
-        searchByLocationItem.addActionListener(e -> new searchBloodDonorLocation().setVisible(true));
-        searchByLocationItem.setIcon(new ImageIcon(imgSearchLocation));
-        searchBloodMenu.add(searchByLocationItem);
-        
-        JMenuItem searchByBloodGroupItem = new JMenuItem("Blood Group");
-        searchByBloodGroupItem.addActionListener(e -> new searchBloodDonorBloodGroup().setVisible(true));
-        searchByBloodGroupItem.setIcon(new ImageIcon(imgSearchBloodGroup));
-        searchBloodMenu.add(searchByBloodGroupItem);
-        
-        // Giving Blood Menu
-        JMenu givingBloodMenu = new JMenu("Patient");
-        givingBloodMenu.setIcon(new ImageIcon(imgDonor));
-        menuBar.add(givingBloodMenu);
-        
-        JMenuItem addNewPatientItem = new JMenuItem("Add New Patient");
-        addNewPatientItem.addActionListener(e -> new addNewPatient().setVisible(true));
-        addNewPatientItem.setIcon(new ImageIcon(imgAddPatient));
-        givingBloodMenu.add(addNewPatientItem);
-        
-        JMenuItem updatePatientItem = new JMenuItem("Update Patient Details");
-        updatePatientItem.addActionListener(e -> new updateDetailsPatient().setVisible(true));
-        updatePatientItem.setIcon(new ImageIcon(imgUpdatePatient));
-        givingBloodMenu.add(updatePatientItem);
-        
-        JMenuItem patientDetailsItem = new JMenuItem("Patient Details");
-        patientDetailsItem.addActionListener(e -> new allPatientDetails().setVisible(true));
-        patientDetailsItem.setIcon(new ImageIcon(imgPatientDetails));
-        givingBloodMenu.add(patientDetailsItem);
-        
-        // Stock Menu
-        JMenu stockMenu = new JMenu("Stock");
-        stockMenu.setIcon(new ImageIcon(imgStock));
-        menuBar.add(stockMenu);
-        
-        JMenuItem addUnitsItem = new JMenuItem("Add Units");
-        addUnitsItem.addActionListener(e -> new stockIncrease().setVisible(true));
-        addUnitsItem.setIcon(new ImageIcon(imgAddUnits));
-        stockMenu.add(addUnitsItem);
-        
-        JMenuItem deleteUnitsItem = new JMenuItem("Delete Units");
-        deleteUnitsItem.addActionListener(e -> new stockDecrese().setVisible(true));
-        deleteUnitsItem.setIcon(new ImageIcon(imgDeleteUnits));
-        stockMenu.add(deleteUnitsItem);
-        
-        JMenuItem stockDetailsItem = new JMenuItem("Details");
-        stockDetailsItem.addActionListener(e -> new stockDetails().setVisible(true));
-        stockDetailsItem.setIcon(new ImageIcon(imgStockDetails));
-        stockMenu.add(stockDetailsItem);
-        
-        // Delete Donor Menu
-        JMenu deleteDonorMenu = new JMenu("Delete Donor");
-        deleteDonorMenu.setIcon(new ImageIcon(imgDeleteDonor));
-        menuBar.add(deleteDonorMenu);
-        
-        JMenuItem deleteDonorItem = new JMenuItem("Delete Donor");
-        deleteDonorItem.addActionListener(e -> new deleteDonor().setVisible(true));
-        deleteDonorItem.setIcon(new ImageIcon(imgDeleteDonorItem));
-        deleteDonorMenu.add(deleteDonorItem);
-        
-        JMenuItem deletePatientItem = new JMenuItem("Delete Patient");
-        deletePatientItem.addActionListener(e -> new deletePatient().setVisible(true));
-        deletePatientItem.setIcon(new ImageIcon(imgDeletePatientItem));
-        deleteDonorMenu.add(deletePatientItem);
         
         JMenu stockMenu_1 = new JMenu("Request");
         stockMenu_1.setIcon(new ImageIcon(imgDonorDetails));
@@ -170,6 +80,96 @@ public class home extends JFrame {
         mntmPatientRequest.addActionListener(e -> new PatientHomePage().setVisible(true));
         mntmPatientRequest.setIcon(new ImageIcon(imgDonorDetails));
         stockMenu_1.add(mntmPatientRequest);
+
+        // Donor Menu
+        JMenu donorMenu = new JMenu("Donor");
+        donorMenu.setIcon(new ImageIcon(imgDonor));
+        menuBar.add(donorMenu);
+        
+        JMenuItem addNewDonorItem = new JMenuItem("Add New Donor");
+        addNewDonorItem.addActionListener(e -> new AddNewDonor().setVisible(true));
+        addNewDonorItem.setIcon(new ImageIcon(imgAddDonor));
+        donorMenu.add(addNewDonorItem);
+        
+        JMenuItem updateDonorItem = new JMenuItem("Update Donor Details");
+        updateDonorItem.addActionListener(e -> new UpdateDetailsDonor().setVisible(true));
+        updateDonorItem.setIcon(new ImageIcon(imgUpdateDonor));
+        donorMenu.add(updateDonorItem);
+        
+        JMenuItem donorDetailsItem = new JMenuItem("Donor Details");
+        donorDetailsItem.addActionListener(e -> new AllDonorDetails().setVisible(true));
+        donorDetailsItem.setIcon(new ImageIcon(imgDonorDetails));
+        donorMenu.add(donorDetailsItem);
+        
+        // Giving Blood Menu
+        JMenu givingBloodMenu = new JMenu("Patient");
+        givingBloodMenu.setIcon(new ImageIcon(imgDonor));
+        menuBar.add(givingBloodMenu);
+        
+        JMenuItem addNewPatientItem = new JMenuItem("Add New Patient");
+        addNewPatientItem.addActionListener(e -> new AddNewPatient().setVisible(true));
+        addNewPatientItem.setIcon(new ImageIcon(imgAddPatient));
+        givingBloodMenu.add(addNewPatientItem);
+        
+        JMenuItem updatePatientItem = new JMenuItem("Update Patient Details");
+        updatePatientItem.addActionListener(e -> new UpdateDetailsPatient().setVisible(true));
+        updatePatientItem.setIcon(new ImageIcon(imgUpdatePatient));
+        givingBloodMenu.add(updatePatientItem);
+        
+        JMenuItem patientDetailsItem = new JMenuItem("Patient Details");
+        patientDetailsItem.addActionListener(e -> new AllPatientDetails().setVisible(true));
+        patientDetailsItem.setIcon(new ImageIcon(imgPatientDetails));
+        givingBloodMenu.add(patientDetailsItem);
+        
+        // Search Blood Menu
+        JMenu searchBloodMenu = new JMenu("Search Blood");
+        searchBloodMenu.setIcon(new ImageIcon(imgSearchBlood));
+        menuBar.add(searchBloodMenu);
+        
+        JMenuItem searchByLocationItem = new JMenuItem("Location");
+        searchByLocationItem.addActionListener(e -> new SearchBloodDonorLocation().setVisible(true));
+        searchByLocationItem.setIcon(new ImageIcon(imgSearchLocation));
+        searchBloodMenu.add(searchByLocationItem);
+        
+        JMenuItem searchByBloodGroupItem = new JMenuItem("Blood Group");
+        searchByBloodGroupItem.addActionListener(e -> new SearchBloodDonorBloodGroup().setVisible(true));
+        searchByBloodGroupItem.setIcon(new ImageIcon(imgSearchBloodGroup));
+        searchBloodMenu.add(searchByBloodGroupItem);
+        
+        // Stock Menu
+        JMenu stockMenu = new JMenu("Stock");
+        stockMenu.setIcon(new ImageIcon(imgStock));
+        menuBar.add(stockMenu);
+        
+        JMenuItem addUnitsItem = new JMenuItem("Add Units");
+        addUnitsItem.addActionListener(e -> new StockIncrease().setVisible(true));
+        addUnitsItem.setIcon(new ImageIcon(imgAddUnits));
+        stockMenu.add(addUnitsItem);
+        
+        JMenuItem deleteUnitsItem = new JMenuItem("Delete Units");
+        deleteUnitsItem.addActionListener(e -> new StockDecrease().setVisible(true));
+        deleteUnitsItem.setIcon(new ImageIcon(imgDeleteUnits));
+        stockMenu.add(deleteUnitsItem);
+        
+        JMenuItem stockDetailsItem = new JMenuItem("Details");
+        stockDetailsItem.addActionListener(e -> new StockDetails().setVisible(true));
+        stockDetailsItem.setIcon(new ImageIcon(imgStockDetails));
+        stockMenu.add(stockDetailsItem);
+        
+        // Delete Donor Menu
+        JMenu deleteDonorMenu = new JMenu("Delete Donor");
+        deleteDonorMenu.setIcon(new ImageIcon(imgDeleteDonor));
+        menuBar.add(deleteDonorMenu);
+        
+        JMenuItem deleteDonorItem = new JMenuItem("Delete Donor");
+        deleteDonorItem.addActionListener(e -> new DeleteDonor().setVisible(true));
+        deleteDonorItem.setIcon(new ImageIcon(imgDeleteDonorItem));
+        deleteDonorMenu.add(deleteDonorItem);
+        
+        JMenuItem deletePatientItem = new JMenuItem("Delete Patient");
+        deletePatientItem.addActionListener(e -> new DeletePatient().setVisible(true));
+        deletePatientItem.setIcon(new ImageIcon(imgDeletePatientItem));
+        deleteDonorMenu.add(deletePatientItem);
         
         // Exit Menu
         JMenu exitMenu = new JMenu("Exit");
@@ -197,6 +197,11 @@ public class home extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
+        
+        // Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        footerPanel.setBounds(0, 435, 850, 54); // Adjust size and position as needed
+        contentPane.add(footerPanel);
         
         JLabel backgroundLabel = new JLabel("");
         backgroundLabel.setIcon(new ImageIcon(imgBackground));

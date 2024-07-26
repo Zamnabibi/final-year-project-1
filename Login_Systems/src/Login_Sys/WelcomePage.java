@@ -69,7 +69,7 @@ public class WelcomePage extends JFrame {
         JButton btnNewButton_1_1 = new JButton("Patient");
         btnNewButton_1_1.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		new bloodRequest().setVisible(true);
+        		new BloodRequest().setVisible(true);
         	}
         });
         btnNewButton_1_1.setBounds(850, 185, 89, 23);

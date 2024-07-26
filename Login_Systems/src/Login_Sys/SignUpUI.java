@@ -2,6 +2,8 @@ package Login_Sys;
 
 import java.awt.*;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.*;
@@ -15,6 +17,7 @@ public class SignUpUI extends JFrame {
     private JPasswordField txtPassword;
     private Connection con;
     private PreparedStatement pst;
+    private JLabel timeLabel;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -29,12 +32,30 @@ public class SignUpUI extends JFrame {
 
     public SignUpUI() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 870, 508);
+        setBounds(100, 100, 870, 550);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
+     // Add time label
+        timeLabel = new JLabel(); // Changed from JTextField to JLabel
+        timeLabel.setBounds(640, 10, 184, 20);
+        timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+        contentPane.add(timeLabel);
+
+        // Set the timer to update the JLabel every second
+        Timer timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTime();
+            }
+        });
+        timer.start();
+
+        // Initial time update
+        updateTime(); 
+        
         // Database connection setup
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -44,7 +65,7 @@ public class SignUpUI extends JFrame {
             e.printStackTrace();
         }
 
-        JLabel lblNewLabel = new JLabel("Login");
+        JLabel lblNewLabel = new JLabel("Donor");
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 60));
         lblNewLabel.setBounds(193, 0, 445, 74);
         contentPane.add(lblNewLabel);
@@ -116,14 +137,6 @@ public class SignUpUI extends JFrame {
         btnReset.setBounds(555, 347, 124, 34);
         contentPane.add(btnReset);
 
-       // JSeparator separator = new JSeparator();
-        //separator.setBounds(23, 85, 1300, 2);
-       // contentPane.add(separator);
-
-       // JSeparator separator_1 = new JSeparator();
-       // separator_1.setBounds(23, 248, 1300, 2);
-        //contentPane.add(separator_1);
-
         JLabel lblCreateAccount = new JLabel("Create Account");
         lblCreateAccount.setFont(new Font("Tahoma", Font.BOLD, 14));
         lblCreateAccount.setBounds(675, 408, 131, 34);
@@ -135,6 +148,11 @@ public class SignUpUI extends JFrame {
         });
         contentPane.add(lblCreateAccount);
 
+        // Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        footerPanel.setBounds(0, 475, 854, 50); // Adjust size and position as needed
+        contentPane.add(footerPanel);
+        
         // Background Image
         JLabel lblBackground = new JLabel("");
         Image img1 = new ImageIcon(getClass().getResource("/back.jpg")).getImage();
@@ -146,7 +164,7 @@ public class SignUpUI extends JFrame {
     private boolean validateLogin(String username, String password) {
         try {
             // Assuming there is a 'Status' field in the 'users' table
-            String query = "SELECT * FROM donors WHERE Username = ? AND Password = ? AND Status = 'Accepted'";
+            String query = "SELECT * FROM donors WHERE UserName = ? AND Password = ? AND Status = 'Accepted'";
             pst = con.prepareStatement(query);
             pst.setString(1, username);
             pst.setString(2, password);
@@ -169,4 +187,11 @@ public class SignUpUI extends JFrame {
             e.printStackTrace();
         }
     }
+    
+    private void updateTime() {
+   	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(new java.util.Date());
+        timeLabel.setText(currentTime);
+   }
+
 }

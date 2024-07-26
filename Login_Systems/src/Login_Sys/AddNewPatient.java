@@ -19,11 +19,13 @@ import javax.swing.JTextArea;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.Timer;
 
-public class addNewPatient extends JFrame {
+public class AddNewPatient extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
@@ -50,7 +52,7 @@ public class addNewPatient extends JFrame {
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
-                addNewPatient frame = new addNewPatient();
+                AddNewPatient frame = new AddNewPatient();
                 frame.setVisible(true);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -62,9 +64,9 @@ public class addNewPatient extends JFrame {
      * Create the frame.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-	public addNewPatient() {
+	public AddNewPatient() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 850, 500);
+        setBounds(100, 100, 850, 550);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -293,7 +295,19 @@ public class addNewPatient extends JFrame {
         btnClose.setIcon(new ImageIcon(img1));
         btnClose.setFont(new Font("Tahoma", Font.BOLD, 16));
         btnClose.addActionListener(e -> dispose());
+        btnClose.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+             setVisible(false);
+            }
+        });
         contentPane.add(btnClose);
+       
+        
+     // Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        footerPanel.setBounds(0, 475, 850, 50); // Adjust size and position as needed
+        contentPane.add(footerPanel);
 
         JLabel lblNewLabel_14 = new JLabel("");
         lblNewLabel_14.setBounds(-21, -145, 1370, 749);
@@ -306,15 +320,18 @@ public class addNewPatient extends JFrame {
     }
 
     private void updateTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        timeLabel.setText(sdf.format(new java.util.Date()));
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(new java.util.Date());
+        timeLabel.setText(currentTime);
     }
+    
+    
 
     private void resetForm() {
         dispose();
         EventQueue.invokeLater(() -> {
             try {
-                addNewPatient frame = new addNewPatient();
+                AddNewPatient frame = new AddNewPatient();
                 frame.setVisible(true);
             } catch (Exception e) {
                 e.printStackTrace();

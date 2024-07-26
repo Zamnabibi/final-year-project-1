@@ -47,6 +47,8 @@ public class Login extends JFrame {
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
+		
+		
 		JMenu mnNewMenu = new JMenu("Donor");
 		Image img=new ImageIcon(this.getClass().getResource("/add donor.png")).getImage();
 		mnNewMenu.setIcon(new ImageIcon(img));
@@ -55,7 +57,7 @@ public class Login extends JFrame {
 		JMenuItem mntmNewMenuItem = new JMenuItem("Add New Donor");
 		mntmNewMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new addNewDonor().setVisible(true);
+				new AddNewDonor().setVisible(true);
 			}
 		});
 		Image img1=new ImageIcon(this.getClass().getResource("/add new.png")).getImage();
@@ -65,7 +67,7 @@ public class Login extends JFrame {
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Update Donor Details");
 		mntmNewMenuItem_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new updateDetailsDonor().setVisible(true);
+				new UpdateDetailsDonor().setVisible(true);
 			}
 		});
 		Image img2=new ImageIcon(this.getClass().getResource("/update.png")).getImage();
@@ -81,7 +83,7 @@ public class Login extends JFrame {
 		JMenuItem mntmNewMenuItem_9 = new JMenuItem("Delete Donor");
 		mntmNewMenuItem_9.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new deleteDonor().setVisible(true);
+				new DeleteDonor().setVisible(true);
 				
 			}
 		});
@@ -116,6 +118,11 @@ public class Login extends JFrame {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+		// Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        footerPanel.setBounds(0, 422, 850, 55); // Adjust size and position as needed
+        contentPane.add(footerPanel);
 		
 		JLabel lblNewLabel = new JLabel("");
 		Image img145=new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();

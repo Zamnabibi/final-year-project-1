@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.text.SimpleDateFormat;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -19,15 +20,34 @@ public class AddAdmin extends JFrame {
     private JPasswordField txtPassword;
     private JPasswordField txtConfirmPassword; // Changed to JPasswordField
     private Connection con;
+    private JLabel timeLabel;
 
     public AddAdmin() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 850, 500);
+        setBounds(100, 100, 850, 550);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
+     // Add time label
+        timeLabel = new JLabel(); // Changed from JTextField to JLabel
+        timeLabel.setBounds(640, 10, 184, 20);
+        timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+        contentPane.add(timeLabel);
+
+        // Set the timer to update the JLabel every second
+        Timer timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTime();
+            }
+        });
+        timer.start();
+
+        // Initial time update
+        updateTime();
+        
         // Title Label
         JLabel lblTitle = new JLabel("Add New Admin");
         lblTitle.setFont(new Font("Tahoma", Font.BOLD, 34));
@@ -98,6 +118,11 @@ public class AddAdmin extends JFrame {
         lblNewLabel.setBounds(650, 409, 130, 25);
         contentPane.add(lblNewLabel);
 
+        // Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        footerPanel.setBounds(0, 475, 850, 50); // Adjust size and position as needed
+        contentPane.add(footerPanel);
+        
         // Background Image
         JLabel lblBackground = new JLabel("");
         lblBackground.setBounds(0, 0, 850, 500); // Cover the entire frame
@@ -144,7 +169,7 @@ public class AddAdmin extends JFrame {
                 txtUsername.setText("");
                 txtPassword.setText("");
                 txtConfirmPassword.setText("");
-                new home().setVisible(true);
+                new Home().setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(this, "Failed to add admin", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -163,4 +188,11 @@ public class AddAdmin extends JFrame {
             }
         });
     }
+    
+    private void updateTime() {
+   	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(new java.util.Date());
+        timeLabel.setText(currentTime);
+   }
+
 }

@@ -2,6 +2,8 @@ package Login_Sys;
 
 import java.awt.*;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.*;
@@ -15,6 +17,7 @@ public class UserSignUpUI extends JFrame {
     private JPasswordField txtPassword;
     private Connection con;
     private PreparedStatement pst;
+    private JLabel timeLabel;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -29,12 +32,30 @@ public class UserSignUpUI extends JFrame {
 
     public UserSignUpUI() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 859, 533);
+        setBounds(100, 100, 859, 553);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
+     // Add time label
+        timeLabel = new JLabel(); // Changed from JTextField to JLabel
+        timeLabel.setBounds(640, 10, 184, 20);
+        timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+        contentPane.add(timeLabel);
+
+        // Set the timer to update the JLabel every second
+        Timer timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTime();
+            }
+        });
+        timer.start();
+
+        // Initial time update
+        updateTime();
+        
         // Database connection setup
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -44,7 +65,7 @@ public class UserSignUpUI extends JFrame {
             e.printStackTrace();
         }
 
-        JLabel lblNewLabel = new JLabel("Login");
+        JLabel lblNewLabel = new JLabel("Patient");
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 60));
         lblNewLabel.setBounds(198, 0, 445, 74);
         contentPane.add(lblNewLabel);
@@ -128,7 +149,12 @@ public class UserSignUpUI extends JFrame {
             }
         });
         contentPane.add(lblCreateAccount);
-
+        
+        // Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        footerPanel.setBounds(0, 475, 850, 50); // Adjust size and position as needed
+        contentPane.add(footerPanel);
+        
         // Background Image
         JLabel lblBackground = new JLabel("");
         Image img1 = new ImageIcon(getClass().getResource("/back.jpg")).getImage();
@@ -140,7 +166,7 @@ public class UserSignUpUI extends JFrame {
     private boolean validateLogin(String username, String password) {
         try {
             // Assuming there is a 'Status' field in the 'users' table
-            String query = "SELECT * FROM users WHERE Username = ? AND Password = ? AND Status = 'Accepted'";
+            String query = "SELECT * FROM users WHERE UserName = ? AND Password = ? AND Status = 'Accepted'";
             pst = con.prepareStatement(query);
             pst.setString(1, username);
             pst.setString(2, password);
@@ -164,4 +190,11 @@ public class UserSignUpUI extends JFrame {
             e.printStackTrace();
         }
     }
+    
+    private void updateTime() {
+   	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(new java.util.Date());
+        timeLabel.setText(currentTime);
+   }
+
 }

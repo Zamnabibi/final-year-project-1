@@ -3,6 +3,7 @@ package Login_Sys;
 import java.awt.EventQueue;
 import java.awt.Image;
 import javax.swing.JTable;
+import javax.swing.Timer;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -15,15 +16,17 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.awt.Font;
 import javax.swing.JScrollPane;
 import java.awt.Color;
 
-public class allPatientDetails extends JFrame {
+public class AllDonorDetails extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
     private JTable table;
+    private JLabel timeLabel;
     private Connection con;
 
     /**
@@ -33,7 +36,7 @@ public class allPatientDetails extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                	allPatientDetails frame = new allPatientDetails();
+                    AllDonorDetails frame = new AllDonorDetails();
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -45,18 +48,43 @@ public class allPatientDetails extends JFrame {
     /**
      * Create the frame.
      */
-    public allPatientDetails() {
+    public AllDonorDetails() {
     	setForeground(Color.PINK);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 1180, 500);
+        setBounds(100, 100, 1180, 550);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
+        
+     // Add time label
+        timeLabel = new JLabel();
+        timeLabel.setBounds(640, 10, 184, 20);
+        timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+        contentPane.add(timeLabel);
 
-        JLabel lblNewLabel = new JLabel("Patient Details");
-        lblNewLabel.setFont(new Font("Sitka Text", Font.BOLD | Font.ITALIC, 60));
+        // Set the timer to update the JLabel every second
+        Timer timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTime();
+            }
+        });
+        timer.start();
+
+        // Initial time update
+        updateTime();
+        
+        // Add the footer panel
+        FooterPanel footerPanel = new FooterPanel();
+        footerPanel.setBounds(0, 470, 1164, 41);
+        contentPane.add(footerPanel);
+    
+
+
+        JLabel lblNewLabel = new JLabel("Donor Details");
         lblNewLabel.setBounds(99, 11, 556, 76);
+        lblNewLabel.setFont(new Font("Sitka Text", Font.BOLD | Font.ITALIC, 60));
         contentPane.add(lblNewLabel);
 
         /*JSeparator separator = new JSeparator();
@@ -68,7 +96,7 @@ public class allPatientDetails extends JFrame {
         table.setModel(new DefaultTableModel(
             new Object[][] {},
             new String[] {
-                "PatientId","UserType", "Name", "FatherName", "MotherName", "DOB", "MobileNo", "Gender", "Email", "BloodGroup","BloodUnit", "City", "Permanent Address", "CreatedAt", "UpdatedAt"
+                "DonorId","UserType", "Name", "FatherName", "MotherName", "DOB", "MobileNo", "Gender", "Email", "BloodGroup","BloodUnit", "City", "Permanent Address", "CreatedAt", "UpdatedAt"
             }
         ));
 
@@ -79,6 +107,7 @@ public class allPatientDetails extends JFrame {
         contentPane.add(scrollPane);
 
         JButton btnPrint = new JButton("Print");
+        btnPrint.setBounds(39, 406, 116, 31);
         btnPrint.setFont(new Font("Tahoma", Font.BOLD, 14));
         Image img2 = new ImageIcon(this.getClass().getResource("/print.png")).getImage();
         btnPrint.setIcon(new ImageIcon(img2));
@@ -91,19 +120,19 @@ public class allPatientDetails extends JFrame {
                 }
             }
         });
-        btnPrint.setBounds(39, 406, 116, 31);
         contentPane.add(btnPrint);
 
         JButton btnClose = new JButton("Close");
+        btnClose.setBounds(690, 405, 106, 33);
         btnClose.setFont(new Font("Tahoma", Font.BOLD, 14));
         Image img1 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
         btnClose.setIcon(new ImageIcon(img1));
         btnClose.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
+               
             }
         });
-        btnClose.setBounds(690, 405, 106, 33);
         contentPane.add(btnClose);
 
         /*JSeparator separator_1 = new JSeparator();
@@ -111,6 +140,7 @@ public class allPatientDetails extends JFrame {
         contentPane.add(separator_1);*/
 
         JButton btnDisplay = new JButton("Display");
+        btnDisplay.setBounds(340, 405, 135, 33);
         btnDisplay.setFont(new Font("Tahoma", Font.BOLD, 14));
         Image img3 = new ImageIcon(this.getClass().getResource("/display.png")).getImage();
         btnDisplay.setIcon(new ImageIcon(img3));
@@ -119,19 +149,18 @@ public class allPatientDetails extends JFrame {
                 loadData();
             }
         });
-        btnDisplay.setBounds(340, 405, 135, 33);
         contentPane.add(btnDisplay);
 
         JLabel lblBackground = new JLabel("");
+        lblBackground.setBounds(0, -121, 1390, 749);
         Image img4 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
         lblBackground.setIcon(new ImageIcon(img4));
-        lblBackground.setBounds(0, -137, 1370, 749);
         contentPane.add(lblBackground);
         
         JLabel lblNewLabel_1 = new JLabel("");
+        lblNewLabel_1.setBounds(840, 0, 324, 511);
         Image img5 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
         lblNewLabel_1.setIcon(new ImageIcon(img5));
-        lblNewLabel_1.setBounds(840, 0, 324, 461);
         contentPane.add(lblNewLabel_1);
 
         // Initialize the database connection
@@ -151,12 +180,11 @@ public class allPatientDetails extends JFrame {
     private void loadData() {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         model.setRowCount(0); // Clear existing rows
-        String query = "SELECT * FROM Patient";
+        String query = "SELECT * FROM donor";
         try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(query)) {
             while (rs.next()) {
-                String PatientId = rs.getString(1);
-               
-				String UserType = rs.getString(2);
+                String DonorId = rs.getString(1);
+                String UserType = rs.getString(2);
                 String Name = rs.getString(3);
                 String FatherName = rs.getString(4);
                 String MotherName = rs.getString(5);
@@ -170,7 +198,7 @@ public class allPatientDetails extends JFrame {
                 String Address = rs.getString(13);
                 String CreatedAt = rs.getString(14);
                 String UpdatedAt = rs.getString(15);
-                String[] row = { PatientId,UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup,BloodUnit, City, Address, CreatedAt, UpdatedAt};
+                String[] row = { DonorId,UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup,BloodUnit, City, Address, CreatedAt, UpdatedAt};
                 model.addRow(row);
                 
             }
@@ -178,4 +206,11 @@ public class allPatientDetails extends JFrame {
             JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
         }
     }
+    private void updateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(new java.util.Date());
+        timeLabel.setText(currentTime);
+    }
+    
+    
 }
