@@ -298,7 +298,7 @@ public class UpdateDetailsDonor extends JFrame {
         Image img2 = new ImageIcon(this.getClass().getResource("/update.png")).getImage();
         btnNewButton_1.setIcon(new ImageIcon(img2));
         btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 16));
-        btnNewButton_1.setBounds(30, 417, 140, 30);
+        btnNewButton_1.setBounds(67, 400, 122, 33);
         contentPane.add(btnNewButton_1);
         
         JButton btnNewButton_2 = new JButton("Reset");
@@ -311,7 +311,7 @@ public class UpdateDetailsDonor extends JFrame {
         });
         Image img3 = new ImageIcon(this.getClass().getResource("/reset-icon.png")).getImage();
         btnNewButton_2.setIcon(new ImageIcon(img3));
-        btnNewButton_2.setBounds(324, 416, 140, 33);
+        btnNewButton_2.setBounds(382, 400, 116, 33);
         contentPane.add(btnNewButton_2);
 
         JButton btnNewButton_3 = new JButton("Close");
@@ -324,7 +324,7 @@ public class UpdateDetailsDonor extends JFrame {
         Image img4 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
         btnNewButton_3.setIcon(new ImageIcon(img4));
         btnNewButton_3.setFont(new Font("Tahoma", Font.BOLD, 16));
-        btnNewButton_3.setBounds(666, 416, 140, 33);
+        btnNewButton_3.setBounds(692, 400, 116, 33);
         contentPane.add(btnNewButton_3);
 
         // Add the footer panel

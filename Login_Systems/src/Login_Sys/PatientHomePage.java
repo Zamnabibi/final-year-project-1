@@ -1,56 +1,15 @@
 package Login_Sys;
 
 import javax.swing.*;
-import java.awt.*;
 
 import java.sql.*;
+
 
 @SuppressWarnings("serial")
 public class PatientHomePage extends AdminHomePage {
 
     public PatientHomePage() {
         super("Patient Home Page");
-    }
-
-    @Override
-    protected void initializeUI() {
-        contentPane = getContentPane();
-        contentPane.setLayout(new BorderLayout());
-
-        // Add the footer panel
-        FooterPanel footerPanel = new FooterPanel();
-        contentPane.add(footerPanel, BorderLayout.SOUTH);
-
-        // Set up layout
-        setLayout(new BorderLayout());
-
-        // Set up the table
-        JScrollPane scrollPane = new JScrollPane(requestsTable);
-        contentPane.add(scrollPane, BorderLayout.CENTER);
-
-        // Add time label
-        JPanel timePanel = new JPanel();
-        timePanel.add(timeLabel);
-        contentPane.add(timePanel, BorderLayout.NORTH);
-
-        // Set up the buttons
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(acceptButton);
-        buttonPanel.add(rejectButton);
-        contentPane.add(buttonPanel, BorderLayout.SOUTH);
-
-        // Set the timer to update the JLabel every second
-        Timer timer = new Timer(1000, e -> updateTime());
-        timer.start();
-
-        // Initial time update
-        updateTime();
-
-        // Load initial requests
-        loadRequests();
-
-        // Add action listeners
-        addListeners();
     }
 
     @Override
@@ -68,7 +27,7 @@ public class PatientHomePage extends AdminHomePage {
              ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
-                int UserId = rs.getInt("userid");
+                int UserId = rs.getInt("UserId");
                 String UserName = rs.getString("username");
                 String Password = rs.getString("password");
                 String Email = rs.getString("email");
@@ -89,8 +48,8 @@ public class PatientHomePage extends AdminHomePage {
         acceptButton.addActionListener(e -> {
             int selectedRow = requestsTable.getSelectedRow();
             if (selectedRow >= 0) {
-                int UserId = (int) tableModel.getValueAt(selectedRow, 0);
-                handleRequest(UserId, "Accepted");
+                int DonorId = (int) tableModel.getValueAt(selectedRow, 0);
+                handleRequest(DonorId, "Accepted");
                 loadRequests();
             } else {
                 JOptionPane.showMessageDialog(PatientHomePage.this, "Please select a request to accept.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -100,8 +59,8 @@ public class PatientHomePage extends AdminHomePage {
         rejectButton.addActionListener(e -> {
             int selectedRow = requestsTable.getSelectedRow();
             if (selectedRow >= 0) {
-                int UserId = (int) tableModel.getValueAt(selectedRow, 0);
-                handleRequest(UserId, "Rejected");
+                int DonorId = (int) tableModel.getValueAt(selectedRow, 0);
+                handleRequest(DonorId, "Rejected");
                 loadRequests();
             } else {
                 JOptionPane.showMessageDialog(PatientHomePage.this, "Please select a request to reject.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -109,7 +68,7 @@ public class PatientHomePage extends AdminHomePage {
         });
     }
 
-    private void handleRequest(int UserId, String Status) {
+    private void handleRequest(int DonorId, String status) {
         String url = "jdbc:mysql://localhost:3306/bbms";
         String user = "root";
         String password = "zamna0";
@@ -119,12 +78,12 @@ public class PatientHomePage extends AdminHomePage {
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            stmt.setString(1, Status);
-            stmt.setInt(2, UserId);
+            stmt.setString(1, status);
+            stmt.setInt(2, DonorId);
 
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated > 0) {
-                JOptionPane.showMessageDialog(this, "Request " + Status + " successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Request " + status + " successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(this, "Failed to update request status", "Error", JOptionPane.ERROR_MESSAGE);
             }

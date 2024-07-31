@@ -4,13 +4,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+
+import java.sql.*;
 import java.text.SimpleDateFormat;
 
 public class StockIncrease extends JFrame {
@@ -28,8 +23,6 @@ public class StockIncrease extends JFrame {
             try {
                 StockIncrease frame = new StockIncrease();
                 frame.setVisible(true);
-                // Initialize database connection
-                frame.connectToDatabase();
                 // Set the timer to update the JLabel every second
                 Timer timer = new Timer(1000, e -> frame.updateTime());
                 timer.start();
@@ -48,6 +41,7 @@ public class StockIncrease extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
+        
         connectToDatabase();
         
         JLabel lblTitle = new JLabel("Add Blood Units to Stock");
@@ -81,24 +75,12 @@ public class StockIncrease extends JFrame {
         contentPane.add(textFieldUnits);
         textFieldUnits.setColumns(10);
 
-        JButton btnDisplay = new JButton("Display");
-        btnDisplay.setFont(new Font("Tahoma", Font.BOLD, 14));
-        Image img3 = new ImageIcon(this.getClass().getResource("/display.png")).getImage();
-        btnDisplay.setIcon(new ImageIcon(img3));
-        btnDisplay.addActionListener(e -> loadData());
-        btnDisplay.setBounds(536, 157, 121, 33);
-        contentPane.add(btnDisplay);
-        
         JButton btnClose = new JButton("Close");
         btnClose.setFont(new Font("Tahoma", Font.BOLD, 14));
         Image img1 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
         btnClose.setIcon(new ImageIcon(img1));
-        btnClose.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-            }
-        });
-        btnClose.setBounds(703, 156, 121, 33);
+        btnClose.addActionListener(e -> setVisible(false));
+        btnClose.setBounds(536, 157, 121, 33);
         contentPane.add(btnClose);
 
         JButton btnAddStock = new JButton("Add to Stock");
@@ -115,7 +97,7 @@ public class StockIncrease extends JFrame {
         tableStock = new JTable();
         tableStock.setModel(new DefaultTableModel(
             new Object[][]{},
-            new String[]{"City", "BloodGroup", "Units"} // Add the AddDate column
+            new String[]{"City", "BloodGroup", "Units"} // Add the AddDate column if needed
         ));
         scrollPaneStock.setViewportView(tableStock);
 
@@ -138,6 +120,9 @@ public class StockIncrease extends JFrame {
         lblBackground1.setIcon(new ImageIcon(getClass().getResource("/back.jpg"))); // Ensure this path is correct
         lblBackground1.setBounds(0, 0, 834, 461);
         contentPane.add(lblBackground1);
+
+        // Load data automatically
+        loadData();
     }
 
     private void connectToDatabase() {
@@ -221,7 +206,7 @@ public class StockIncrease extends JFrame {
     }
 
     private void updateTime() {
-    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentTime = sdf.format(new java.util.Date());
         timeLabel.setText(currentTime);
     }

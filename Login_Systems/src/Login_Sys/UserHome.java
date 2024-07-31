@@ -47,6 +47,8 @@ public class UserHome extends JFrame {
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
+		
+		
 		JMenu mnNewMenu = new JMenu("Patient");
 		Image img=new ImageIcon(this.getClass().getResource("/add donor.png")).getImage();
 		mnNewMenu.setIcon(new ImageIcon(img));
@@ -114,6 +116,17 @@ public class UserHome extends JFrame {
 		Image img12=new ImageIcon(this.getClass().getResource("/delete donor.jpg")).getImage();
 		mntmNewMenuItem_9.setIcon(new ImageIcon(img12));
 		mnNewMenu_3.add(mntmNewMenuItem_9);
+		
+		JMenu mnHospital = new JMenu("Hospital");
+		Image img123=new ImageIcon(this.getClass().getResource("/hospital.png")).getImage();
+        mnHospital.setIcon(new ImageIcon(img123));
+        menuBar.add(mnHospital);
+        
+        JMenuItem mntmHospital = new JMenuItem("Hospital");
+        mntmHospital.addActionListener(e -> new Hospital().setVisible(true));
+        Image img126=new ImageIcon(this.getClass().getResource("/hospital.png")).getImage();
+        mntmHospital.setIcon(new ImageIcon(img126));
+        mnHospital.add(mntmHospital);
 		
 		JMenu mnNewMenu_4 = new JMenu("Exit");
 		Image img13=new ImageIcon(this.getClass().getResource("/exit.png")).getImage();

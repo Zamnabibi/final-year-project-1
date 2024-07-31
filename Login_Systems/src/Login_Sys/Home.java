@@ -66,7 +66,7 @@ public class Home extends JFrame {
         Image imgHistory = loadImage("/close application.png");
         Image imgLogout = loadImage("/logout.jpg");
         Image imgBackground = loadImage("/back.jpg");
-        
+        Image imghospital = loadImage("/hospital.png");
         JMenu stockMenu_1 = new JMenu("Request");
         stockMenu_1.setIcon(new ImageIcon(imgDonorDetails));
         menuBar.add(stockMenu_1);
@@ -156,8 +156,17 @@ public class Home extends JFrame {
         stockDetailsItem.setIcon(new ImageIcon(imgStockDetails));
         stockMenu.add(stockDetailsItem);
         
+        JMenu mnHospital = new JMenu("Hospital");
+        mnHospital.setIcon(new ImageIcon(imghospital));
+        menuBar.add(mnHospital);
+        
+        JMenuItem mntmHospital = new JMenuItem("Hospital");
+        mntmHospital.addActionListener(e -> new Hospital().setVisible(true));
+        mntmHospital.setIcon(new ImageIcon(imghospital));
+        mnHospital.add(mntmHospital);
+        
         // Delete Donor Menu
-        JMenu deleteDonorMenu = new JMenu("Delete Donor");
+        JMenu deleteDonorMenu = new JMenu("Delete");
         deleteDonorMenu.setIcon(new ImageIcon(imgDeleteDonor));
         menuBar.add(deleteDonorMenu);
         

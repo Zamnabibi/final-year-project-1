@@ -87,6 +87,8 @@ public class AddAdmin extends JFrame {
 
         // Add Admin Button
         JButton btnAdd = new JButton("Add Admin");
+        Image img14=new ImageIcon(this.getClass().getResource("/add new.png")).getImage();
+        btnAdd.setIcon(new ImageIcon(img14));
         btnAdd.setFont(new Font("Tahoma", Font.BOLD, 14));
         btnAdd.setBounds(171, 356, 150, 30);
         btnAdd.addActionListener(new ActionListener() {
@@ -98,8 +100,10 @@ public class AddAdmin extends JFrame {
 
         // Cancel Button
         JButton btnCancel = new JButton("Cancel");
+        Image img13=new ImageIcon(this.getClass().getResource("/close.png")).getImage();
+        btnCancel.setIcon(new ImageIcon(img13));
         btnCancel.setFont(new Font("Tahoma", Font.BOLD, 14));
-        btnCancel.setBounds(598, 356, 100, 30);
+        btnCancel.setBounds(623, 356, 150, 30);
         btnCancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Closes the frame

@@ -265,10 +265,16 @@ public class SearchBloodDonorLocation extends JFrame {
 
             stmt.executeUpdate();
             System.out.println("Data saved to Location table.");
+            resetForm();
+            setVisible(false);
+          
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error saving data to location: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
+    }
+    private void resetForm() {
+        dispose();
     }
     private void updateTime() {
     	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

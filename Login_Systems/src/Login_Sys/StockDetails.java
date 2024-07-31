@@ -4,14 +4,12 @@ import java.awt.EventQueue;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-//import javax.swing.JSeparator; // Ensure this import is present
 import javax.swing.JTable;
 import javax.swing.Timer;
 import javax.swing.ImageIcon;
@@ -80,11 +78,6 @@ public class StockDetails extends JFrame {
         // Initial time update
         updateTime();
 
-        // Adding JSeparator
-        /*JSeparator separator = new JSeparator();
-        separator.setBounds(10, 85, 814, 4);
-        contentPane.add(separator);*/
-
         table = new JTable();
         table.setBounds(10, 100, 814, 225);
         contentPane.add(table);
@@ -102,13 +95,6 @@ public class StockDetails extends JFrame {
         btnPrint.setBounds(45, 371, 99, 36);
         contentPane.add(btnPrint);
 
-        JButton btnDisplay = new JButton("Display");
-        Image imgDisplay = new ImageIcon(this.getClass().getResource("/display.png")).getImage();
-        btnDisplay.setIcon(new ImageIcon(imgDisplay));
-        btnDisplay.addActionListener(e -> displayStockDetails());
-        btnDisplay.setBounds(335, 371, 112, 36);
-        contentPane.add(btnDisplay);
-
         JButton btnClose = new JButton("Close");
         Image imgClose = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
         btnClose.setIcon(new ImageIcon(imgClose));
@@ -121,7 +107,7 @@ public class StockDetails extends JFrame {
         separator_1.setBounds(10, 336, 824, 4);
         contentPane.add(separator_1);*/
         
-     // Add the footer panel
+        // Add the footer panel
         FooterPanel footerPanel = new FooterPanel();
         footerPanel.setBounds(0, 475, 850, 50); // Adjust size and position as needed
         contentPane.add(footerPanel);
@@ -131,6 +117,9 @@ public class StockDetails extends JFrame {
         lblBackground.setIcon(new ImageIcon(imgBackground));
         lblBackground.setBounds(0, 0, 834, 461);
         contentPane.add(lblBackground);
+
+        // Automatically display stock details
+        displayStockDetails();
     }
 
     private void displayStockDetails() {
@@ -178,8 +167,8 @@ public class StockDetails extends JFrame {
     
 
     private void updateTime() {
-    	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-         String currentTime = sdf.format(new java.util.Date());
-         timeLabel.setText(currentTime);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(new java.util.Date());
+        timeLabel.setText(currentTime);
     }
 }

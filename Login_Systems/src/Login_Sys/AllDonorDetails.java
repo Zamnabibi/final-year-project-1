@@ -49,123 +49,106 @@ public class AllDonorDetails extends JFrame {
      * Create the frame.
      */
     public AllDonorDetails() {
-    	setForeground(Color.PINK);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 1180, 550);
-        contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        setContentPane(contentPane);
-        contentPane.setLayout(null);
-        
-     // Add time label
-        timeLabel = new JLabel();
-        timeLabel.setBounds(640, 10, 184, 20);
-        timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
-        contentPane.add(timeLabel);
+    	    setForeground(Color.PINK);
+    	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	    setBounds(100, 100, 1180, 550);
+    	    contentPane = new JPanel();
+    	    contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+    	    setContentPane(contentPane);
+    	    contentPane.setLayout(null);
 
-        // Set the timer to update the JLabel every second
-        Timer timer = new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateTime();
-            }
-        });
-        timer.start();
+    	    // Add time label
+    	    timeLabel = new JLabel(); // Changed from JTextField to JLabel
+    	    timeLabel.setBounds(640, 10, 184, 20);
+    	    timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
+    	    contentPane.add(timeLabel);
 
-        // Initial time update
-        updateTime();
-        
-        // Add the footer panel
-        FooterPanel footerPanel = new FooterPanel();
-        footerPanel.setBounds(0, 470, 1164, 41);
-        contentPane.add(footerPanel);
-    
+    	    // Set the timer to update the JLabel every second
+    	    Timer timer = new Timer(1000, new ActionListener() {
+    	        @Override
+    	        public void actionPerformed(ActionEvent e) {
+    	            updateTime();
+    	        }
+    	    });
+    	    timer.start();
 
+    	    // Initial time update
+    	    updateTime();
 
-        JLabel lblNewLabel = new JLabel("Donor Details");
-        lblNewLabel.setBounds(99, 11, 556, 76);
-        lblNewLabel.setFont(new Font("Sitka Text", Font.BOLD | Font.ITALIC, 60));
-        contentPane.add(lblNewLabel);
+    	    JLabel lblNewLabel = new JLabel("Donor Details");
+    	    lblNewLabel.setFont(new Font("Sitka Text", Font.BOLD | Font.ITALIC, 60));
+    	    lblNewLabel.setBounds(99, 11, 556, 76);
+    	    contentPane.add(lblNewLabel);
 
-        /*JSeparator separator = new JSeparator();
-        separator.setBounds(10, 85, 1323, 2);
-        contentPane.add(separator);*/
+    	    table = new JTable();
+    	    table.setFont(new Font("Tahoma", Font.BOLD, 14));
+    	    table.setModel(new DefaultTableModel(
+    	        new Object[][] {},
+    	        new String[] {
+    	            "PatientId", "UserType", "Name", "FatherName", "MotherName", "DOB", "MobileNo", "Gender", "Email", "BloodGroup", "BloodUnit", "City", "Permanent Address", "CreatedAt", "UpdatedAt"
+    	        }
+    	    ));
 
-        table = new JTable();
-        table.setFont(new Font("Tahoma", Font.BOLD, 14));
-        table.setModel(new DefaultTableModel(
-            new Object[][] {},
-            new String[] {
-                "DonorId","UserType", "Name", "FatherName", "MotherName", "DOB", "MobileNo", "Gender", "Email", "BloodGroup","BloodUnit", "City", "Permanent Address", "CreatedAt", "UpdatedAt"
-            }
-        ));
+    	    JScrollPane scrollPane = new JScrollPane(table);
+    	    scrollPane.setBounds(10, 98, 1154, 284);
+    	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+    	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    	    contentPane.add(scrollPane);
 
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBounds(10, 98, 1154, 284);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        contentPane.add(scrollPane);
+    	    JButton btnPrint = new JButton("Print");
+    	    btnPrint.setFont(new Font("Tahoma", Font.BOLD, 14));
+    	    Image img2 = new ImageIcon(this.getClass().getResource("/print.png")).getImage();
+    	    btnPrint.setIcon(new ImageIcon(img2));
+    	    btnPrint.addActionListener(new ActionListener() {
+    	        public void actionPerformed(ActionEvent e) {
+    	            try {
+    	                table.print(JTable.PrintMode.NORMAL);
+    	            } catch (Exception t) {
+    	                JOptionPane.showMessageDialog(null, t);
+    	            }
+    	        }
+    	    });
+    	    btnPrint.setBounds(39, 406, 116, 31);
+    	    contentPane.add(btnPrint);
 
-        JButton btnPrint = new JButton("Print");
-        btnPrint.setBounds(39, 406, 116, 31);
-        btnPrint.setFont(new Font("Tahoma", Font.BOLD, 14));
-        Image img2 = new ImageIcon(this.getClass().getResource("/print.png")).getImage();
-        btnPrint.setIcon(new ImageIcon(img2));
-        btnPrint.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    table.print(JTable.PrintMode.NORMAL);
-                } catch (Exception t) {
-                    JOptionPane.showMessageDialog(null, t);
-                }
-            }
-        });
-        contentPane.add(btnPrint);
+    	    JButton btnClose = new JButton("Close");
+    	    btnClose.setFont(new Font("Tahoma", Font.BOLD, 14));
+    	    Image img1 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
+    	    btnClose.setIcon(new ImageIcon(img1));
+    	    btnClose.addActionListener(new ActionListener() {
+    	        public void actionPerformed(ActionEvent e) {
+    	            setVisible(false);
+    	        }
+    	    });
+    	    btnClose.setBounds(690, 405, 106, 33);
+    	    contentPane.add(btnClose);
 
-        JButton btnClose = new JButton("Close");
-        btnClose.setBounds(690, 405, 106, 33);
-        btnClose.setFont(new Font("Tahoma", Font.BOLD, 14));
-        Image img1 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
-        btnClose.setIcon(new ImageIcon(img1));
-        btnClose.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-               
-            }
-        });
-        contentPane.add(btnClose);
+    	    // Add the footer panel
+    	    FooterPanel footerPanel = new FooterPanel();
+    	    footerPanel.setBounds(0, 462, 1164, 49); // Adjust size and position as needed
+    	    contentPane.add(footerPanel);
 
-        /*JSeparator separator_1 = new JSeparator();
-        separator_1.setBounds(10, 393, 1323, 2);
-        contentPane.add(separator_1);*/
+    	    // Removed the display button
 
-        JButton btnDisplay = new JButton("Display");
-        btnDisplay.setBounds(340, 405, 135, 33);
-        btnDisplay.setFont(new Font("Tahoma", Font.BOLD, 14));
-        Image img3 = new ImageIcon(this.getClass().getResource("/display.png")).getImage();
-        btnDisplay.setIcon(new ImageIcon(img3));
-        btnDisplay.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                loadData();
-            }
-        });
-        contentPane.add(btnDisplay);
+    	    JLabel lblBackground = new JLabel("");
+    	    Image img4 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
+    	    lblBackground.setIcon(new ImageIcon(img4));
+    	    lblBackground.setBounds(0, -137, 1370, 749);
+    	    contentPane.add(lblBackground);
 
-        JLabel lblBackground = new JLabel("");
-        lblBackground.setBounds(0, -121, 1390, 749);
-        Image img4 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
-        lblBackground.setIcon(new ImageIcon(img4));
-        contentPane.add(lblBackground);
-        
-        JLabel lblNewLabel_1 = new JLabel("");
-        lblNewLabel_1.setBounds(840, 0, 324, 511);
-        Image img5 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
-        lblNewLabel_1.setIcon(new ImageIcon(img5));
-        contentPane.add(lblNewLabel_1);
+    	    JLabel lblNewLabel_1 = new JLabel("");
+    	    Image img5 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
+    	    lblNewLabel_1.setIcon(new ImageIcon(img5));
+    	    lblNewLabel_1.setBounds(840, 0, 324, 511);
+    	    contentPane.add(lblNewLabel_1);
 
-        // Initialize the database connection
-        initializeDatabaseConnection();
-    }
+    	    // Initialize the database connection
+    	    initializeDatabaseConnection();
+
+    	    // Load data automatically when frame opens
+    	    loadData();
+    	}
+
 
     private void initializeDatabaseConnection() {
         try {

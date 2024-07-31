@@ -15,7 +15,6 @@ public class RecordManager extends JFrame {
     private JTable donorTable, patientTable, historyTable, stockTable;
     private JTextField donorSearchField, patientSearchField;
     private JButton donorRecordButton, patientRecordButton, historyRecordButton, stockRecordButton, deleteButton, donorSearchButton, patientSearchButton;
-
     private Connection con;
     private String selectedDonorId;
     private String selectedPatientId;
@@ -30,44 +29,6 @@ public class RecordManager extends JFrame {
         contentPane = new JPanel();
         setContentPane(contentPane);
         contentPane.setLayout(null);
-        historyRecordButton = new JButton("Display History Records");
-
-        JPanel inputPanel = new JPanel();
-        inputPanel.setBounds(24, 11, 932, 33);
-        JLabel lblDonorSearch = new JLabel("Search Donor ID: ");
-        inputPanel.add(lblDonorSearch);
-        donorSearchField = new JTextField(10);
-        inputPanel.add(donorSearchField);
-        donorSearchButton = new JButton("Search Donor ID");
-        inputPanel.add(donorSearchButton);
-        
-                donorSearchButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        searchDonorRecord();
-                    }
-                });
-        
-                donorRecordButton = new JButton("Display Donor Records");
-                inputPanel.add(donorRecordButton);
-                
-                        donorRecordButton.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                displayDonorRecords();
-                            }
-                        });
-        inputPanel.add(historyRecordButton);
-        contentPane.add(inputPanel);
-        deleteButton = new JButton("Delete Record");
-        inputPanel.add(deleteButton);
-        
-                deleteButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        deleteRecord();
-                    }
-                });
 
         donorTable = new JTable();
         JScrollPane donorScrollPane = new JScrollPane(donorTable);
@@ -81,12 +42,12 @@ public class RecordManager extends JFrame {
 
         historyTable = new JTable();
         JScrollPane historyScrollPane = new JScrollPane(historyTable);
-        historyScrollPane.setBounds(10, 489, 645, 262);
+        historyScrollPane.setBounds(10, 489, 645, 249);
         contentPane.add(historyScrollPane);
         
         stockTable = new JTable();
         JScrollPane stockScrollPane = new JScrollPane(stockTable);
-        stockScrollPane.setBounds(674, 489, 653, 262);
+        stockScrollPane.setBounds(674, 489, 653, 249);
         contentPane.add(stockScrollPane);
         
         JLabel lblHistory = new JLabel("History");
@@ -101,7 +62,7 @@ public class RecordManager extends JFrame {
         
         JLabel lblPatient = new JLabel("Patient");
         lblPatient.setFont(new Font("Tahoma", Font.BOLD, 24));
-        lblPatient.setBounds(928, 58, 105, 38);
+        lblPatient.setBounds(928, 62, 105, 38);
         contentPane.add(lblPatient);
         Image img2 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
         
@@ -110,10 +71,14 @@ public class RecordManager extends JFrame {
         lblStock.setBounds(928, 440, 105, 38);
         contentPane.add(lblStock);
         patientRecordButton = new JButton("Display Patient Records");
-        patientRecordButton.setBounds(464, 43, 173, 23);
+        Image img8=new ImageIcon(this.getClass().getResource("/add donor.png")).getImage();
+        patientRecordButton.setIcon(new ImageIcon(img8));
+        patientRecordButton.setBounds(490, 43, 199, 27);
         contentPane.add(patientRecordButton);
         stockRecordButton = new JButton("Display Stock Records");
-        stockRecordButton.setBounds(657, 43, 164, 23);
+        Image img14=new ImageIcon(this.getClass().getResource("/stock.png")).getImage();
+        stockRecordButton.setIcon(new ImageIcon(img14));
+        stockRecordButton.setBounds(699, 43, 210, 27);
         contentPane.add(stockRecordButton);
         
         JLabel lblPatientSearch = new JLabel("Search Patient ID: ");
@@ -123,11 +88,13 @@ public class RecordManager extends JFrame {
         patientSearchField.setBounds(201, 44, 105, 20);
         contentPane.add(patientSearchField);
         patientSearchButton = new JButton("Search Patient ID");
-        patientSearchButton.setBounds(316, 43, 138, 23);
-        contentPane.add(patientSearchButton);
         
+        patientSearchButton.setBounds(316, 43, 164, 27);
+        contentPane.add(patientSearchButton);
+        Image img5=new ImageIcon(this.getClass().getResource("/search user.jpg")).getImage();
+		patientSearchButton.setIcon(new ImageIcon(img5));
         JButton btnNewButton_3 = new JButton("Close");
-        btnNewButton_3.setBounds(509, 74, 111, 23);
+        btnNewButton_3.setBounds(928, 11, 156, 27);
         contentPane.add(btnNewButton_3);
         btnNewButton_3.setFont(new Font("Tahoma", Font.BOLD, 14));
         btnNewButton_3.addActionListener(new ActionListener() {
@@ -136,6 +103,89 @@ public class RecordManager extends JFrame {
             }
         });
         btnNewButton_3.setIcon(new ImageIcon(img2));
+        
+        donorSearchField = new JTextField(10);
+		donorSearchField.setBounds(201, 16, 105, 20);
+		contentPane.add(donorSearchField);
+		donorSearchButton = new JButton("Search Donor ID");
+		Image img4=new ImageIcon(this.getClass().getResource("/search user.jpg")).getImage();
+		donorSearchButton.setIcon(new ImageIcon(img4));
+		donorSearchButton.setBounds(316, 11, 164, 27);
+		contentPane.add(donorSearchButton);
+		
+		        donorRecordButton = new JButton("Display Donor Records");
+		        Image img6=new ImageIcon(this.getClass().getResource("/add donor.png")).getImage();
+		        donorRecordButton.setIcon(new ImageIcon(img6));
+		        donorRecordButton.setBounds(490, 11, 199, 27);
+		        contentPane.add(donorRecordButton);
+		        historyRecordButton = new JButton("Display History Records");
+		        Image img12=new ImageIcon(this.getClass().getResource("/details.png")).getImage();
+		        historyRecordButton.setIcon(new ImageIcon(img12));
+		        historyRecordButton.setBounds(699, 11, 210, 27);
+		        contentPane.add(historyRecordButton);
+		        deleteButton = new JButton("Delete Record");
+		        Image img19=new ImageIcon(this.getClass().getResource("/stock.png")).getImage();
+		        deleteButton.setIcon(new ImageIcon(img19));
+		        deleteButton.setBounds(928, 45, 156, 25);
+		        contentPane.add(deleteButton);
+		        
+		        JLabel lblDonorSearch = new JLabel("Search Donor ID: ");
+				lblDonorSearch.setBounds(85, 19, 95, 14);
+				contentPane.add(lblDonorSearch);
+        
+        JLabel lblNewLabel = new JLabel("");
+		Image img145=new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
+		lblNewLabel.setIcon(new ImageIcon(img145));
+		lblNewLabel.setBounds(806, 234, 834, 527);
+		contentPane.add(lblNewLabel);
+		
+		JLabel lblNewLabel_1= new JLabel("");
+		Image img146=new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
+		lblNewLabel_1.setIcon(new ImageIcon(img146));
+		lblNewLabel_1.setBounds(647, -13, 834, 527);
+		contentPane.add(lblNewLabel_1);
+        
+		JLabel lblNewLabel_2= new JLabel("");
+		Image img1=new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
+		lblNewLabel_2.setIcon(new ImageIcon(img1));
+		lblNewLabel_2.setBounds(-13, 249, 834, 527);
+		contentPane.add(lblNewLabel_2);
+        
+		JLabel lblNewLabel_3= new JLabel("");
+		Image img3=new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
+		lblNewLabel_3.setIcon(new ImageIcon(img3));
+		lblNewLabel_3.setBounds(0, -13, 834, 527);
+		contentPane.add(lblNewLabel_3);
+		
+		
+		        
+		                deleteButton.addActionListener(new ActionListener() {
+		                    @Override
+		                    public void actionPerformed(ActionEvent e) {
+		                        deleteRecord();
+		                    }
+		                });
+		        
+		                historyRecordButton.addActionListener(new ActionListener() {
+		                    @Override
+		                    public void actionPerformed(ActionEvent e) {
+		                        displayHistoryRecords();
+		                    }
+		                });
+		        
+		                donorRecordButton.addActionListener(new ActionListener() {
+		                    @Override
+		                    public void actionPerformed(ActionEvent e) {
+		                        displayDonorRecords();
+		                    }
+		                });
+		
+		        donorSearchButton.addActionListener(new ActionListener() {
+		            @Override
+		            public void actionPerformed(ActionEvent e) {
+		                searchDonorRecord();
+		            }
+		        });
         
                 patientSearchButton.addActionListener(new ActionListener() {
                     @Override
@@ -157,13 +207,6 @@ public class RecordManager extends JFrame {
                         displayPatientRecords();
                     }
                 });
-
-        historyRecordButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                displayHistoryRecords();
-            }
-        });
 
         donorTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override

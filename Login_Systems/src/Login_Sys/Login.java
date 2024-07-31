@@ -91,6 +91,17 @@ public class Login extends JFrame {
 		mntmNewMenuItem_9.setIcon(new ImageIcon(img12));
 		mnNewMenu_3.add(mntmNewMenuItem_9);
 		
+		JMenu mnHospital = new JMenu("Hospital");
+		Image img123=new ImageIcon(this.getClass().getResource("/hospital.png")).getImage();
+        mnHospital.setIcon(new ImageIcon(img123));
+        menuBar.add(mnHospital);
+        
+        JMenuItem mntmHospital = new JMenuItem("Hospital");
+        mntmHospital.addActionListener(e -> new Hospital().setVisible(true));
+        Image img126=new ImageIcon(this.getClass().getResource("/hospital.png")).getImage();
+        mntmHospital.setIcon(new ImageIcon(img126));
+        mnHospital.add(mntmHospital);
+		
 		JMenu mnNewMenu_4 = new JMenu("Exit");
 		Image img13=new ImageIcon(this.getClass().getResource("/exit.png")).getImage();
 		mnNewMenu_4.setIcon(new ImageIcon(img13));

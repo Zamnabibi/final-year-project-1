@@ -1,68 +1,21 @@
 package Login_Sys;
 
 import javax.swing.*;
-import java.awt.*;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
+
 
 @SuppressWarnings("serial")
 public class DonorHomePage extends AdminHomePage {
-    
+
     public DonorHomePage() {
         super("Donor Home Page");
     }
 
     @Override
-    protected void initializeUI() {
-        // Ensure content pane is set properly
-        contentPane = getContentPane();
-        contentPane.setLayout(new BorderLayout());
-
-        // Add the footer panel
-        FooterPanel footerPanel = new FooterPanel();
-        contentPane.add(footerPanel, BorderLayout.SOUTH);
-
-        // Set up time label
-        timeLabel = new JLabel();
-        timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
-        JPanel timePanel = new JPanel();
-        timePanel.add(timeLabel);
-        contentPane.add(timePanel, BorderLayout.NORTH);
-
-        // Set up layout
-        setLayout(new BorderLayout());
-
-        // Set up the table
-        JScrollPane scrollPane = new JScrollPane(requestsTable);
-        contentPane.add(scrollPane, BorderLayout.CENTER);
-
-        // Set up the buttons
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(acceptButton);
-        buttonPanel.add(rejectButton);
-        contentPane.add(buttonPanel, BorderLayout.SOUTH);
-
-        // Set the timer to update the JLabel every second
-        Timer timer = new Timer(1000, e -> updateTime());
-        timer.start();
-
-        // Initial time update
-        updateTime();
-
-        // Load initial requests
-        loadRequests();
-
-        // Add action listeners
-        addListeners();
-    }
-
-    @Override
     protected void loadRequests() {
-        // Clear the existing rows
         tableModel.setRowCount(0);
 
-        // Fetch requests from the database and populate the table
         String url = "jdbc:mysql://localhost:3306/bbms";
         String user = "root";
         String password = "zamna0";
@@ -138,12 +91,6 @@ public class DonorHomePage extends AdminHomePage {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Failed to update request status: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    protected void updateTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String currentTime = sdf.format(new java.util.Date());
-        timeLabel.setText(currentTime);
     }
 
     public static void main(String[] args) {

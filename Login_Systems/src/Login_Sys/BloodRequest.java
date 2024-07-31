@@ -16,9 +16,9 @@ import java.text.SimpleDateFormat;
 public class BloodRequest extends JFrame {
     private JTextField usernameField, emailField, fullNameField;
     private JPasswordField passwordField;
-    private JComboBox<String> userTypeComboBox;
     private JButton submitButton;
     private JLabel timeLabel;
+    private JLabel userTypeLabel;
 
     public BloodRequest() {
         // Frame settings
@@ -74,12 +74,15 @@ public class BloodRequest extends JFrame {
         fullNameField.setBounds(307, 276, 307, 73);
         getContentPane().add(fullNameField);
 
+
         JLabel label_4 = new JLabel("User Type:");
         label_4.setBounds(29, 349, 278, 73);
         getContentPane().add(label_4);
-        userTypeComboBox = new JComboBox<>(new String[]{"Donor", "Patient"});
-        userTypeComboBox.setBounds(307, 349, 307, 73);
-        getContentPane().add(userTypeComboBox);
+        
+        // User Type Label
+        userTypeLabel = new JLabel("Patient");
+        userTypeLabel.setBounds(307, 349, 307, 73);
+        getContentPane().add(userTypeLabel);
 
         submitButton = new JButton("Submit");
         submitButton.setBounds(307, 420, 307, 73);
@@ -131,7 +134,7 @@ public class BloodRequest extends JFrame {
         String password = new String(passwordField.getPassword());
         String email = emailField.getText();
         String fullName = fullNameField.getText();
-        String userType = (String) userTypeComboBox.getSelectedItem();
+        String userType = userTypeLabel.getText();
 
         if (username.isEmpty() || password.isEmpty() || email.isEmpty() || fullName.isEmpty() || userType.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill all fields.", "Error", JOptionPane.ERROR_MESSAGE);

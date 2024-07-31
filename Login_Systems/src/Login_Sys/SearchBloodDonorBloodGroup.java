@@ -264,11 +264,18 @@ public class SearchBloodDonorBloodGroup extends JFrame {
 
             stmt.executeUpdate();
             System.out.println("Data saved to bloodbank table.");
+            resetForm();
+            setVisible(false);
+          
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error saving data to blood bank: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
+    private void resetForm() {
+        dispose();
+    }
+    
     private void updateTime() {
     	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentTime = sdf.format(new java.util.Date());

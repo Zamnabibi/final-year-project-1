@@ -11,7 +11,6 @@ import java.awt.Font;
 import java.awt.Image;
 import java.sql.*;
 import java.text.SimpleDateFormat;
-//import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import com.toedter.calendar.JDateChooser;
 import javax.swing.JComboBox;
@@ -32,7 +31,6 @@ public class AddNewDonor extends JFrame {
     private JTextField textField_1;
     private JTextField textField_2;
     private JTextField textField_3;
-    private JTextField textField_4;
     private JTextField textField_5;
     private JTextField textField_6;
     private JLabel lblNewLabel_8;
@@ -40,10 +38,10 @@ public class AddNewDonor extends JFrame {
     private JLabel timeLabel;
     private JComboBox<String> comboBox;
     private JComboBox<String> comboBox_1;
+    private JComboBox<String> comboBoxCity;
     private JTextArea textArea;
     private JDateChooser dateChooser;
-	@SuppressWarnings("rawtypes")
-	private JComboBox comboBox_2;
+    
 
     /**
      * Launch the application.
@@ -64,8 +62,7 @@ public class AddNewDonor extends JFrame {
     /**
      * Create the frame.
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-	public AddNewDonor() {
+    public AddNewDonor() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 850, 550);
         contentPane = new JPanel();
@@ -82,12 +79,6 @@ public class AddNewDonor extends JFrame {
         lblNewLabel_15.setFont(new Font("Tahoma", Font.BOLD, 14));
         lblNewLabel_15.setBounds(220, 79, 73, 24);
         contentPane.add(lblNewLabel_15);
-        
-        comboBox_2 = new JComboBox<>();
-        comboBox_2.setBounds(298, 82, 88, 22);
-        comboBox_2.setFont(new Font("Tahoma", Font.BOLD, 14));
-        comboBox_2.setModel(new DefaultComboBoxModel(new String[] {"Donor", "Patient"}));
-        contentPane.add(comboBox_2);
 
         // Add time label
         timeLabel = new JLabel(); // Changed from JTextField to JLabel
@@ -197,13 +188,9 @@ public class AddNewDonor extends JFrame {
         dateChooser.setBounds(170, 219, 158, 20);
         contentPane.add(dateChooser);
 
-        //JSeparator separator = new JSeparator();
-        //separator.setBounds(10, 56, 1339, 9);
-        //contentPane.add(separator);
-
         comboBox = new JComboBox<String>();
         comboBox.setBounds(167, 293, 157, 22);
-        comboBox.setModel(new DefaultComboBoxModel<String>(new String[] { "Male", "Female", "Others" }));
+        comboBox.setModel(new DefaultComboBoxModel<>(new String[] { "Male", "Female", "Others" }));
         comboBox.setFont(new Font("Tahoma", Font.BOLD, 14));
         contentPane.add(comboBox);
 
@@ -223,187 +210,228 @@ public class AddNewDonor extends JFrame {
         contentPane.add(lblNewLabel_13);
 
         JLabel lblNewLabel_11 = new JLabel("City");
-        lblNewLabel_11.setBounds(511, 155, 61, 21);
+        lblNewLabel_11.setBounds(509, 162, 66, 21);
         lblNewLabel_11.setFont(new Font("Tahoma", Font.BOLD, 16));
         contentPane.add(lblNewLabel_11);
 
-        JLabel lblNewLabel_12 = new JLabel("Permanent Address");
-        lblNewLabel_12.setBounds(480, 182, 165, 30);
-        lblNewLabel_12.setFont(new Font("Tahoma", Font.BOLD, 16));
-        contentPane.add(lblNewLabel_12);
-
-        textField_3 = new JTextField();
-        textField_3.setBounds(167, 325, 184, 20);
-        textField_3.setFont(new Font("Tahoma", Font.BOLD, 14));
-        contentPane.add(textField_3);
-        textField_3.setColumns(10);
-
         comboBox_1 = new JComboBox<String>();
-        comboBox_1.setBounds(640, 80, 184, 22);
+        comboBox_1.setBounds(670, 81, 145, 22);
+        comboBox_1.setModel(new DefaultComboBoxModel<>(new String[] { "A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-" }));
         comboBox_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-        comboBox_1.setModel(new DefaultComboBoxModel<String>(new String[] { "A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-" }));
         contentPane.add(comboBox_1);
 
-        textField_4 = new JTextField();
-        textField_4.setBounds(640, 155, 184, 20);
-        textField_4.setFont(new Font("Tahoma", Font.BOLD, 14));
-        contentPane.add(textField_4);
-        textField_4.setColumns(10);
-
-        textArea = new JTextArea();
-        textArea.setBounds(642, 186, 182, 97);
-        textArea.setFont(new Font("Monospaced", Font.BOLD, 14));
-        contentPane.add(textArea);
-
         textField_5 = new JTextField();
-        textField_5.setBounds(169, 187, 158, 20);
-        textField_5.setFont(new Font("Dialog", Font.BOLD, 14));
+        textField_5.setBounds(669, 126, 146, 20);
+        textField_5.setFont(new Font("Tahoma", Font.BOLD, 14));
         contentPane.add(textField_5);
         textField_5.setColumns(10);
 
+        // City ComboBox with Lahore areas
+        comboBoxCity = new JComboBox<String>();
+        comboBoxCity.setBounds(668, 164, 148, 22);
+        comboBoxCity.setModel(new DefaultComboBoxModel<>(new String[] {  "Johar Town",
+                "Gulberg",
+                "DHA",
+                "Model Town",
+                "Bahria Town",
+                "Garden Town",
+                "Shadman",
+                "Cantt",
+                "Faisal Town",
+                "Allama Iqbal Town",
+                "Anarkali",
+                "New Campus",
+                "New Muslim Town",
+                "Ferozepur Road",
+                "Jail Road",
+                "Shalimar Link Road",
+                "Wapda Town",
+                "Sabzazar",
+                "Mughalpura",
+                "Multan Road",
+                "Raiwind Road",
+                "Sanda Road",
+                "Westwood Colony",
+                "Main Boulevard",
+                "Main Gulberg",
+                "L-Block, DHA Phase 1",
+                "GT Road",
+                "University Avenue" }));
+        comboBoxCity.setFont(new Font("Tahoma", Font.BOLD, 14));
+        contentPane.add(comboBoxCity);
+
+        JLabel lblNewLabel_12 = new JLabel("Permanent Address");
+        lblNewLabel_12.setBounds(459, 218, 201, 30);
+        lblNewLabel_12.setFont(new Font("Tahoma", Font.BOLD, 16));
+        contentPane.add(lblNewLabel_12);
+        
+        JLabel lblNewLabel_15_1 = new JLabel("Donor");
+        lblNewLabel_15_1.setFont(new Font("Tahoma", Font.BOLD, 14));
+        lblNewLabel_15_1.setBounds(296, 83, 88, 20);
+        contentPane.add(lblNewLabel_15_1);
+
+        textArea = new JTextArea();
+        textArea.setBounds(670, 215, 159, 70);
+        textArea.setFont(new Font("Tahoma", Font.BOLD, 14));
+        contentPane.add(textArea);
+        
         textField_6 = new JTextField();
-        textField_6.setBounds(640, 118, 184, 20);
+        textField_6.setBounds(167, 187, 160, 21);
         textField_6.setFont(new Font("Tahoma", Font.BOLD, 14));
         contentPane.add(textField_6);
         textField_6.setColumns(10);
 
-        //JSeparator separator_1 = new JSeparator();
-        //separator_1.setBounds(10, 355, 1339, 9);
-        //contentPane.add(separator_1);
-
-        JButton btnSave = new JButton("Save");
-        btnSave.setBounds(56, 393, 111, 30);
-        Image img2 = new ImageIcon(this.getClass().getResource("/save.png")).getImage();
-        btnSave.setIcon(new ImageIcon(img2));
-        btnSave.setFont(new Font("Tahoma", Font.BOLD, 16));
-        btnSave.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                saveDonor();
-              
-            }
-        });
-        contentPane.add(btnSave);
-
-        JButton btnReset = new JButton("Reset");
-        btnReset.setBounds(352, 391, 119, 35);
-        Image img3 = new ImageIcon(this.getClass().getResource("/reset-icon.png")).getImage();
-        btnReset.setIcon(new ImageIcon(img3));
-        btnReset.setFont(new Font("Tahoma", Font.BOLD, 16));
-        btnReset.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                resetForm();
-                //new addNewDonor().setVisible(true);
-            }
-        });
-        contentPane.add(btnReset);
-
-        JButton btnClose = new JButton("Close");
-        btnClose.setBounds(661, 391, 119, 35);
-        Image img1 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
-        btnClose.setIcon(new ImageIcon(img1));
-        btnClose.setFont(new Font("Tahoma", Font.BOLD, 16));
-        btnClose.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-              
-            }
-        });
-        contentPane.add(btnClose);
         
+
         // Add the footer panel
         FooterPanel footerPanel = new FooterPanel();
         footerPanel.setBounds(0, 475, 850, 50); // Adjust size and position as needed
         contentPane.add(footerPanel);
 
-        JLabel lblNewLabel_14 = new JLabel("");
-        lblNewLabel_14.setBounds(-21, -145, 1370, 749);
-        Image img4 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
-        lblNewLabel_14.setIcon(new ImageIcon(img4));
-        contentPane.add(lblNewLabel_14);
-    }
 
-    private void updateTime() {
-    	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-         String currentTime = sdf.format(new java.util.Date());
-         timeLabel.setText(currentTime);
-    }
+        JButton btnNewButton = new JButton("Save");
+        btnNewButton.setBounds(44, 413, 119, 30);
+        Image img1 = new ImageIcon(this.getClass().getResource("/save.png")).getImage();
+        btnNewButton.setIcon(new ImageIcon(img1));
+        btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btnNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	 // Validate form fields
+                if (textField.getText().trim().isEmpty() ||
+                    textField_1.getText().trim().isEmpty() ||
+                    textField_5.getText().trim().isEmpty() ||
+                    textField_2.getText().trim().isEmpty() ||
+                    textField_3.getText().trim().isEmpty() ||
+                    textField_6.getText().trim().isEmpty() ||
+                    textArea.getText().trim().isEmpty() ||
+                    dateChooser.getDate() == null) {
+                    JOptionPane.showMessageDialog(null, "Please fill all fields");
+                    return;
+                }
 
-    private void resetForm() {
-        dispose();
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
+            	
+                String donorId = lblNewLabel_8.getText();
+                String userType =lblNewLabel_15_1.getText();
+                String fullName = textField.getText();
+                String fatherName = textField_1.getText();
+                String motherName = textField_6.getText();
+                String mobile = textField_2.getText();
+                String gender = (String) comboBox.getSelectedItem();
+                String email = textField_3.getText();
+                String bloodGroup = (String) comboBox_1.getSelectedItem();
+                String bloodUnits = textField_5.getText();
+                String city = (String) comboBoxCity.getSelectedItem();
+                String address = textArea.getText();
+                
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String dob = dateFormat.format(dateChooser.getDate());
+
                 try {
-                    AddNewDonor frame = new AddNewDonor();
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    PreparedStatement pst = con.prepareStatement("insert into donor(DonorId, UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup, BloodUnit, City, Address) values(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+                    pst.setString(1, donorId);
+                    pst.setString(2, userType);
+                    pst.setString(3, fullName);
+                    pst.setString(4, fatherName);
+                    pst.setString(5, motherName);
+                    pst.setString(6, dob);
+                    pst.setString(7, mobile);
+                    pst.setString(8, gender);
+                    pst.setString(9, email);
+                    pst.setString(10, bloodGroup);
+                    pst.setString(11, bloodUnits);
+                    pst.setString(12, city);
+                    pst.setString(13, address);
+
+                    int rs = pst.executeUpdate();
+
+                    if (rs == 1) {
+                        JOptionPane.showMessageDialog(btnNewButton, "Record Inserted Successfully");
+                        resetFields();
+                        setVisible(false);
+                       new AddNewDonor().setVisible(true);
+                    } else {
+                        JOptionPane.showMessageDialog(btnNewButton, "Failed to Insert Record");
+                    }
+                } catch (Exception e1) {
+                    e1.printStackTrace();
                 }
             }
         });
-    }
+        contentPane.add(btnNewButton);
 
-    private void saveDonor() {
-    	// Validate form fields
-        if (textField.getText().trim().isEmpty() ||
-            textField_1.getText().trim().isEmpty() ||
-            textField_5.getText().trim().isEmpty() ||
-            textField_2.getText().trim().isEmpty() ||
-            textField_3.getText().trim().isEmpty() ||
-            textField_4.getText().trim().isEmpty() ||
-            textArea.getText().trim().isEmpty() ||
-            dateChooser.getDate() == null) {
-            JOptionPane.showMessageDialog(null, "Please fill all fields");
-            return;
-        }
+        JButton btnNewButton_1 = new JButton("Close");
+        btnNewButton_1.setBounds(705, 413, 119, 30);
+        Image img2 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
+        btnNewButton_1.setIcon(new ImageIcon(img2));
+        btnNewButton_1.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btnNewButton_1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+            }
+        });
+        contentPane.add(btnNewButton_1);
 
-        // Get current timestamp
-        Timestamp now = new Timestamp(System.currentTimeMillis());
+        JButton btnReset = new JButton("Reset");
+        btnReset.setBounds(331, 413, 119, 30);
+        Image img3 = new ImageIcon(this.getClass().getResource("/reset-icon.png")).getImage();
+        btnReset.setIcon(new ImageIcon(img3));
+        btnReset.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btnReset.addActionListener(e -> resetForm());
+        contentPane.add(btnReset);
         
-        // Retrieve form values
-        String DonorId = lblNewLabel_8.getText();
-        String UserType = (String) comboBox_2.getSelectedItem();
-        String Name = textField.getText();
-        String FatherName = textField_1.getText();
-        String MotherName = textField_5.getText();
-        SimpleDateFormat dFormat = new SimpleDateFormat("yyyy-MM-dd"); // Format for SQL DATE
-        String DOB = dFormat.format(dateChooser.getDate());
-        String MobileNo = textField_2.getText();
-        String Gender = (String) comboBox.getSelectedItem();
-        String Email = textField_3.getText();
-        String BloodGroup = (String) comboBox_1.getSelectedItem();
-        String BloodUnit = textField_6.getText();
-        String City = textField_4.getText();
-        String Address = textArea.getText();
-
-        // Prepare SQL with column names
-        String sql = "INSERT INTO donor (DonorId, UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup, BloodUnit, City, Address, CreatedAt) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        try (PreparedStatement pst = con.prepareStatement(sql)) {
-            pst.setInt(1, Integer.parseInt(DonorId));
-            pst.setString(2, UserType);
-            pst.setString(3, Name);
-            pst.setString(4, FatherName);
-            pst.setString(5, MotherName);
-            pst.setString(6, DOB);
-            pst.setString(7, MobileNo);
-            pst.setString(8, Gender);
-            pst.setString(9, Email);
-            pst.setString(10, BloodGroup);
-            pst.setString(11, BloodUnit);
-            pst.setString(12, City);
-            pst.setString(13, Address);
-            pst.setTimestamp(14, now); // Set CreatedAt
-           
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Successfully Updated");
-            resetForm();
-            
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Invalid Donor ID format");
-        }
+        
+        textField_3 = new JTextField();
+        textField_3.setFont(new Font("Tahoma", Font.BOLD, 14));
+        textField_3.setColumns(10);
+        textField_3.setBounds(168, 327, 160, 21);
+        contentPane.add(textField_3);
+        
+        
+        
+        JLabel lblNewLabel_16 = new JLabel("");
+        lblNewLabel_16.setBounds(-15, -42, 1121, 590);
+        Image img4 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
+        lblNewLabel_16.setIcon(new ImageIcon(img4));
+        contentPane.add(lblNewLabel_16);
+       
+        
+        
     }
 
+    // Update the time label with the current time
+    private void updateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(new java.util.Date());
+        timeLabel.setText(currentTime);
     }
 
+    // Reset all input fields
+    private void resetFields() {
+        textField.setText("");
+        textField_1.setText("");
+        textField_2.setText("");
+        textField_3.setText("");
+        textField_5.setText("");
+        textField_6.setText("");
+        dateChooser.setDate(null);
+        comboBox.setSelectedIndex(-1);
+        comboBox_1.setSelectedIndex(-1);
+        
+        comboBoxCity.setSelectedIndex(-1);
+        textArea.setText("");
+    }
+    private void resetForm() {
+        dispose();
+        EventQueue.invokeLater(() -> {
+            try {
+                AddNewPatient frame = new AddNewPatient();
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+   
+
+}

@@ -297,7 +297,7 @@ public class UpdateDetailsPatient extends JFrame {
         });
         Image img5 = new ImageIcon(this.getClass().getResource("/update.png")).getImage();
         btnNewButton_1.setIcon(new ImageIcon(img5));
-        btnNewButton_1.setBounds(49, 399, 140, 33);
+        btnNewButton_1.setBounds(74, 399, 116, 33);
         contentPane.add(btnNewButton_1);
 
         JButton btnNewButton_2 = new JButton("Reset");
@@ -310,7 +310,7 @@ public class UpdateDetailsPatient extends JFrame {
         });
         Image img3 = new ImageIcon(this.getClass().getResource("/reset-icon.png")).getImage();
         btnNewButton_2.setIcon(new ImageIcon(img3));
-        btnNewButton_2.setBounds(324, 399, 140, 33);
+        btnNewButton_2.setBounds(403, 399, 116, 33);
         contentPane.add(btnNewButton_2);
 
         JButton btnNewButton_3 = new JButton("Close");
@@ -322,7 +322,7 @@ public class UpdateDetailsPatient extends JFrame {
         });
         Image img2 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
         btnNewButton_3.setIcon(new ImageIcon(img2));
-        btnNewButton_3.setBounds(656, 399, 140, 33);
+        btnNewButton_3.setBounds(708, 399, 116, 33);
         contentPane.add(btnNewButton_3);
 
         textField_6 = new JTextField();

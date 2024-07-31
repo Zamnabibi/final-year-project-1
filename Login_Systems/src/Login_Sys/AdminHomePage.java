@@ -3,77 +3,81 @@ package Login_Sys;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.text.SimpleDateFormat;
 
 @SuppressWarnings("serial")
 public abstract class AdminHomePage extends JFrame {
     protected JButton acceptButton;
     protected JButton rejectButton;
+    protected JButton btnClose;
     protected JLabel timeLabel;
-
     protected JTable requestsTable;
     protected DefaultTableModel tableModel;
     protected Container contentPane;
 
     public AdminHomePage(String title) {
         setTitle(title);
-        setSize(800, 700);
+        setSize(800, 727);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
-        // Initialize content pane
         contentPane = getContentPane();
-        contentPane.setLayout(new BorderLayout());
 
-        // Create buttons
-        acceptButton = new JButton("Accept");
-        rejectButton = new JButton("Reject");
+        initializeUI();
+        startClock();
+        loadRequests();
+        addListeners();
+    }
+    private void initializeUI() {
+        // Set the layout manager to null for absolute positioning
+        contentPane.setLayout(null);
+
+        // Set the background color to pink
+        contentPane.setBackground(Color.PINK);
 
         // Set up table model and table
         tableModel = new DefaultTableModel(new Object[]{"UserID", "UserName", "Password", "Email", "FullName", "Status", "Type"}, 0);
         requestsTable = new JTable(tableModel);
-
-        // Set up scroll pane
         JScrollPane scrollPane = new JScrollPane(requestsTable);
+        scrollPane.setBounds(35, 68, 720, 540);
+        contentPane.add(scrollPane);
 
-        // Add the footer panel
+        // Add footer panel
         FooterPanel footerPanel = new FooterPanel();
-        contentPane.add(footerPanel, BorderLayout.SOUTH);
+        footerPanel.setBounds(0, 648, 784, 40);
+        contentPane.add(footerPanel);
 
-        // Add time label
-        timeLabel = new JLabel(); // Changed from JTextField to JLabel
+        // Create and set up buttons
+        acceptButton = new JButton("Accept");
+        acceptButton.setBounds(204, 28, 119, 29);
+        contentPane.add(acceptButton);
+        acceptButton.setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource("/OK-icon.png")).getImage()));
+
+        rejectButton = new JButton("Reject");
+        rejectButton.setBounds(395, 28, 120, 29);
+        contentPane.add(rejectButton);
+        rejectButton.setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource("/close.png")).getImage()));
+
+        btnClose = new JButton("Close");
+        btnClose.setBounds(601, 26, 120, 31);
+        contentPane.add(btnClose);
+
+        // Add close button action listener
+        btnClose.setFont(new Font("Tahoma", Font.BOLD, 14));
+        btnClose.addActionListener(e -> setVisible(false));
+        btnClose.setIcon(new ImageIcon(new ImageIcon(this.getClass().getResource("/close.png")).getImage()));
+
+        // Create and set up time label
+        timeLabel = new JLabel();
+        timeLabel.setBounds(24, 11, 152, 17);
         timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
-        JPanel timePanel = new JPanel();
-        timePanel.add(timeLabel);
-        contentPane.add(timePanel, BorderLayout.NORTH);
+        contentPane.add(timeLabel);
+    }
 
-        // Set the timer to update the JLabel every second
-        Timer timer = new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateTime();
-            }
-        });
+    private void startClock() {
+        Timer timer = new Timer(1000, e -> updateTime());
         timer.start();
-
-        // Initial time update
         updateTime();
-
-        // Layout setup
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(acceptButton);
-        buttonPanel.add(rejectButton);
-
-        contentPane.add(buttonPanel, BorderLayout.NORTH);
-        contentPane.add(scrollPane, BorderLayout.CENTER);
-
-        // Load initial requests
-        loadRequests();
-
-        // Add action listeners
-        addListeners();
     }
 
     protected void updateTime() {
@@ -99,9 +103,4 @@ public abstract class AdminHomePage extends JFrame {
             }
         }.setVisible(true));
     }
-
-	protected void initializeUI() {
-		// TODO Auto-generated method stub
-		
-	}
 }

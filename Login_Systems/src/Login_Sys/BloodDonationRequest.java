@@ -16,9 +16,9 @@ import java.text.SimpleDateFormat;
 public class BloodDonationRequest extends JFrame {
     private JTextField usernameField, emailField, fullNameField;
     private JPasswordField passwordField;
-    private JComboBox<String> userTypeComboBox;
     private JButton submitButton;
     private JLabel timeLabel;
+    private JLabel userTypeLabel;
 
     public BloodDonationRequest() {
         // Frame settings
@@ -77,9 +77,11 @@ public class BloodDonationRequest extends JFrame {
         JLabel label_4 = new JLabel("User Type:");
         label_4.setBounds(29, 349, 278, 73);
         getContentPane().add(label_4);
-        userTypeComboBox = new JComboBox<>(new String[]{"Donor", "Patient"});
-        userTypeComboBox.setBounds(307, 349, 307, 73);
-        getContentPane().add(userTypeComboBox);
+
+        // User Type Label
+        userTypeLabel = new JLabel("Donor");
+        userTypeLabel.setBounds(307, 349, 307, 73);
+        getContentPane().add(userTypeLabel);
 
         submitButton = new JButton("Submit");
         submitButton.setBounds(307, 420, 307, 73);
@@ -93,19 +95,18 @@ public class BloodDonationRequest extends JFrame {
                 new SignUpUI().setVisible(true);
             }
         });
-        
+
         JLabel lblRequest = new JLabel("Request");
         lblRequest.setFont(new Font("Times New Roman", Font.BOLD, 24));
         lblRequest.setBounds(29, 0, 278, 59);
         getContentPane().add(lblRequest);
-        
 
         JLabel lblNewLabel = new JLabel("Already Account");
         lblNewLabel.addMouseListener(new MouseAdapter() {
-        	@Override
-        	public void mouseClicked(MouseEvent e) {
-        		new SignUpUI().setVisible(true);
-        	}
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new SignUpUI().setVisible(true);
+            }
         });
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
         lblNewLabel.setBounds(694, 387, 130, 25);
@@ -122,8 +123,6 @@ public class BloodDonationRequest extends JFrame {
         lblBackground.setIcon(new ImageIcon(img1));
         lblBackground.setBounds(0, 0, 830, 517); // Adjusted bounds
         getContentPane().add(lblBackground);
-        
-        
 
         setVisible(true);
     }
@@ -133,9 +132,9 @@ public class BloodDonationRequest extends JFrame {
         String password = new String(passwordField.getPassword());
         String email = emailField.getText();
         String fullName = fullNameField.getText();
-        String userType = (String) userTypeComboBox.getSelectedItem();
+        String userType = userTypeLabel.getText();
 
-        if (username.isEmpty() || password.isEmpty() || email.isEmpty() || fullName.isEmpty() || userType.isEmpty()) {
+        if (username.isEmpty() || password.isEmpty() || email.isEmpty() || fullName.isEmpty() || userType == null) {
             JOptionPane.showMessageDialog(this, "Please fill all fields.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -155,17 +154,20 @@ public class BloodDonationRequest extends JFrame {
              PreparedStatement pst = con.prepareStatement(query)) {
 
             pst.setString(1, username);
-            pst.setString(2, password);
+            pst.setString(2, password); // Consider hashing the password
             pst.setString(3, email);
             pst.setString(4, fullName);
             pst.setString(5, userType);
 
-            pst.executeUpdate();
-
-            JOptionPane.showMessageDialog(this, "Request submitted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            int rowsAffected = pst.executeUpdate();
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(this, "Request submitted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "No rows affected. Please check the table structure and data.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error submitting request.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error submitting request: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

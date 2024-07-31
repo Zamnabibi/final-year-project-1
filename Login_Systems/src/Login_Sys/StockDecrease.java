@@ -4,9 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-//import java.awt.event.ActionEvent;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -27,7 +25,7 @@ public class StockDecrease extends JFrame {
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
-            	StockDecrease frame = new StockDecrease();
+                StockDecrease frame = new StockDecrease();
                 frame.setVisible(true);
                 frame.connectToDatabase();
 
@@ -52,9 +50,9 @@ public class StockDecrease extends JFrame {
         contentPane.setLayout(null);
         connectToDatabase();
 
-        JLabel lblTitle = new JLabel("Delete Blood Units to Stock");
+        JLabel lblTitle = new JLabel("Delete Blood Units from Stock");
         lblTitle.setFont(new Font("Tahoma", Font.BOLD, 34));
-        lblTitle.setBounds(138, 11, 500, 47);
+        lblTitle.setBounds(138, 11, 533, 47);
         contentPane.add(lblTitle);
 
         JLabel lblCity = new JLabel("City");
@@ -83,31 +81,19 @@ public class StockDecrease extends JFrame {
         contentPane.add(textFieldUnits);
         textFieldUnits.setColumns(10);
 
-        JButton btnDisplay = new JButton("Display");
-        btnDisplay.setFont(new Font("Tahoma", Font.BOLD, 14));
-        Image img3 = new ImageIcon(this.getClass().getResource("/display.png")).getImage();
-        btnDisplay.setIcon(new ImageIcon(img3));
-        btnDisplay.addActionListener(e -> loadData());
-        btnDisplay.setBounds(537, 157, 120, 33);
-        contentPane.add(btnDisplay);
-        
         JButton btnClose = new JButton("Close");
         btnClose.setFont(new Font("Tahoma", Font.BOLD, 14));
         Image img1 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
         btnClose.setIcon(new ImageIcon(img1));
-        btnClose.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-            }
-        });
-        btnClose.setBounds(703, 157, 121, 33);
+        btnClose.addActionListener(e -> setVisible(false));
+        btnClose.setBounds(657, 157, 140, 33);
         contentPane.add(btnClose);
 
-        JButton btnAddStock = new JButton("Delete to Stock");
-        btnAddStock.setIcon(new ImageIcon(getClass().getResource("/delete.png"))); // Ensure this path is correct
-        btnAddStock.addActionListener(e -> deleteStock());
-        btnAddStock.setBounds(349, 160, 147, 31);
-        contentPane.add(btnAddStock);
+        JButton btnDeleteStock = new JButton("Delete from Stock");
+        btnDeleteStock.setIcon(new ImageIcon(getClass().getResource("/delete.png"))); // Ensure this path is correct
+        btnDeleteStock.addActionListener(e -> deleteStock());
+        btnDeleteStock.setBounds(349, 160, 161, 31);
+        contentPane.add(btnDeleteStock);
 
         JScrollPane scrollPaneStock = new JScrollPane();
         scrollPaneStock.setBounds(10, 200, 814, 450);
@@ -117,7 +103,7 @@ public class StockDecrease extends JFrame {
         tableStock = new JTable();
         tableStock.setModel(new DefaultTableModel(
             new Object[][]{},
-            new String[]{"City", "BloodGroup", "Units"} // Add the RemoveDate column
+            new String[]{"City", "BloodGroup", "Units"} // Adjust columns if necessary
         ));
         scrollPaneStock.setViewportView(tableStock);
 
@@ -140,6 +126,9 @@ public class StockDecrease extends JFrame {
         lblBackground1.setIcon(new ImageIcon(getClass().getResource("/back.jpg"))); // Ensure this path is correct
         lblBackground1.setBounds(0, 0, 834, 461);
         contentPane.add(lblBackground1);
+
+        // Automatically load data into the table
+        loadData();
     }
 
     private void connectToDatabase() {
@@ -207,8 +196,7 @@ public class StockDecrease extends JFrame {
                 String[] row = {
                     rs.getString("City"),
                     rs.getString("BloodGroup"),
-                    rs.getString("Units"),
-                    //rs.getString("RemoveDate")
+                    rs.getString("Units")
                 };
                 model.addRow(row);
             }
@@ -218,7 +206,7 @@ public class StockDecrease extends JFrame {
     }
 
     private void updateTime() {
-    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentTime = sdf.format(new java.util.Date());
         timeLabel.setText(currentTime);
     }
@@ -232,7 +220,6 @@ public class StockDecrease extends JFrame {
                 String city = rs.getString("City");
                 String bloodGroup = rs.getString("BloodGroup");
                 String units = rs.getString("Units");
-                //String removeDate = rs.getString("RemoveDate");
 
                 String[] row = { city, bloodGroup, units };
                 model.addRow(row);

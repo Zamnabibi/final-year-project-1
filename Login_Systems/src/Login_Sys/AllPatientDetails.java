@@ -29,14 +29,11 @@ public class AllPatientDetails extends JFrame {
     private Connection con;
     private JLabel timeLabel;
 
-    /**
-     * Launch the application.
-     */
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                	AllPatientDetails frame = new AllPatientDetails();
+                    AllPatientDetails frame = new AllPatientDetails();
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -45,25 +42,20 @@ public class AllPatientDetails extends JFrame {
         });
     }
 
-    /**
-     * Create the frame.
-     */
     public AllPatientDetails() {
-    	setForeground(Color.PINK);
+        setForeground(Color.PINK);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 1180, 550);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
-        
-        // Add time label
-        timeLabel = new JLabel(); // Changed from JTextField to JLabel
+
+        timeLabel = new JLabel();
         timeLabel.setBounds(640, 10, 184, 20);
         timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
         contentPane.add(timeLabel);
 
-        // Set the timer to update the JLabel every second
         Timer timer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -71,8 +63,6 @@ public class AllPatientDetails extends JFrame {
             }
         });
         timer.start();
-
-        // Initial time update
         updateTime();
 
         JLabel lblNewLabel = new JLabel("Patient Details");
@@ -80,16 +70,12 @@ public class AllPatientDetails extends JFrame {
         lblNewLabel.setBounds(99, 11, 556, 76);
         contentPane.add(lblNewLabel);
 
-        /*JSeparator separator = new JSeparator();
-        separator.setBounds(10, 85, 1323, 2);
-        contentPane.add(separator);*/
-
         table = new JTable();
         table.setFont(new Font("Tahoma", Font.BOLD, 14));
         table.setModel(new DefaultTableModel(
             new Object[][] {},
             new String[] {
-                "PatientId","UserType", "Name", "FatherName", "MotherName", "DOB", "MobileNo", "Gender", "Email", "BloodGroup","BloodUnit", "City", "Permanent Address", "CreatedAt", "UpdatedAt"
+                "PatientId", "UserType", "Name", "FatherName", "MotherName", "DOB", "MobileNo", "Gender", "Email", "BloodGroup", "BloodUnit", "City", "Permanent Address", "CreatedAt", "UpdatedAt"
             }
         ));
 
@@ -126,42 +112,25 @@ public class AllPatientDetails extends JFrame {
         });
         btnClose.setBounds(690, 405, 106, 33);
         contentPane.add(btnClose);
-        
-        // Add the footer panel
+
         FooterPanel footerPanel = new FooterPanel();
-        footerPanel.setBounds(0, 462, 1164, 49); // Adjust size and position as needed
+        footerPanel.setBounds(0, 462, 1164, 49);
         contentPane.add(footerPanel);
-
-        /*JSeparator separator_1 = new JSeparator();
-        separator_1.setBounds(10, 393, 1323, 2);
-        contentPane.add(separator_1);*/
-
-        JButton btnDisplay = new JButton("Display");
-        btnDisplay.setFont(new Font("Tahoma", Font.BOLD, 14));
-        Image img3 = new ImageIcon(this.getClass().getResource("/display.png")).getImage();
-        btnDisplay.setIcon(new ImageIcon(img3));
-        btnDisplay.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                loadData();
-            }
-        });
-        btnDisplay.setBounds(340, 405, 135, 33);
-        contentPane.add(btnDisplay);
 
         JLabel lblBackground = new JLabel("");
         Image img4 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
         lblBackground.setIcon(new ImageIcon(img4));
         lblBackground.setBounds(0, -137, 1370, 749);
         contentPane.add(lblBackground);
-        
+
         JLabel lblNewLabel_1 = new JLabel("");
         Image img5 = new ImageIcon(this.getClass().getResource("/back.jpg")).getImage();
         lblNewLabel_1.setIcon(new ImageIcon(img5));
         lblNewLabel_1.setBounds(840, 0, 324, 511);
         contentPane.add(lblNewLabel_1);
 
-        // Initialize the database connection
         initializeDatabaseConnection();
+        loadData();
     }
 
     private void initializeDatabaseConnection() {
@@ -176,12 +145,12 @@ public class AllPatientDetails extends JFrame {
 
     private void loadData() {
         DefaultTableModel model = (DefaultTableModel) table.getModel();
-        model.setRowCount(0); // Clear existing rows
+        model.setRowCount(0);
         String query = "SELECT * FROM Patient";
         try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(query)) {
             while (rs.next()) {
                 String PatientId = rs.getString(1);
-				String UserType = rs.getString(2);
+                String UserType = rs.getString(2);
                 String Name = rs.getString(3);
                 String FatherName = rs.getString(4);
                 String MotherName = rs.getString(5);
@@ -195,17 +164,17 @@ public class AllPatientDetails extends JFrame {
                 String Address = rs.getString(13);
                 String CreatedAt = rs.getString(14);
                 String UpdatedAt = rs.getString(15);
-                String[] row = { PatientId,UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup,BloodUnit, City, Address, CreatedAt, UpdatedAt};
+                String[] row = { PatientId, UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup, BloodUnit, City, Address, CreatedAt, UpdatedAt };
                 model.addRow(row);
-                
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
         }
     }
+
     private void updateTime() {
-   	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentTime = sdf.format(new java.util.Date());
         timeLabel.setText(currentTime);
-   }
+    }
 }
