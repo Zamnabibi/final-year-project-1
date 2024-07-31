@@ -80,13 +80,13 @@ public class StockIncrease extends JFrame {
         Image img1 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
         btnClose.setIcon(new ImageIcon(img1));
         btnClose.addActionListener(e -> setVisible(false));
-        btnClose.setBounds(536, 157, 121, 33);
+        btnClose.setBounds(617, 157, 163, 33);
         contentPane.add(btnClose);
 
         JButton btnAddStock = new JButton("Add to Stock");
         btnAddStock.setIcon(new ImageIcon(getClass().getResource("/add donor.png"))); // Ensure this path is correct
         btnAddStock.addActionListener(e -> addStock());
-        btnAddStock.setBounds(329, 156, 150, 35);
+        btnAddStock.setBounds(329, 156, 163, 35);
         contentPane.add(btnAddStock);
 
         JScrollPane scrollPaneStock = new JScrollPane();

@@ -86,13 +86,13 @@ public class StockDecrease extends JFrame {
         Image img1 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
         btnClose.setIcon(new ImageIcon(img1));
         btnClose.addActionListener(e -> setVisible(false));
-        btnClose.setBounds(657, 157, 140, 33);
+        btnClose.setBounds(627, 157, 184, 33);
         contentPane.add(btnClose);
 
         JButton btnDeleteStock = new JButton("Delete from Stock");
         btnDeleteStock.setIcon(new ImageIcon(getClass().getResource("/delete.png"))); // Ensure this path is correct
         btnDeleteStock.addActionListener(e -> deleteStock());
-        btnDeleteStock.setBounds(349, 160, 161, 31);
+        btnDeleteStock.setBounds(349, 160, 184, 31);
         contentPane.add(btnDeleteStock);
 
         JScrollPane scrollPaneStock = new JScrollPane();

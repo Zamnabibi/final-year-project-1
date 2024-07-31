@@ -21,13 +21,13 @@ import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.awt.Font;
+import javax.swing.JScrollPane;
 
 public class StockDetails extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
     private JTable table;
-    private Connection con;
     private JLabel timeLabel;
 
     /**
@@ -77,10 +77,12 @@ public class StockDetails extends JFrame {
 
         // Initial time update
         updateTime();
-
+        
         table = new JTable();
-        table.setBounds(10, 100, 814, 225);
-        contentPane.add(table);
+        table.setFont(new Font("Tahoma", Font.BOLD, 14));
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBounds(10, 100, 814, 225);
+        contentPane.add(scrollPane);
 
         JButton btnPrint = new JButton("Print");
         Image imgPrint = new ImageIcon(this.getClass().getResource("/print.png")).getImage();
@@ -102,11 +104,6 @@ public class StockDetails extends JFrame {
         btnClose.setBounds(660, 371, 99, 36);
         contentPane.add(btnClose);
 
-        // Adding another JSeparator
-        /*JSeparator separator_1 = new JSeparator();
-        separator_1.setBounds(10, 336, 824, 4);
-        contentPane.add(separator_1);*/
-        
         // Add the footer panel
         FooterPanel footerPanel = new FooterPanel();
         footerPanel.setBounds(0, 475, 850, 50); // Adjust size and position as needed
@@ -123,15 +120,12 @@ public class StockDetails extends JFrame {
     }
 
     private void displayStockDetails() {
-        try {
-            // Connect to the database
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bbms", "root", "zamna0");
-            System.out.println("Connection created");
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/bbms", "root", "zamna0");
+             Statement st = con.createStatement();
+             ResultSet rs = st.executeQuery("SELECT * FROM stock")) {
 
-            // Fetch data from the database
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM stock");
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            System.out.println("Connection created");
 
             // Get metadata to determine the column names
             ResultSetMetaData rsmd = rs.getMetaData();
@@ -155,16 +149,10 @@ public class StockDetails extends JFrame {
                 model.addRow(row);
             }
 
-            // Close resources
-            rs.close();
-            st.close();
-            con.close();
-
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Error displaying stock details: " + ex.getMessage());
         }
     }
-    
 
     private void updateTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

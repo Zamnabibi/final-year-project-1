@@ -2,6 +2,7 @@ package Login_Sys;
 
 import javax.swing.*;
 
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -192,10 +193,23 @@ public class Hospital extends JFrame {
         hospitalList.setBounds(160, 94, 460, 20);
         getContentPane().add(hospitalList);
 
+        JButton btnClose = new JButton("Close");
+        btnClose.setFont(new Font("Tahoma", Font.BOLD, 14));
+        Image img1 = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
+        btnClose.setIcon(new ImageIcon(img1));
+        btnClose.addActionListener(e -> setVisible(false));
+        btnClose.setBounds(419, 150, 121, 30);
+        getContentPane().add(btnClose);
+        
         // Create a button to confirm selection
         JButton selectButton = new JButton("Select");
-        selectButton.setBounds(200, 150, 100, 30);
+        selectButton.setFont(new Font("Tahoma", Font.BOLD, 14));
+        Image img2 = new ImageIcon(this.getClass().getResource("/save.png")).getImage();
+        selectButton.setIcon(new ImageIcon(img2));
+        selectButton.setBounds(178, 150, 120, 30);
         getContentPane().add(selectButton);
+        
+        
 
         // Add action listener to the button
         selectButton.addActionListener(new ActionListener() {
