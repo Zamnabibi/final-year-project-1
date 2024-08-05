@@ -268,7 +268,7 @@ public class Hospital extends JFrame {
         String password = "zamna0"; // Update with your database password
 
         try (Connection connection = DriverManager.getConnection(url, user, password)) {
-            String query = "INSERT INTO Hospitals (Role, HospitalName, LocalityName) VALUES (?, ?, ?)";
+            String query = "INSERT INTO Hospital(Role, HospitalName, LocalityName) VALUES (?, ?, ?)";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setString(1, role);
                 preparedStatement.setString(2, hospitalName);

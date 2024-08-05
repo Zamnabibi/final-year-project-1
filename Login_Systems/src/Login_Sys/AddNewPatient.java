@@ -327,7 +327,7 @@ public class AddNewPatient extends JFrame {
                 String dob = dateFormat.format(dateChooser.getDate());
 
                 try {
-                    PreparedStatement pst = con.prepareStatement("insert into Patient(PatientId, UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup, BloodUnitRequired, City, Address) values(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    PreparedStatement pst = con.prepareStatement("insert into Patient(PatientId, UserType, Name, FatherName, MotherName, DOB, MobileNo, Gender, Email, BloodGroup, BloodUnit, City, Address) values(?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
                     pst.setString(1, patientId);
                     pst.setString(2, userType);

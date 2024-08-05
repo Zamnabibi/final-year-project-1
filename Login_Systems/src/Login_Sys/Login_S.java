@@ -171,7 +171,7 @@ public class Login_S extends JFrame {
 
     private boolean validateLogin(String username, String password) {
         try {
-            String query = "SELECT * FROM Admin WHERE UserName = ? AND Password = ?";
+            String query = "SELECT * FROM Admin WHERE UserName = ? AND Password = ? AND Status = 'Accepted' AND Type = 'Admin'";
             pst = con.prepareStatement(query);
             pst.setString(1, username);
             pst.setString(2, password);

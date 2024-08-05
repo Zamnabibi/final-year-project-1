@@ -1,9 +1,7 @@
 package Login_Sys;
 
 import javax.swing.*;
-
 import java.sql.*;
-
 
 @SuppressWarnings("serial")
 public class DonorHomePage extends AdminHomePage {
@@ -20,14 +18,15 @@ public class DonorHomePage extends AdminHomePage {
         String user = "root";
         String password = "zamna0";
 
-        String query = "SELECT * FROM donors WHERE type = 'Donor'";
+        // Query adjusted to match Admin table and its fields
+        String query = "SELECT * FROM Admin WHERE type = 'Donor'";
 
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
-                int DonorId = rs.getInt("donorid");
+                int AdminId = rs.getInt("adminId");
                 String UserName = rs.getString("username");
                 String Password = rs.getString("password");
                 String Email = rs.getString("email");
@@ -35,7 +34,7 @@ public class DonorHomePage extends AdminHomePage {
                 String Status = rs.getString("status");
                 String Type = rs.getString("type");
 
-                tableModel.addRow(new Object[]{DonorId, UserName, Password, Email, FullName, Status, Type});
+                tableModel.addRow(new Object[]{AdminId, UserName, Password, Email, FullName, Status, Type});
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -48,8 +47,8 @@ public class DonorHomePage extends AdminHomePage {
         acceptButton.addActionListener(e -> {
             int selectedRow = requestsTable.getSelectedRow();
             if (selectedRow >= 0) {
-                int DonorId = (int) tableModel.getValueAt(selectedRow, 0);
-                handleRequest(DonorId, "Accepted");
+                int AdminId = (int) tableModel.getValueAt(selectedRow, 0);
+                handleRequest(AdminId, "Accepted");
                 loadRequests();
             } else {
                 JOptionPane.showMessageDialog(DonorHomePage.this, "Please select a request to accept.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -59,8 +58,8 @@ public class DonorHomePage extends AdminHomePage {
         rejectButton.addActionListener(e -> {
             int selectedRow = requestsTable.getSelectedRow();
             if (selectedRow >= 0) {
-                int DonorId = (int) tableModel.getValueAt(selectedRow, 0);
-                handleRequest(DonorId, "Rejected");
+                int AdminId = (int) tableModel.getValueAt(selectedRow, 0);
+                handleRequest(AdminId, "Rejected");
                 loadRequests();
             } else {
                 JOptionPane.showMessageDialog(DonorHomePage.this, "Please select a request to reject.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -68,18 +67,19 @@ public class DonorHomePage extends AdminHomePage {
         });
     }
 
-    private void handleRequest(int DonorId, String status) {
+    private void handleRequest(int AdminId, String status) {
         String url = "jdbc:mysql://localhost:3306/bbms";
         String user = "root";
         String password = "zamna0";
 
-        String query = "UPDATE donors SET Status = ? WHERE DonorId = ?";
+        // Query updated to reflect Admin table and its fields
+        String query = "UPDATE Admin SET Status = ? WHERE adminId = ?";
 
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setString(1, status);
-            stmt.setInt(2, DonorId);
+            stmt.setInt(2, AdminId);
 
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated > 0) {

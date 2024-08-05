@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
 public class DonorSignupSystem extends JFrame {
@@ -22,6 +23,7 @@ public class DonorSignupSystem extends JFrame {
     private JPasswordField confirmPasswordField;
     private Connection con;
     private JLabel timeLabel;
+	private Connection pst;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -68,61 +70,81 @@ public class DonorSignupSystem extends JFrame {
 
         JLabel lblUsername = new JLabel("Username");
         lblUsername.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblUsername.setBounds(27, 122, 100, 17);
+        lblUsername.setBounds(69, 100, 80, 25);
         contentPane.add(lblUsername);
 
         textFieldUsername = new JTextField();
-        textFieldUsername.setBounds(170, 119, 200, 20);
+        textFieldUsername.setBounds(516, 102, 200, 25);
         contentPane.add(textFieldUsername);
         textFieldUsername.setColumns(10);
 
+        // Password Label and Field
         JLabel lblPassword = new JLabel("Password");
         lblPassword.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblPassword.setBounds(27, 159, 100, 17);
+        lblPassword.setBounds(69, 153, 80, 25);
         contentPane.add(lblPassword);
 
         passwordField = new JPasswordField();
-        passwordField.setBounds(170, 156, 200, 20);
+        passwordField.setBounds(516, 155, 200, 25);
         contentPane.add(passwordField);
 
+        // Confirm Password Label and Field
         JLabel lblConfirmPassword = new JLabel("Confirm Password");
         lblConfirmPassword.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblConfirmPassword.setBounds(27, 202, 150, 17);
+        lblConfirmPassword.setBounds(69, 205, 130, 25);
         contentPane.add(lblConfirmPassword);
 
         confirmPasswordField = new JPasswordField();
-        confirmPasswordField.setBounds(170, 199, 200, 20);
+        confirmPasswordField.setBounds(516, 207, 200, 25);
         contentPane.add(confirmPasswordField);
 
+        // Email Label and Field
         JLabel lblEmail = new JLabel("Email");
         lblEmail.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblEmail.setBounds(34, 244, 100, 17);
+        lblEmail.setBounds(69, 256, 104, 17);
         contentPane.add(lblEmail);
 
         textFieldEmail = new JTextField();
-        textFieldEmail.setBounds(170, 238, 200, 20);
+        textFieldEmail.setBounds(516, 254, 200, 25);
         contentPane.add(textFieldEmail);
         textFieldEmail.setColumns(10);
 
+        // Full Name Label and Field
         JLabel lblFullName = new JLabel("Full Name");
         lblFullName.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblFullName.setBounds(34, 283, 100, 20);
+        lblFullName.setBounds(69, 305, 100, 20);
         contentPane.add(lblFullName);
 
         textFieldFullName = new JTextField();
-        textFieldFullName.setBounds(170, 283, 200, 20);
+        textFieldFullName.setBounds(516, 300, 200, 25);
         contentPane.add(textFieldFullName);
         textFieldFullName.setColumns(10);
 
-        JButton btnSignup = new JButton("Sign Up");
+        JButton btnSignup = new JButton("Login");
+        Image img4 = new ImageIcon(this.getClass().getResource("/Ok-icon.png")).getImage();
+        btnSignup.setIcon(new ImageIcon(img4));
         btnSignup.setFont(new Font("Tahoma", Font.BOLD, 14));
         btnSignup.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 signUp();
             }
         });
-        btnSignup.setBounds(455, 347, 122, 23);
+        btnSignup.setBounds(350, 347, 122, 23);
         contentPane.add(btnSignup);
+        
+        JButton btnClose = new JButton("Close");
+        Image img2 = new ImageIcon(getClass().getResource("/close.png")).getImage();
+        btnClose.setIcon(new ImageIcon(img2));
+        btnClose.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btnClose.addActionListener(e -> {
+            int response = JOptionPane.showConfirmDialog(this, "Confirm if you want to close", "Login System", JOptionPane.YES_NO_OPTION);
+            if (response == JOptionPane.YES_OPTION) {
+                closeResources();
+                System.exit(0);
+            }
+        });
+        btnClose.setBounds(80, 347, 122, 23);
+        contentPane.add(btnClose);
         
         JButton resetButton = new JButton("Reset");
         Image img3 = new ImageIcon(this.getClass().getResource("/reset-icon.png")).getImage();
@@ -199,12 +221,14 @@ public class DonorSignupSystem extends JFrame {
 
         // Insert into database
         try {
-            String query = "INSERT INTO donors (UserName, Password, Email, FullName) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO Admin (UserName, Password, Email, FullName, Status, Type) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement pst = con.prepareStatement(query);
             pst.setString(1, username);
             pst.setString(2, password); // Consider hashing the password before storing it
             pst.setString(3, email);
             pst.setString(4, fullName);
+            pst.setString(5, "Accepted");
+            pst.setString(6, "Donor");
             int result = pst.executeUpdate();
 
             if (result > 0) {
@@ -221,6 +245,16 @@ public class DonorSignupSystem extends JFrame {
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+
+    private void closeResources() {
+        try {
+            if (pst != null) pst.close();
+            if (con != null) con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
     

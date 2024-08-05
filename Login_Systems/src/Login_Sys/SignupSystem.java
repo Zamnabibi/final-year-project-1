@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
 public class SignupSystem extends JFrame {
@@ -22,6 +23,9 @@ public class SignupSystem extends JFrame {
     private JPasswordField confirmPasswordField;
     private Connection con;
     private JLabel timeLabel;
+    private PreparedStatement pst;
+	private JPasswordField txtPassword;
+	private JTextField txtUsername;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -34,8 +38,6 @@ public class SignupSystem extends JFrame {
             }
         });
     }
-    
-    
 
     public SignupSystem() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -44,8 +46,8 @@ public class SignupSystem extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
-        
-     // Add time label
+
+        // Add time label
         timeLabel = new JLabel(); // Changed from JTextField to JLabel
         timeLabel.setBounds(640, 10, 184, 20);
         timeLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -63,87 +65,103 @@ public class SignupSystem extends JFrame {
         // Initial time update
         updateTime();
 
-        
-        
         JLabel lblTitle = new JLabel("Add New Patient");
         lblTitle.setFont(new Font("Tahoma", Font.BOLD, 34));
         lblTitle.setBounds(183, 11, 352, 50);
         contentPane.add(lblTitle);
 
+     // Username Label and Field
         JLabel lblUsername = new JLabel("Username");
         lblUsername.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblUsername.setBounds(27, 122, 100, 17);
+        lblUsername.setBounds(69, 100, 80, 25);
         contentPane.add(lblUsername);
 
-        textFieldUsername = new JTextField();
-        textFieldUsername.setBounds(170, 119, 200, 20);
-        contentPane.add(textFieldUsername);
-        textFieldUsername.setColumns(10);
+        txtUsername = new JTextField();
+        txtUsername.setBounds(516, 102, 200, 25);
+        contentPane.add(txtUsername);
+        txtUsername.setColumns(10);
 
+        // Password Label and Field
         JLabel lblPassword = new JLabel("Password");
         lblPassword.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblPassword.setBounds(27, 159, 100, 17);
+        lblPassword.setBounds(69, 153, 80, 25);
         contentPane.add(lblPassword);
 
-        passwordField = new JPasswordField();
-        passwordField.setBounds(170, 156, 200, 20);
-        contentPane.add(passwordField);
+        txtPassword = new JPasswordField();
+        txtPassword.setBounds(516, 155, 200, 25);
+        contentPane.add(txtPassword);
 
+        // Confirm Password Label and Field
         JLabel lblConfirmPassword = new JLabel("Confirm Password");
         lblConfirmPassword.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblConfirmPassword.setBounds(27, 202, 150, 17);
+        lblConfirmPassword.setBounds(69, 205, 130, 25);
         contentPane.add(lblConfirmPassword);
 
         confirmPasswordField = new JPasswordField();
-        confirmPasswordField.setBounds(170, 199, 200, 20);
+        confirmPasswordField.setBounds(516, 207, 200, 25);
         contentPane.add(confirmPasswordField);
 
+        // Email Label and Field
         JLabel lblEmail = new JLabel("Email");
         lblEmail.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblEmail.setBounds(34, 244, 100, 17);
+        lblEmail.setBounds(69, 256, 104, 17);
         contentPane.add(lblEmail);
 
         textFieldEmail = new JTextField();
-        textFieldEmail.setBounds(170, 238, 200, 20);
+        textFieldEmail.setBounds(516, 254, 200, 25);
         contentPane.add(textFieldEmail);
         textFieldEmail.setColumns(10);
 
+        // Full Name Label and Field
         JLabel lblFullName = new JLabel("Full Name");
         lblFullName.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblFullName.setBounds(34, 283, 100, 20);
+        lblFullName.setBounds(69, 305, 100, 20);
         contentPane.add(lblFullName);
 
         textFieldFullName = new JTextField();
-        textFieldFullName.setBounds(170, 283, 200, 20);
+        textFieldFullName.setBounds(516, 300, 200, 25);
         contentPane.add(textFieldFullName);
         textFieldFullName.setColumns(10);
 
-        JButton btnSignup = new JButton("Sign Up");
+        JButton btnSignup = new JButton("Login");
+        Image img4 = new ImageIcon(this.getClass().getResource("/Ok-icon.png")).getImage();
+        btnSignup.setIcon(new ImageIcon(img4));
         btnSignup.setFont(new Font("Tahoma", Font.BOLD, 14));
         btnSignup.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 signUp();
             }
         });
-        btnSignup.setBounds(455, 347, 122, 23);
+        btnSignup.setBounds(350, 347, 122, 23);
         contentPane.add(btnSignup);
-        
-        
-        
+
         // Add the footer panel
         FooterPanel footerPanel = new FooterPanel();
         footerPanel.setBounds(0, 475, 850, 50); // Adjust size and position as needed
         contentPane.add(footerPanel);
 
-        
+        JButton btnClose = new JButton("Close");
+        Image img2 = new ImageIcon(getClass().getResource("/close.png")).getImage();
+        btnClose.setIcon(new ImageIcon(img2));
+        btnClose.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btnClose.addActionListener(e -> {
+            int response = JOptionPane.showConfirmDialog(this, "Confirm if you want to close", "Login System", JOptionPane.YES_NO_OPTION);
+            if (response == JOptionPane.YES_OPTION) {
+                closeResources();
+                System.exit(0);
+            }
+        });
+        btnClose.setBounds(80, 347, 122, 23);
+        contentPane.add(btnClose);
+
         JButton resetButton = new JButton("Reset");
         Image img3 = new ImageIcon(this.getClass().getResource("/reset-icon.png")).getImage();
         resetButton.setIcon(new ImageIcon(img3));
         resetButton.setFont(new Font("Arial", Font.PLAIN, 14));
-        
+
         resetButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	textFieldUsername.setText("");
+                textFieldUsername.setText("");
                 passwordField.setText("");
                 confirmPasswordField.setText("");
                 textFieldEmail.setText("");
@@ -155,13 +173,12 @@ public class SignupSystem extends JFrame {
 
         setContentPane(contentPane);
 
-        
         JLabel lblNewLabel = new JLabel("Already Account");
         lblNewLabel.addMouseListener(new MouseAdapter() {
-        	@Override
-        	public void mouseClicked(MouseEvent e) {
-        		new UserSignUpUI().setVisible(true);
-        	}
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new UserSignUpUI().setVisible(true);
+            }
         });
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
         lblNewLabel.setBounds(694, 387, 130, 25);
@@ -186,6 +203,15 @@ public class SignupSystem extends JFrame {
         }
     }
 
+    private void closeResources() {
+        try {
+            if (pst != null) pst.close();
+            if (con != null) con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void signUp() {
         String username = textFieldUsername.getText();
         String password = new String(passwordField.getPassword());
@@ -206,16 +232,18 @@ public class SignupSystem extends JFrame {
 
         // Insert into database
         try {
-            String query = "INSERT INTO users (UserName, Password, Email, FullName) VALUES (?, ?, ?, ?)";
-            PreparedStatement pst = con.prepareStatement(query);
+            String query = "INSERT INTO Admin (UserName, Password, Email, FullName, Status, Type) VALUES (?, ?, ?, ?, ?, ?)";
+            pst = con.prepareStatement(query);
             pst.setString(1, username);
             pst.setString(2, password); // Consider hashing the password before storing it
             pst.setString(3, email);
             pst.setString(4, fullName);
+            pst.setString(5, "Accepted");
+            pst.setString(6, "Patient");
             int result = pst.executeUpdate();
 
             if (result > 0) {
-                JOptionPane.showMessageDialog(this, "User added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Patient added successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
                 textFieldUsername.setText("");
                 passwordField.setText("");
                 confirmPasswordField.setText("");
@@ -230,11 +258,10 @@ public class SignupSystem extends JFrame {
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private void updateTime() {
-   	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentTime = sdf.format(new java.util.Date());
         timeLabel.setText(currentTime);
-   }
-
+    }
 }

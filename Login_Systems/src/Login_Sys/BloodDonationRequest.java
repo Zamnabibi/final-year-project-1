@@ -148,7 +148,7 @@ public class BloodDonationRequest extends JFrame {
         String user = "root";
         String pass = "zamna0";
 
-        String query = "INSERT INTO Donors (UserName, Password, Email, FullName, Type, CreatedAt, UpdatedAt) VALUES (?, ?, ?, ?, ?, NOW(), NOW())";
+        String query = "INSERT INTO Admin (UserName, Password, Email, FullName, Type, CreatedAt, UpdatedAt) VALUES (?, ?, ?, ?, ?, NOW(), NOW())";
 
         try (Connection con = DriverManager.getConnection(url, user, pass);
              PreparedStatement pst = con.prepareStatement(query)) {
