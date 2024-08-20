@@ -31,10 +31,11 @@ public class UpdateDonorFrame extends JFrame {
     private Map<String, String> groupNameMap = new HashMap<>();
     private JPanel footerPanel;
     private Component footerLabel;
+    private JTextField textField;
 
     public UpdateDonorFrame() {
         setTitle("Update Donor");
-        setSize(800, 524);
+        setSize(800, 586);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(null); // Set layout to null for absolute positioning
 
@@ -44,7 +45,7 @@ public class UpdateDonorFrame extends JFrame {
         // Create and configure form panel
         JPanel formPanel = new JPanel(null); // Use absolute layout for form panel
         formPanel.setBackground(Color.PINK);
-        formPanel.setBounds(10, 10, 760, 259); // Set bounds for the form panel
+        formPanel.setBounds(10, 10, 760, 293); // Set bounds for the form panel
         getContentPane().add(formPanel);
 
         // Form setup
@@ -95,20 +96,8 @@ public class UpdateDonorFrame extends JFrame {
         contactNoField = new JTextField();
         contactNoField.setBounds(356, 186, 150, 25);
         formPanel.add(contactNoField);
-
-        // Initialize buttons
-        updateButton = new JButton("Update Donor");
-        updateButton.setBounds(244, 220, 150, 30);
         closeButton = new JButton("Close");
-        closeButton.setBounds(523, 220, 150, 30);
-
-        // Load icons
-        try {
-            Image imgUpdate = new ImageIcon(this.getClass().getResource("/update.png")).getImage();
-            updateButton.setIcon(new ImageIcon(imgUpdate));
-        } catch (Exception e) {
-            System.out.println("Update icon not found.");
-        }
+        closeButton.setBounds(522, 252, 150, 30);
 
         try {
             Image imgClose = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
@@ -116,14 +105,33 @@ public class UpdateDonorFrame extends JFrame {
         } catch (Exception e) {
             System.out.println("Close icon not found.");
         }
-
-        // Add buttons to form panel
-        formPanel.add(updateButton);
         formPanel.add(closeButton);
+        
+                // Initialize buttons
+                updateButton = new JButton("Update Donor");
+                updateButton.setBounds(230, 252, 150, 30);
+                // Load icons
+                try {
+                    Image imgUpdate = new ImageIcon(this.getClass().getResource("/update.png")).getImage();
+                    updateButton.setIcon(new ImageIcon(imgUpdate));
+                } catch (Exception e) {
+                    System.out.println("Update icon not found.");
+                }
+                formPanel.add(updateButton);
+               
+                
+                JLabel lblBloodunit = new JLabel("BloodUnit:");
+                lblBloodunit.setBounds(167, 222, 100, 25);
+                formPanel.add(lblBloodunit);
+                
+                textField = new JTextField();
+                textField.setBounds(356, 222, 150, 25);
+                formPanel.add(textField);
+                updateButton.addActionListener(e -> updateDonor());
 
         // Initialize table and load data
         tableModel = new DefaultTableModel();
-        tableModel.setColumnIdentifiers(new Object[]{"DonorId", "UserId", "Name", "BloodGroupId", "GroupName", "Amount", "ContactNo"});
+        tableModel.setColumnIdentifiers(new Object[]{"DonorId", "UserId", "Name", "BloodGroupId", "GroupName", "Amount", "ContactNo", "BloodUnit"});
         donorTable = new JTable(tableModel);
 
         donorTable.setBackground(Color.WHITE);
@@ -133,14 +141,14 @@ public class UpdateDonorFrame extends JFrame {
         tableHeader.setBackground(Color.LIGHT_GRAY);
 
         JScrollPane tableScrollPane = new JScrollPane(donorTable);
-        tableScrollPane.setBounds(54, 267, 694, 178); // Adjust bounds for table scroll pane
+        tableScrollPane.setBounds(54, 314, 694, 167); // Adjust bounds for table scroll pane
         getContentPane().add(tableScrollPane);
 
         // Footer Panel
         footerPanel = new JPanel(new BorderLayout());
         footerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         footerPanel.setBackground(Color.PINK);
-        footerPanel.setBounds(0, 443, 800, 55); // Set bounds for footer panel
+        footerPanel.setBounds(10, 492, 800, 55); // Set bounds for footer panel
 
         footerLabel = new JLabel("© 2024 Blood Bank Management System. All rights reserved.", SwingConstants.CENTER);
         footerLabel.setFont(new Font("Arial", Font.BOLD, 14));
@@ -158,7 +166,6 @@ public class UpdateDonorFrame extends JFrame {
         userComboBox.addActionListener(e -> updateNameLabel());
         bloodGroupComboBox.addActionListener(e -> updateGroupName());
         groupNameComboBox.addActionListener(e -> updateBloodGroupId());
-        updateButton.addActionListener(e -> updateDonor());
         closeButton.addActionListener(e -> dispose());
 
         donorTable.getSelectionModel().addListSelectionListener(e -> {
@@ -207,7 +214,7 @@ public class UpdateDonorFrame extends JFrame {
 
     private void loadTableData() {
         try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "SELECT DonorId, UserId, Name, BloodGroupId, GroupName, Amount, ContactNo FROM Donor";
+            String query = "SELECT DonorId, UserId, Name, BloodGroupId, GroupName, Amount, ContactNo, BloodUnit FROM Donor";
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
 
@@ -221,7 +228,8 @@ public class UpdateDonorFrame extends JFrame {
                     resultSet.getString("BloodGroupId"),
                     resultSet.getString("GroupName"),
                     resultSet.getBigDecimal("Amount") != null ? "$" + resultSet.getBigDecimal("Amount").toPlainString() : "",
-                    resultSet.getString("ContactNo")
+                    resultSet.getString("ContactNo"),
+                    resultSet.getString("BloodUnit"), 
                 });
             }
         } catch (SQLException e) {
@@ -283,6 +291,9 @@ public class UpdateDonorFrame extends JFrame {
             }
         }
     }
+    
+    
+
 
     private void updateDonor() {
         String selectedUserId = (String) userComboBox.getSelectedItem();
@@ -293,14 +304,16 @@ public class UpdateDonorFrame extends JFrame {
                 String selectedBloodGroupId = (String) bloodGroupComboBox.getSelectedItem();
                 String selectedGroupName = (String) groupNameComboBox.getSelectedItem();
                 String contactNo = contactNoField.getText();
+                String bloodUnit = textField.getText();
 
-                String query = "UPDATE Donor SET BloodGroupId = ?, GroupName = ?, Amount = ?, ContactNo = ? WHERE UserId = ?";
+                String query = "UPDATE Donor SET BloodGroupId = ?, GroupName = ?, Amount = ?, ContactNo = ?, BloodUnit = ? WHERE UserId = ?";
                 PreparedStatement statement = connection.prepareStatement(query);
                 statement.setString(1, selectedBloodGroupId);
                 statement.setString(2, selectedGroupName);
                 statement.setBigDecimal(3, amount);
                 statement.setString(4, contactNo);
-                statement.setString(5, selectedUserId);
+                statement.setString(5, bloodUnit);
+                statement.setString(6, selectedUserId);
                 int rowsUpdated = statement.executeUpdate();
 
                 if (rowsUpdated > 0) {
@@ -325,6 +338,8 @@ public class UpdateDonorFrame extends JFrame {
             groupNameComboBox.setSelectedItem(donorTable.getValueAt(selectedRow, 4));
             amountComboBox.setSelectedItem(donorTable.getValueAt(selectedRow, 5));
             contactNoField.setText((String) donorTable.getValueAt(selectedRow, 6));
+            textField.setText((String) donorTable.getValueAt(selectedRow,7));
+            
         }
     }
     public static void main(String[] args) {
