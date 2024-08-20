@@ -1,4 +1,4 @@
-package Login_Sys;
+package com.bbms.ui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -146,7 +146,7 @@ public class BloodRequest extends JFrame {
     }
 
     private void saveToDatabase(String username, String password, String email, String fullName, String userType) {
-        String url = "jdbc:mysql://localhost:3306/bbms";
+        String url = "jdbc:mysql://localhost:3306/blood";
         String user = "root";
         String pass = "zamna0";
 

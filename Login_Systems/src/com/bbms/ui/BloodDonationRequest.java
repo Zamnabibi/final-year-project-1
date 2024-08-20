@@ -1,4 +1,4 @@
-package Login_Sys;
+package com.bbms.ui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,16 +13,16 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
 @SuppressWarnings("serial")
-public class BloodRequest extends JFrame {
+public class BloodDonationRequest extends JFrame {
     private JTextField usernameField, emailField, fullNameField;
     private JPasswordField passwordField;
     private JButton submitButton;
     private JLabel timeLabel;
     private JLabel userTypeLabel;
 
-    public BloodRequest() {
+    public BloodDonationRequest() {
         // Frame settings
-        setTitle("Blood Request");
+        setTitle("Blood Donation Request");
         setSize(846, 593);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
@@ -74,13 +74,12 @@ public class BloodRequest extends JFrame {
         fullNameField.setBounds(307, 276, 307, 73);
         getContentPane().add(fullNameField);
 
-
         JLabel label_4 = new JLabel("User Type:");
         label_4.setBounds(29, 349, 278, 73);
         getContentPane().add(label_4);
-        
+
         // User Type Label
-        userTypeLabel = new JLabel("Patient");
+        userTypeLabel = new JLabel("Donor");
         userTypeLabel.setBounds(307, 349, 307, 73);
         getContentPane().add(userTypeLabel);
 
@@ -93,25 +92,26 @@ public class BloodRequest extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 handleSubmit();
-                new UserSignUpUI().setVisible(true);
+                new SignUpUI().setVisible(true);
             }
         });
-        
+
         JLabel lblRequest = new JLabel("Request");
         lblRequest.setFont(new Font("Times New Roman", Font.BOLD, 24));
         lblRequest.setBounds(29, 0, 278, 59);
         getContentPane().add(lblRequest);
+
         JLabel lblNewLabel = new JLabel("Already Account");
         lblNewLabel.addMouseListener(new MouseAdapter() {
-        	@Override
-        	public void mouseClicked(MouseEvent e) {
-        		new UserSignUpUI().setVisible(true);
-        	}
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new SignUpUI().setVisible(true);
+            }
         });
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
         lblNewLabel.setBounds(694, 387, 130, 25);
         getContentPane().add(lblNewLabel);
-        
+
         // Add footer panel
         FooterPanel footerPanel = new FooterPanel();
         footerPanel.setBounds(0, 504, 830, 50); // Adjust size and position as needed
@@ -123,8 +123,6 @@ public class BloodRequest extends JFrame {
         lblBackground.setIcon(new ImageIcon(img1));
         lblBackground.setBounds(0, 0, 830, 517); // Adjusted bounds
         getContentPane().add(lblBackground);
-        
-        
 
         setVisible(true);
     }
@@ -136,7 +134,7 @@ public class BloodRequest extends JFrame {
         String fullName = fullNameField.getText();
         String userType = userTypeLabel.getText();
 
-        if (username.isEmpty() || password.isEmpty() || email.isEmpty() || fullName.isEmpty() || userType.isEmpty()) {
+        if (username.isEmpty() || password.isEmpty() || email.isEmpty() || fullName.isEmpty() || userType == null) {
             JOptionPane.showMessageDialog(this, "Please fill all fields.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -146,7 +144,7 @@ public class BloodRequest extends JFrame {
     }
 
     private void saveToDatabase(String username, String password, String email, String fullName, String userType) {
-        String url = "jdbc:mysql://localhost:3306/bbms";
+        String url = "jdbc:mysql://localhost:3306/blood";
         String user = "root";
         String pass = "zamna0";
 
@@ -156,17 +154,20 @@ public class BloodRequest extends JFrame {
              PreparedStatement pst = con.prepareStatement(query)) {
 
             pst.setString(1, username);
-            pst.setString(2, password);
+            pst.setString(2, password); // Consider hashing the password
             pst.setString(3, email);
             pst.setString(4, fullName);
             pst.setString(5, userType);
 
-            pst.executeUpdate();
-
-            JOptionPane.showMessageDialog(this, "Request submitted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            int rowsAffected = pst.executeUpdate();
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(this, "Request submitted successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "No rows affected. Please check the table structure and data.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error submitting request.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error submitting request: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -177,6 +178,6 @@ public class BloodRequest extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new BloodRequest());
+        SwingUtilities.invokeLater(() -> new BloodDonationRequest());
     }
 }

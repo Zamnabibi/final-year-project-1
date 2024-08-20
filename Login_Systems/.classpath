@@ -14,5 +14,10 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="jcalendar-1.4.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Zamna/Downloads/rs2xml.jar"/>
+	<classpathentry kind="lib" path="D:/Java-WebSocket-1.5.1.jar"/>
+	<classpathentry kind="lib" path="D:/slf4j-api-1.7.25.jar"/>
+	<classpathentry kind="lib" path="D:/javax.activation-api-1.2.0 (1).jar"/>
+	<classpathentry kind="lib" path="D:/javax.mail-1.6.2 (1).jar"/>
+	<classpathentry kind="lib" path="D:/lib/activation-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
