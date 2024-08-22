@@ -9,8 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import com.bbms.util.DatabaseConnection;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,30 +20,28 @@ public class UpdateDonorFrame extends JFrame {
     private JComboBox<String> groupNameComboBox;
     private JTextField contactNoField;
     private JLabel nameLabel;
+    private JTextField textField; // BloodUnit field
     
     private JButton updateButton;
     private JButton closeButton;
-    private JTable donorTable;
-    private DefaultTableModel tableModel;
+    
     private Map<String, String> bloodGroupMap = new HashMap<>();
     private Map<String, String> groupNameMap = new HashMap<>();
     private JPanel footerPanel;
     private Component footerLabel;
-    private JTextField textField;
 
     public UpdateDonorFrame() {
         setTitle("Update Donor");
         setSize(800, 586);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        getContentPane().setLayout(null); // Set layout to null for absolute positioning
+        getContentPane().setLayout(null);
 
-        // Set the background color of the content pane to pink
         getContentPane().setBackground(Color.PINK);
 
         // Create and configure form panel
-        JPanel formPanel = new JPanel(null); // Use absolute layout for form panel
+        JPanel formPanel = new JPanel(null);
         formPanel.setBackground(Color.PINK);
-        formPanel.setBounds(10, 10, 760, 293); // Set bounds for the form panel
+        formPanel.setBounds(10, 10, 760, 293);
         getContentPane().add(formPanel);
 
         // Form setup
@@ -96,9 +92,17 @@ public class UpdateDonorFrame extends JFrame {
         contactNoField = new JTextField();
         contactNoField.setBounds(356, 186, 150, 25);
         formPanel.add(contactNoField);
+        
+        JLabel lblBloodunit = new JLabel("BloodUnit:");
+        lblBloodunit.setBounds(167, 222, 100, 25);
+        formPanel.add(lblBloodunit);
+        
+        textField = new JTextField();
+        textField.setBounds(356, 222, 150, 25);
+        formPanel.add(textField);
+        
         closeButton = new JButton("Close");
         closeButton.setBounds(522, 252, 150, 30);
-
         try {
             Image imgClose = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
             closeButton.setIcon(new ImageIcon(imgClose));
@@ -107,76 +111,41 @@ public class UpdateDonorFrame extends JFrame {
         }
         formPanel.add(closeButton);
         
-                // Initialize buttons
-                updateButton = new JButton("Update Donor");
-                updateButton.setBounds(230, 252, 150, 30);
-                // Load icons
-                try {
-                    Image imgUpdate = new ImageIcon(this.getClass().getResource("/update.png")).getImage();
-                    updateButton.setIcon(new ImageIcon(imgUpdate));
-                } catch (Exception e) {
-                    System.out.println("Update icon not found.");
-                }
-                formPanel.add(updateButton);
-               
-                
-                JLabel lblBloodunit = new JLabel("BloodUnit:");
-                lblBloodunit.setBounds(167, 222, 100, 25);
-                formPanel.add(lblBloodunit);
-                
-                textField = new JTextField();
-                textField.setBounds(356, 222, 150, 25);
-                formPanel.add(textField);
-                updateButton.addActionListener(e -> updateDonor());
-
-        // Initialize table and load data
-        tableModel = new DefaultTableModel();
-        tableModel.setColumnIdentifiers(new Object[]{"DonorId", "UserId", "Name", "BloodGroupId", "GroupName", "Amount", "ContactNo", "BloodUnit"});
-        donorTable = new JTable(tableModel);
-
-        donorTable.setBackground(Color.WHITE);
-        donorTable.setSelectionBackground(Color.LIGHT_GRAY);
-
-        JTableHeader tableHeader = donorTable.getTableHeader();
-        tableHeader.setBackground(Color.LIGHT_GRAY);
-
-        JScrollPane tableScrollPane = new JScrollPane(donorTable);
-        tableScrollPane.setBounds(54, 314, 694, 167); // Adjust bounds for table scroll pane
-        getContentPane().add(tableScrollPane);
-
+        updateButton = new JButton("Update Donor");
+        updateButton.setBounds(230, 252, 150, 30);
+        try {
+            Image imgUpdate = new ImageIcon(this.getClass().getResource("/update.png")).getImage();
+            updateButton.setIcon(new ImageIcon(imgUpdate));
+        } catch (Exception e) {
+            System.out.println("Update icon not found.");
+        }
+        formPanel.add(updateButton);
+        
         // Footer Panel
         footerPanel = new JPanel(new BorderLayout());
         footerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         footerPanel.setBackground(Color.PINK);
-        footerPanel.setBounds(10, 492, 800, 55); // Set bounds for footer panel
-
+        footerPanel.setBounds(10, 492, 800, 55);
         footerLabel = new JLabel("© 2024 Blood Bank Management System. All rights reserved.", SwingConstants.CENTER);
         footerLabel.setFont(new Font("Arial", Font.BOLD, 14));
         footerLabel.setForeground(Color.black);
-
         footerPanel.add(footerLabel, BorderLayout.NORTH);
         getContentPane().add(footerPanel);
 
-        // Load data into the table and combo boxes
         loadComboBoxes();
-        loadTableData();
+       
 
-        // Add action listeners
-        userComboBox.addActionListener(e -> updateAmountField());
-        userComboBox.addActionListener(e -> updateNameLabel());
+        userComboBox.addActionListener(e -> updateUserDetails());
         bloodGroupComboBox.addActionListener(e -> updateGroupName());
         groupNameComboBox.addActionListener(e -> updateBloodGroupId());
         closeButton.addActionListener(e -> dispose());
+        updateButton.addActionListener(e -> updateDonorDetails());
 
-        donorTable.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                loadSelectedDonor();
-            }
-        });
     }
 
     private void loadComboBoxes() {
         try (Connection connection = DatabaseConnection.getConnection()) {
+            // Load UserIds for Donors
             String query = "SELECT UserId FROM User WHERE UserType = 'Donor'";
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
@@ -184,6 +153,7 @@ public class UpdateDonorFrame extends JFrame {
                 userComboBox.addItem(resultSet.getString("UserId"));
             }
 
+            // Load BloodGroupId and GroupName
             query = "SELECT BloodGroupId, GroupName FROM BloodGroup";
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
@@ -197,155 +167,122 @@ public class UpdateDonorFrame extends JFrame {
                 groupNameMap.put(groupName, bloodGroupId);
             }
 
-            // Load unique amounts from the Donor table
-            query = "SELECT DISTINCT Amount FROM Donor WHERE Amount IS NOT NULL";
+            // Load unique amounts
+            query = "SELECT DISTINCT Amount FROM User WHERE Amount IS NOT NULL";
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 BigDecimal amount = resultSet.getBigDecimal("Amount");
-                if (amount != null) {
-                    amountComboBox.addItem("$" + amount.toString());
-                }
+                amountComboBox.addItem(amount.toString());
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error loading data from database.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void loadTableData() {
+
+    private void updateUserDetails() {
+        String selectedUserId = (String) userComboBox.getSelectedItem();
         try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "SELECT DonorId, UserId, Name, BloodGroupId, GroupName, Amount, ContactNo, BloodUnit FROM Donor";
+            // Query to get user details
+            String query = "SELECT Name, ContactNo FROM User WHERE UserId = ?";
             PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, selectedUserId);
             ResultSet resultSet = statement.executeQuery();
 
-            tableModel.setRowCount(0);
+            if (resultSet.next()) {
+                nameLabel.setText(resultSet.getString("Name"));
+                contactNoField.setText(resultSet.getString("ContactNo"));
+            }
 
-            while (resultSet.next()) {
-                tableModel.addRow(new Object[]{
-                    resultSet.getInt("DonorId"),
-                    resultSet.getString("UserId"),
-                    resultSet.getString("Name"),
-                    resultSet.getString("BloodGroupId"),
-                    resultSet.getString("GroupName"),
-                    resultSet.getBigDecimal("Amount") != null ? "$" + resultSet.getBigDecimal("Amount").toPlainString() : "",
-                    resultSet.getString("ContactNo"),
-                    resultSet.getString("BloodUnit"), 
-                });
+            // Query to get donor details
+            query = "SELECT BloodGroupId, BloodUnit FROM Donor WHERE UserId = ?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, selectedUserId);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                String bloodGroupId = resultSet.getString("BloodGroupId");
+                BigDecimal bloodUnit = resultSet.getBigDecimal("BloodUnit");
+
+                bloodGroupComboBox.setSelectedItem(bloodGroupId);
+                textField.setText(bloodUnit != null ? bloodUnit.toString() : ""); // Ensure textField is updated correctly
+
+                // Set the selected GroupName based on BloodGroupId
+                groupNameComboBox.setSelectedItem(bloodGroupMap.get(bloodGroupId));
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error updating user details.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void updateGroupName() {
         String selectedBloodGroupId = (String) bloodGroupComboBox.getSelectedItem();
-        if (selectedBloodGroupId != null) {
-            String groupName = bloodGroupMap.get(selectedBloodGroupId);
-            groupNameComboBox.setSelectedItem(groupName);
-        }
+        String groupName = bloodGroupMap.get(selectedBloodGroupId);
+        groupNameComboBox.setSelectedItem(groupName);
     }
 
     private void updateBloodGroupId() {
         String selectedGroupName = (String) groupNameComboBox.getSelectedItem();
-        if (selectedGroupName != null) {
-            String bloodGroupId = groupNameMap.get(selectedGroupName);
-            bloodGroupComboBox.setSelectedItem(bloodGroupId);
-        }
-    }
-
-    private void updateAmountField() {
-        String selectedUserId = (String) userComboBox.getSelectedItem();
-        if (selectedUserId != null) {
-            try (Connection connection = DatabaseConnection.getConnection()) {
-                String query = "SELECT Amount FROM Donor WHERE UserId = ?";
-                PreparedStatement statement = connection.prepareStatement(query);
-                statement.setString(1, selectedUserId);
-                ResultSet resultSet = statement.executeQuery();
-                if (resultSet.next()) {
-                    BigDecimal amount = resultSet.getBigDecimal("Amount");
-                    if (amount != null) {
-                        amountComboBox.setSelectedItem("$" + amount.toPlainString());
-                    } else {
-                        amountComboBox.setSelectedIndex(-1);
-                    }
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void updateNameLabel() {
-        String selectedUserId = (String) userComboBox.getSelectedItem();
-        if (selectedUserId != null) {
-            try (Connection connection = DatabaseConnection.getConnection()) {
-                String query = "SELECT Name FROM User WHERE UserId = ?";
-                PreparedStatement statement = connection.prepareStatement(query);
-                statement.setString(1, selectedUserId);
-                ResultSet resultSet = statement.executeQuery();
-                if (resultSet.next()) {
-                    nameLabel.setText(resultSet.getString("Name"));
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        String bloodGroupId = groupNameMap.get(selectedGroupName);
+        bloodGroupComboBox.setSelectedItem(bloodGroupId);
     }
     
-    
+    private void updateDonorDetails() {
+        // Prompt user for confirmation
+        int confirmResult = JOptionPane.showConfirmDialog(
+            this, 
+            "Are you sure you want to update the donor details?", 
+            "Confirm Update", 
+            JOptionPane.YES_NO_OPTION, 
+            JOptionPane.QUESTION_MESSAGE
+        );
 
+        // If the user confirms, proceed with the update
+        if (confirmResult == JOptionPane.YES_OPTION) {
+            String selectedUserId = (String) userComboBox.getSelectedItem();
+            String selectedBloodGroupId = (String) bloodGroupComboBox.getSelectedItem();
+            
+            // Check if bloodUnit field is empty or not a valid number
+            BigDecimal bloodUnit;
+            try {
+                bloodUnit = new BigDecimal(textField.getText());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid number for Blood Unit.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-    private void updateDonor() {
-        String selectedUserId = (String) userComboBox.getSelectedItem();
-        if (selectedUserId != null) {
             try (Connection connection = DatabaseConnection.getConnection()) {
-                String amountText = (String) amountComboBox.getSelectedItem();
-                BigDecimal amount = amountText != null ? new BigDecimal(amountText.replace("$", "")) : null;
-                String selectedBloodGroupId = (String) bloodGroupComboBox.getSelectedItem();
-                String selectedGroupName = (String) groupNameComboBox.getSelectedItem();
-                String contactNo = contactNoField.getText();
-                String bloodUnit = textField.getText();
-
-                String query = "UPDATE Donor SET BloodGroupId = ?, GroupName = ?, Amount = ?, ContactNo = ?, BloodUnit = ? WHERE UserId = ?";
+                // Update Donor table
+                String query = "UPDATE Donor SET BloodGroupId = ?, BloodUnit = ? WHERE UserId = ?";
                 PreparedStatement statement = connection.prepareStatement(query);
                 statement.setString(1, selectedBloodGroupId);
-                statement.setString(2, selectedGroupName);
-                statement.setBigDecimal(3, amount);
-                statement.setString(4, contactNo);
-                statement.setString(5, bloodUnit);
-                statement.setString(6, selectedUserId);
+                statement.setBigDecimal(2, bloodUnit);
+                statement.setString(3, selectedUserId);
                 int rowsUpdated = statement.executeUpdate();
 
                 if (rowsUpdated > 0) {
-                    JOptionPane.showMessageDialog(this, "Donor updated successfully!");
-                    loadTableData(); // Refresh the table data
+                    JOptionPane.showMessageDialog(this, "Donor details updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(this, "Donor update failed.");
+                    JOptionPane.showMessageDialog(this, "No donor found with the selected UserId.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error updating donor details.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    private void loadSelectedDonor() {
-        int selectedRow = donorTable.getSelectedRow();
-        if (selectedRow >= 0) {
-            String userId = (String) donorTable.getValueAt(selectedRow, 1);
-            userComboBox.setSelectedItem(userId);
-            nameLabel.setText((String) donorTable.getValueAt(selectedRow, 2));
-            bloodGroupComboBox.setSelectedItem(donorTable.getValueAt(selectedRow, 3));
-            groupNameComboBox.setSelectedItem(donorTable.getValueAt(selectedRow, 4));
-            amountComboBox.setSelectedItem(donorTable.getValueAt(selectedRow, 5));
-            contactNoField.setText((String) donorTable.getValueAt(selectedRow, 6));
-            textField.setText((String) donorTable.getValueAt(selectedRow,7));
-            
-        }
-    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            UpdateDonorFrame frame = new UpdateDonorFrame();
-            frame.setVisible(true);
+        EventQueue.invokeLater(() -> {
+            try {
+                UpdateDonorFrame frame = new UpdateDonorFrame();
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
     }
 }

@@ -11,12 +11,12 @@ public class HomePage extends JFrame {
         // Set up the frame
         setTitle("Home Page");
         setSize(854, 517);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
         // Create a panel with a background color
         JPanel backgroundPanel = new JPanel();
-        backgroundPanel.setLayout(null);
+        backgroundPanel.setLayout(new BorderLayout()); // Use BorderLayout for better layout management
         backgroundPanel.setBackground(Color.PINK);
 
         // Create the menu bar
@@ -37,7 +37,15 @@ public class HomePage extends JFrame {
         Image img1 = new ImageIcon(getClass().getResource("/back.jpg")).getImage();
         lblBackground.setIcon(new ImageIcon(img1.getScaledInstance(854, 517, Image.SCALE_SMOOTH)));
         lblBackground.setBounds(0, 0, 854, 517);
-        backgroundPanel.add(lblBackground);
+        backgroundPanel.add(lblBackground, BorderLayout.CENTER); // Use BorderLayout.CENTER to cover the whole panel
+
+        // Create and add the footer panel
+        JPanel footerPanel = new JPanel();
+        footerPanel.setBackground(Color.pink);
+        footerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        JLabel footerLabel = new JLabel("© 2024 Blood Bank Management System. All rights reserved.");
+        footerPanel.add(footerLabel);
+        backgroundPanel.add(footerPanel, BorderLayout.SOUTH);
 
         // Add the background panel to the frame
         setContentPane(backgroundPanel);
@@ -45,186 +53,97 @@ public class HomePage extends JFrame {
 
     private void createUserMenu(JMenuBar menuBar) {
         JMenu userMenu = new JMenu("User");
-        // Set the icon for the User menu
-        try {
-            Image img = new ImageIcon(this.getClass().getResource("/add donor.png")).getImage(); // Update with your actual icon path
-            userMenu.setIcon(new ImageIcon(img));
-        } catch (Exception e) {
-            System.out.println("User menu icon not found.");
-        }
+        setMenuIcon(userMenu, "/add donor.png");
 
-        // Define actions and corresponding icons
-        String[] actions = {"Add User", "Update User", "Delete User"};
-        String[] icons = {"/add new.png", "/update.png", "/delete.png"}; // Update with your actual icon paths
+        String[] actions = {"Add User", "Update User", "Delete User", "View User"};
+        String[] icons = {"/add new.png", "/update.png", "/delete.png", "/view.png"};
 
-        for (int i = 0; i < actions.length; i++) {
-            final String action = actions[i]; // Make the variable final for use in lambda expression
-            JMenuItem menuItem = new JMenuItem(action);
-            // Set icon for the menu item
-            try {
-                Image img = new ImageIcon(this.getClass().getResource(icons[i])).getImage();
-                menuItem.setIcon(new ImageIcon(img));
-            } catch (Exception e) {
-                System.out.println("Icon not found for action: " + action);
-            }
-            menuItem.addActionListener(e -> openFrame(action));
-            addMenuShortcut(menuItem, action);
-            userMenu.add(menuItem);
-        }
-
+        addMenuItems(userMenu, actions, icons);
         menuBar.add(userMenu);
     }
 
-
     private void createDonorMenu(JMenuBar menuBar) {
         JMenu donorMenu = new JMenu("Donor Unit");
-        // Set the icon for the Donor menu
-        try {
-            Image img = new ImageIcon(this.getClass().getResource("/add new.png")).getImage(); // Update with your actual icon path
-            donorMenu.setIcon(new ImageIcon(img));
-        } catch (Exception e) {
-            System.out.println("Donor icon not found.");
-        }
+        setMenuIcon(donorMenu, "/add new.png");
 
-        // Define actions and corresponding icons
-        String[] actions = {"Add Donor Unit", "Update Donor Unit", "Delete Donor Unit"};
-        String[] icons = {"/add new.png", "/update.png", "/delete.png"}; // Update with your actual icon paths
+        String[] actions = {"Add Donor Unit", "Update Donor Unit", "Delete Donor Unit", "View Donor Units"};
+        String[] icons = {"/add new.png", "/update.png", "/delete.png", "/view.png"};
 
-        for (int i = 0; i < actions.length; i++) {
-            final String action = actions[i]; // Make the variable final for use in lambda expression
-            JMenuItem menuItem = new JMenuItem(action);
-            // Set icon for the donor menu item
-            try {
-                Image img = new ImageIcon(this.getClass().getResource(icons[i])).getImage();
-                menuItem.setIcon(new ImageIcon(img));
-            } catch (Exception e) {
-                System.out.println("Icon not found for action: " + action);
-            }
-            menuItem.addActionListener(e -> openFrame(action));
-            addMenuShortcut(menuItem, action);
-            donorMenu.add(menuItem);
-        }
-
+        addMenuItems(donorMenu, actions, icons);
         menuBar.add(donorMenu);
     }
 
     private void createPatientMenu(JMenuBar menuBar) {
         JMenu patientMenu = new JMenu("Patient Unit");
-        // Set the icon for the Patient menu
-        try {
-            Image img = new ImageIcon(this.getClass().getResource("/add donor.png")).getImage(); // Update with your actual icon path
-            patientMenu.setIcon(new ImageIcon(img));
-        } catch (Exception e) {
-            System.out.println("Patient icon not found.");
-        }
+        setMenuIcon(patientMenu, "/add donor.png");
 
-        // Define actions and corresponding icons
-        String[] actions = {"Add Patient Unit", "Update Patient Unit", "Delete Patient Unit"};
-        String[] icons = {"/add new.png", "/update.png", "/delete.png"}; // Update with your actual icon paths
+        String[] actions = {"Add Patient Unit", "Update Patient Unit", "Delete Patient Unit", "View Patient Units"};
+        String[] icons = {"/add new.png", "/update.png", "/delete.png", "/view.png"};
 
-        for (int i = 0; i < actions.length; i++) {
-            final String action = actions[i]; // Make the variable final for use in lambda expression
-            JMenuItem menuItem = new JMenuItem(action);
-            // Set icon for the patient menu item
-            try {
-                Image img = new ImageIcon(this.getClass().getResource(icons[i])).getImage();
-                menuItem.setIcon(new ImageIcon(img));
-            } catch (Exception e) {
-                System.out.println("Icon not found for action: " + action);
-            }
-            menuItem.addActionListener(e -> openFrame(action));
-            addMenuShortcut(menuItem, action);
-            patientMenu.add(menuItem);
-        }
-
+        addMenuItems(patientMenu, actions, icons);
         menuBar.add(patientMenu);
     }
 
     private void createBloodGroupMenu(JMenuBar menuBar) {
         JMenu bloodGroupMenu = new JMenu("Blood Group");
-        // Set the icon for the Blood Group menu
-        try {
-            Image img = new ImageIcon(this.getClass().getResource("/blood group.png")).getImage(); // Update with your actual icon path
-            bloodGroupMenu.setIcon(new ImageIcon(img));
-        } catch (Exception e) {
-            System.out.println("Blood Group icon not found.");
-        }
+        setMenuIcon(bloodGroupMenu, "/blood group.png");
 
-        // Define actions and corresponding icons
-        String[] actions = {"Add Blood Group", "Update Blood Group", "Delete Blood Group"};
-        String[] icons = {"/add new.png", "/update.png", "/delete.png"}; // Update with your actual icon paths
+        String[] actions = {"Add Blood Group", "Update Blood Group", "Delete Blood Group", "View Blood Group"};
+        String[] icons = {"/add new.png", "/update.png", "/delete.png", "/view.png"};
 
-        for (int i = 0; i < actions.length; i++) {
-            final String action = actions[i]; // Make the variable final for use in lambda expression
-            JMenuItem menuItem = new JMenuItem(action);
-            // Set icon for the blood group menu item
-            try {
-                Image img = new ImageIcon(this.getClass().getResource(icons[i])).getImage();
-                menuItem.setIcon(new ImageIcon(img));
-            } catch (Exception e) {
-                System.out.println("Icon not found for action: " + action);
-            }
-            menuItem.addActionListener(e -> openFrame(action));
-            addMenuShortcut(menuItem, action);
-            bloodGroupMenu.add(menuItem);
-        }
-
+        addMenuItems(bloodGroupMenu, actions, icons);
         menuBar.add(bloodGroupMenu);
     }
 
     private void createHistoryMenu(JMenuBar menuBar) {
         JMenu historyMenu = new JMenu("History");
-        // Set the icon for the History menu
-        try {
-            Image img = new ImageIcon(this.getClass().getResource("/details.png")).getImage(); // Update with your actual icon path
-            historyMenu.setIcon(new ImageIcon(img));
-        } catch (Exception e) {
-            System.out.println("History icon not found.");
-        }
+        setMenuIcon(historyMenu, "/details.png");
 
-        // Define actions and corresponding icons
         String[] actions = {"View History"};
-        String[] icons = {"/details.png"}; // Update with your actual icon path
+        String[] icons = {"/details.png"};
 
-        for (int i = 0; i < actions.length; i++) {
-            final String action = actions[i]; // Make the variable final for use in lambda expression
-            JMenuItem menuItem = new JMenuItem(action);
-            // Set icon for the history menu item
-            try {
-                Image img = new ImageIcon(this.getClass().getResource(icons[i])).getImage();
-                menuItem.setIcon(new ImageIcon(img));
-            } catch (Exception e) {
-                System.out.println("Icon not found for action: " + action);
-            }
-            menuItem.addActionListener(e -> openFrame(action));
-            addMenuShortcut(menuItem, action);
-            historyMenu.add(menuItem);
-        }
-
+        addMenuItems(historyMenu, actions, icons);
         menuBar.add(historyMenu);
     }
 
-
     private void createLogoutMenu(JMenuBar menuBar) {
         JMenu logoutMenu = new JMenu("Logout");
-        // Set the icon for the Logout menu
-        try {
-            Image img = new ImageIcon(this.getClass().getResource("/logout.jpg")).getImage();
-            logoutMenu.setIcon(new ImageIcon(img));
-        } catch (Exception e) {
-            System.out.println("Logout icon not found.");
-        }
+        setMenuIcon(logoutMenu, "/logout.jpg");
+
         JMenuItem logoutMenuItem = new JMenuItem("Logout");
-        // Set icon for the logout menu item
-        try {
-            Image img = new ImageIcon(this.getClass().getResource("/logout.jpg")).getImage();
-            logoutMenuItem.setIcon(new ImageIcon(img));
-        } catch (Exception e) {
-            System.out.println("Logout item icon not found.");
-        }
+        setMenuIcon(logoutMenuItem, "/logout.jpg");
         logoutMenuItem.addActionListener(e -> logout());
         logoutMenu.add(logoutMenuItem);
         menuBar.add(logoutMenu);
+    }
+
+    private void setMenuIcon(JMenu menu, String iconPath) {
+        try {
+            Image img = new ImageIcon(getClass().getResource(iconPath)).getImage();
+            menu.setIcon(new ImageIcon(img));
+        } catch (Exception e) {
+            System.out.println("Icon not found: " + iconPath);
+        }
+    }
+
+    private void setMenuIcon(JMenuItem menuItem, String iconPath) {
+        try {
+            Image img = new ImageIcon(getClass().getResource(iconPath)).getImage();
+            menuItem.setIcon(new ImageIcon(img));
+        } catch (Exception e) {
+            System.out.println("Icon not found: " + iconPath);
+        }
+    }
+
+    private void addMenuItems(JMenu menu, String[] actions, String[] icons) {
+        for (int i = 0; i < actions.length; i++) {
+            final String action = actions[i];
+            JMenuItem menuItem = new JMenuItem(action);
+            setMenuIcon(menuItem, icons[i]);
+            menuItem.addActionListener(e -> openFrame(action));
+            addMenuShortcut(menuItem, action);
+            menu.add(menuItem);
+        }
     }
 
     private void openFrame(String action) {
@@ -232,21 +151,25 @@ public class HomePage extends JFrame {
             case "Add User": new AddUserFrame().setVisible(true); break;
             case "Update User": new UpdateUserFrame().setVisible(true); break;
             case "Delete User": new DeleteUserFrame().setVisible(true); break;
+            case "View User": new ViewUserFrame().setVisible(true); break;
             case "Add Donor Unit": new AddDonorFrame().setVisible(true); break;
             case "Update Donor Unit": new UpdateDonorFrame().setVisible(true); break;
             case "Delete Donor Unit": new DeleteDonorFrame().setVisible(true); break;
+            case "View Donor Units": new ViewDonorFrame().setVisible(true); break;
             case "Add Patient Unit": new AddPatientFrame().setVisible(true); break;
             case "Update Patient Unit": new UpdatePatientFrame().setVisible(true); break;
             case "Delete Patient Unit": new DeletePatientFrame().setVisible(true); break;
+            case "View Patient Units": new ViewPatientFrame().setVisible(true); break;
             case "Add Blood Group": new AddBloodGroupFrame().setVisible(true); break;
             case "Update Blood Group": new UpdateBloodGroupFrame().setVisible(true); break;
             case "Delete Blood Group": new DeleteBloodGroupFrame().setVisible(true); break;
+            case "View Blood Group": new ViewBloodGroupFrame().setVisible(true); break;
             case "View History": new HistoryFrame().setVisible(true); break;
         }
     }
 
     @SuppressWarnings("deprecation")
-	private void addMenuShortcut(JMenuItem menuItem, String action) {
+    private void addMenuShortcut(JMenuItem menuItem, String action) {
         Action openFrameAction = new AbstractAction(action) {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -258,12 +181,11 @@ public class HomePage extends JFrame {
     }
 
     private void logout() {
-    	 int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to log out?", "Logout", JOptionPane.YES_NO_OPTION);
-         if (result == JOptionPane.YES_OPTION) {
-             this.dispose(); // Close the current frame
-             // Uncomment the line below to open the login page after logout
-             new Login_S().setVisible(true); 
-         } 
+        int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to log out?", "Logout", JOptionPane.YES_NO_OPTION);
+        if (result == JOptionPane.YES_OPTION) {
+            this.dispose(); // Close the current frame
+            new Login_S().setVisible(true); // Open the login frame
+        }
     }
 
     public static void main(String[] args) {

@@ -2,12 +2,10 @@ package com.bbms.ui;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,8 +27,9 @@ public class UpdateUserFrame extends JFrame {
     private JComboBox<String> genderComboBox;
     private JButton updateButton;
     private JButton closeButton;
-    private JTable userTable;
-    private Integer userId; // Instance variable to store userId
+
+    private JComboBox<Integer> userIdComboBox; // New JComboBox for UserId
+    private Integer selectedUserId; // Instance variable to store selected userId
     private JPanel footerPanel;
     private Component footerLabel;
 
@@ -46,9 +45,10 @@ public class UpdateUserFrame extends JFrame {
         getContentPane().setBackground(Color.PINK);
 
         // Create the form panel using GridLayout
-        JPanel formPanel = new JPanel(new GridLayout(10, 2, 10, 10)); // 10 rows, 2 columns, spacing of 10
+        JPanel formPanel = new JPanel(new GridLayout(11, 2, 10, 10)); // 11 rows, 2 columns, spacing of 10
         formPanel.setBackground(Color.PINK); // Set the background of the form panel
 
+        userIdComboBox = new JComboBox<>();
         nameField = new JTextField();
         fatherNameField = new JTextField();
         motherNameField = new JTextField();
@@ -61,6 +61,8 @@ public class UpdateUserFrame extends JFrame {
         genderComboBox = new JComboBox<>(new String[]{"Male", "Female"});
 
         // Add labels and fields to the form panel
+        formPanel.add(new JLabel("User ID:"));
+        formPanel.add(userIdComboBox);
         formPanel.add(new JLabel("Name:"));
         formPanel.add(nameField);
         formPanel.add(new JLabel("Father Name:"));
@@ -129,14 +131,11 @@ public class UpdateUserFrame extends JFrame {
         // Add southPanel to the frame
         add(southPanel, BorderLayout.SOUTH);
 
-        // Create table for displaying user data
-        userTable = new JTable();
-        JScrollPane tableScrollPane = new JScrollPane(userTable);
-        tableScrollPane.getViewport().setBackground(Color.PINK); // Set viewport background color
-        add(tableScrollPane, BorderLayout.CENTER);
-
+       
         // Load user data into the table
-        loadUserData();
+       
+        // Populate userIdComboBox with user IDs
+        populateUserIdComboBox();
 
         // Add action listener to update button
         updateButton.addActionListener(new ActionListener() {
@@ -154,34 +153,13 @@ public class UpdateUserFrame extends JFrame {
             }
         });
 
-        // Add mouse listener to table for row selection
-        userTable.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                int selectedRow = userTable.getSelectedRow();
-
-                if (selectedRow >= 0) {
-                    String userType = (userTable.getValueAt(selectedRow, 7) != null) ? userTable.getValueAt(selectedRow, 7).toString() : "";
-                    String name = (userTable.getValueAt(selectedRow, 1) != null) ? userTable.getValueAt(selectedRow, 1).toString() : "";
-                    String fatherName = (userTable.getValueAt(selectedRow, 2) != null) ? userTable.getValueAt(selectedRow, 2).toString() : "";
-                    String motherName = (userTable.getValueAt(selectedRow, 3) != null) ? userTable.getValueAt(selectedRow, 3).toString() : "";
-                    String dob = (userTable.getValueAt(selectedRow, 6) != null) ? userTable.getValueAt(selectedRow, 6).toString() : "";
-                    String contactNo = (userTable.getValueAt(selectedRow, 5) != null) ? userTable.getValueAt(selectedRow, 5).toString() : "";
-                    String gender = (userTable.getValueAt(selectedRow, 8) != null) ? userTable.getValueAt(selectedRow, 8).toString() : "";
-                    String email = (userTable.getValueAt(selectedRow, 4) != null) ? userTable.getValueAt(selectedRow, 4).toString() : "";
-                    String amount = (userTable.getValueAt(selectedRow, 9) != null) ? userTable.getValueAt(selectedRow, 9).toString() : "";
-                    String address = (userTable.getValueAt(selectedRow, 10) != null) ? userTable.getValueAt(selectedRow, 10).toString() : "";
-
-                    userTypeComboBox.setSelectedItem(userType);
-                    nameField.setText(name);
-                    fatherNameField.setText(fatherName);
-                    motherNameField.setText(motherName);
-                    dobField.setText(dob);
-                    contactNoField.setText(contactNo);
-                    genderComboBox.setSelectedItem(gender);
-                    emailField.setText(email);
-                    amountField.setText(amount);
-                    addressField.setText(address);
-                    userId = (Integer) userTable.getValueAt(selectedRow, 0); // Store the selected userId
+        // Add action listener to userIdComboBox
+        userIdComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                selectedUserId = (Integer) userIdComboBox.getSelectedItem();
+                if (selectedUserId != null) {
+                    loadUserDetails(selectedUserId);
                 }
             }
         });
@@ -200,43 +178,47 @@ public class UpdateUserFrame extends JFrame {
         });
     }
 
-    private void loadUserData() {
-        DefaultTableModel tableModel = new DefaultTableModel(new Object[]{
-            "UserId", "Name", "Father Name", "Mother Name", "Email", "Contact No", "DOB", "User Type", "Gender", "Amount", "Address"
-        }, 0);
-
+   
+    private void populateUserIdComboBox() {
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM user")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT UserId FROM user")) {
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                BigDecimal amount = rs.getBigDecimal("Amount");
-                String formattedAmount = amount != null ? "$" + amount.toPlainString() : "";
-
-                tableModel.addRow(new Object[]{
-                    rs.getInt("UserId"),
-                    rs.getString("Name"),
-                    rs.getString("FatherName"),
-                    rs.getString("MotherName"),
-                    rs.getString("Email"),
-                    rs.getString("ContactNo"),
-                    rs.getString("DOB"),
-                    rs.getString("UserType"),
-                    rs.getString("Gender"),
-                    formattedAmount, // Display the amount with $
-                    rs.getString("Address")
-                });
+                userIdComboBox.addItem(rs.getInt("UserId"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
 
-        userTable.setModel(tableModel);
+    private void loadUserDetails(int userId) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM user WHERE UserId = ?")) {
+
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                nameField.setText(rs.getString("Name"));
+                fatherNameField.setText(rs.getString("FatherName"));
+                motherNameField.setText(rs.getString("MotherName"));
+                emailField.setText(rs.getString("Email"));
+                contactNoField.setText(rs.getString("ContactNo"));
+                dobField.setText(rs.getString("DOB"));
+                userTypeComboBox.setSelectedItem(rs.getString("UserType"));
+                genderComboBox.setSelectedItem(rs.getString("Gender"));
+                amountField.setText(rs.getBigDecimal("Amount") != null ? rs.getBigDecimal("Amount").toPlainString() : ""); // Format amount as needed
+                addressField.setText(rs.getString("Address"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateUser() {
-        if (userId == null) {
-            JOptionPane.showMessageDialog(this, "No user selected.", "Error", JOptionPane.ERROR_MESSAGE);
+        if (selectedUserId == null) {
+            JOptionPane.showMessageDialog(this, "Please select a User ID.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -251,50 +233,59 @@ public class UpdateUserFrame extends JFrame {
         String amountText = amountField.getText();
         String address = addressField.getText();
 
+        // Remove the '$' sign if it is present
         BigDecimal amount = null;
-        if (userType.equals("Donor")) {
+        if (amountText != null && !amountText.isEmpty()) {
             try {
-                // Debugging statement to check the amountText value
-                System.out.println("Amount Text: " + amountText);
-                
-                // Attempt to parse the amount
+                // Remove '$' if present
+                amountText = amountText.replace("$", "").trim();
                 amount = new BigDecimal(amountText);
-            } catch (NumberFormatException e) {
-                // Provide detailed error message
-                JOptionPane.showMessageDialog(this, "Invalid amount format. Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid amount format.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         }
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement("UPDATE user SET Name=?, FatherName=?, MotherName=?, Email=?, ContactNo=?, DOB=?, UserType=?, Gender=?, Amount=?, Address=? WHERE UserId=?")) {
+        // Confirm update action
+        int confirmation = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to update this user?",
+            "Confirm Update",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
 
-            stmt.setString(1, name);
-            stmt.setString(2, fatherName);
-            stmt.setString(3, motherName);
-            stmt.setString(4, email);
-            stmt.setString(5, contactNo);
-            stmt.setString(6, dob);
-            stmt.setString(7, userType);
-            stmt.setString(8, gender);
-            if (amount != null) {
+        if (confirmation == JOptionPane.YES_OPTION) {
+            // Proceed with the update
+            try (Connection conn = DatabaseConnection.getConnection();
+                 PreparedStatement stmt = conn.prepareStatement(
+                         "UPDATE user SET Name = ?, FatherName = ?, MotherName = ?, Email = ?, ContactNo = ?, DOB = ?, UserType = ?, Gender = ?, Amount = ?, Address = ? WHERE UserId = ?")) {
+
+                stmt.setString(1, name);
+                stmt.setString(2, fatherName);
+                stmt.setString(3, motherName);
+                stmt.setString(4, email);
+                stmt.setString(5, contactNo);
+                stmt.setString(6, dob);
+                stmt.setString(7, userType);
+                stmt.setString(8, gender);
                 stmt.setBigDecimal(9, amount);
-            } else {
-                stmt.setNull(9, java.sql.Types.DECIMAL);
-            }
-            stmt.setString(10, address);
-            stmt.setInt(11, userId);
+                stmt.setString(10, address);
+                stmt.setInt(11, selectedUserId);
 
-            int rowsUpdated = stmt.executeUpdate();
-            if (rowsUpdated > 0) {
-                JOptionPane.showMessageDialog(this, "User updated successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-                loadUserData(); // Reload user data
-            } else {
-                JOptionPane.showMessageDialog(this, "Update failed.", "Error", JOptionPane.ERROR_MESSAGE);
+                int rowsUpdated = stmt.executeUpdate();
+                if (rowsUpdated > 0) {
+                    JOptionPane.showMessageDialog(this, "User updated successfully.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "User update failed.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error updating user.", "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "An error occurred while updating the user. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            // User chose not to update
+            JOptionPane.showMessageDialog(this, "Update canceled.");
         }
     }
 

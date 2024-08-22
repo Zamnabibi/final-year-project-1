@@ -28,7 +28,7 @@ public class EmailFrame extends JFrame {
     public EmailFrame() {
     	 setTitle("Email Sender");
     	    setSize(500, 500);
-    	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     	    setLocationRelativeTo(null);
     	    getContentPane().setLayout(null); // Use absolute layout
     	    

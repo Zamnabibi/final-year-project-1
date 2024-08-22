@@ -43,7 +43,7 @@ public class SignupSystem extends JFrame {
              JOptionPane.showMessageDialog(this, "Database connection failed!", "Error", JOptionPane.ERROR_MESSAGE);
          }
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 858, 550);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -114,9 +114,30 @@ public class SignupSystem extends JFrame {
         Image img4 = new ImageIcon(this.getClass().getResource("/Ok-icon.png")).getImage();
         btnSignup.setIcon(new ImageIcon(img4));
         btnSignup.setFont(new Font("Tahoma", Font.BOLD, 14));
-        btnSignup.addActionListener(e -> signUp());
+
+        // Add action listener with confirmation dialog
+        btnSignup.addActionListener(e -> {
+            // Prompt user to confirm sign-up action
+            int confirmation = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to sign up?",
+                "Confirm Sign-Up",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            // Proceed if user confirms
+            if (confirmation == JOptionPane.YES_OPTION) {
+                signUp();
+            } else {
+                // User chose not to sign up
+                JOptionPane.showMessageDialog(this, "Sign-up canceled.");
+            }
+        });
+
         btnSignup.setBounds(350, 347, 122, 23);
         contentPane.add(btnSignup);
+
 
         // Add the footer panel
         FooterPanel footerPanel = new FooterPanel();

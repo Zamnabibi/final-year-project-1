@@ -31,7 +31,7 @@ public class Login_S extends JFrame {
     }
 
     public Login_S() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	 setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 870, 550);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -96,21 +96,38 @@ public class Login_S extends JFrame {
         btnLogin.setIcon(new ImageIcon(img));
         btnLogin.setFont(new Font("Tahoma", Font.BOLD, 16));
         btnLogin.addActionListener(e -> {
-            String username = txtUsername.getText();
-            String password = new String(txtPassword.getPassword());
-            if (validateLogin(username, password)) {
-                txtPassword.setText(null);
-                txtUsername.setText(null);
-                setVisible(false);
-                new HomePage().setVisible(true);
+            // Prompt user to confirm login action
+            int confirmation = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to log in?",
+                "Confirm Login",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+
+            // Proceed if user confirms
+            if (confirmation == JOptionPane.YES_OPTION) {
+                String username = txtUsername.getText();
+                String password = new String(txtPassword.getPassword());
+
+                if (validateLogin(username, password)) {
+                    txtPassword.setText(null);
+                    txtUsername.setText(null);
+                    setVisible(false);
+                    new HomePage().setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Invalid Login Details", "Login Error", JOptionPane.ERROR_MESSAGE);
+                    txtPassword.setText(null);
+                    txtUsername.setText(null);
+                }
             } else {
-                JOptionPane.showMessageDialog(this, "Invalid Login Details", "Login Error", JOptionPane.ERROR_MESSAGE);
-                txtPassword.setText(null);
-                txtUsername.setText(null);
+                // User chose not to log in
+                JOptionPane.showMessageDialog(this, "Login canceled.");
             }
         });
         btnLogin.setBounds(54, 327, 107, 34);
         contentPane.add(btnLogin);
+
 
         JButton btnClose = new JButton("Close");
         Image img2 = new ImageIcon(getClass().getResource("/close.png")).getImage();

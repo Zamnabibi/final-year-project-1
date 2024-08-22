@@ -11,12 +11,11 @@ public class DonorHomeFrame extends JFrame {
         // Set up the frame
         setTitle("Donor Home Page");
         setSize(854, 517);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
         // Create the menu bar
         JMenuBar menuBar = new JMenuBar();
-        
         createUserMenu(menuBar);
         createDonorMenu(menuBar);
         createLogoutMenu(menuBar);
@@ -24,15 +23,21 @@ public class DonorHomeFrame extends JFrame {
 
         // Create a panel with a background color
         JPanel backgroundPanel = new JPanel();
-        backgroundPanel.setLayout(null);
-        backgroundPanel.setBackground(Color.PINK);
+        backgroundPanel.setLayout(new BorderLayout()); // Use BorderLayout for positioning
 
         // Add the background image
         JLabel lblBackground = new JLabel();
         Image img1 = new ImageIcon(getClass().getResource("/back.jpg")).getImage();
         lblBackground.setIcon(new ImageIcon(img1.getScaledInstance(854, 517, Image.SCALE_SMOOTH)));
-        lblBackground.setBounds(0, 0, 854, 517);
-        backgroundPanel.add(lblBackground);
+        backgroundPanel.add(lblBackground, BorderLayout.CENTER);
+
+        // Create and add the footer panel
+        JPanel footerPanel = new JPanel();
+        footerPanel.setBackground(Color.pink);
+        footerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        JLabel footerLabel = new JLabel("© 2024 Blood Bank Management System. All rights reserved.");
+        footerPanel.add(footerLabel);
+        backgroundPanel.add(footerPanel, BorderLayout.SOUTH);
 
         // Add the background panel to the frame
         setContentPane(backgroundPanel);
@@ -82,7 +87,7 @@ public class DonorHomeFrame extends JFrame {
 
         // Define actions and corresponding icons
         String[] actions = {"Add Donor Unit", "Update Donor Unit", "Delete Donor Unit"};
-        String[] icons = {"/add donor.png", "/update.png", "/delete.png"}; // Update with your actual icon paths
+        String[] icons = {"/add new.png", "/update.png", "/delete.png"}; // Update with your actual icon paths
 
         for (int i = 0; i < actions.length; i++) {
             final String action = actions[i]; // Make the variable final for use in lambda expression
@@ -129,9 +134,11 @@ public class DonorHomeFrame extends JFrame {
             case "Add User": new AddUserFrame().setVisible(true); break;
             case "Update User": new UpdateUserFrame().setVisible(true); break;
             case "Delete User": new DeleteUserFrame().setVisible(true); break;
+            
             case "Add Donor Unit": new AddDonorFrame().setVisible(true); break;
             case "Update Donor Unit": new UpdateDonorFrame().setVisible(true); break;
             case "Delete Donor Unit": new DeleteDonorFrame().setVisible(true); break;
+            
         }
     }
 
@@ -147,9 +154,11 @@ public class DonorHomeFrame extends JFrame {
             case "Add User" -> KeyStroke.getKeyStroke("ctrl shift U");
             case "Update User" -> KeyStroke.getKeyStroke("ctrl shift E");
             case "Delete User" -> KeyStroke.getKeyStroke("ctrl shift R");
+            case "View User" -> KeyStroke.getKeyStroke("ctrl shift O");
             case "Add Donor Unit" -> KeyStroke.getKeyStroke("ctrl shift A");
             case "Update Donor Unit" -> KeyStroke.getKeyStroke("ctrl shift J");
             case "Delete Donor Unit" -> KeyStroke.getKeyStroke("ctrl shift D");
+            case "View Donor Units" -> KeyStroke.getKeyStroke("ctrl shift J");
             default -> null;
         };
         if (keyStroke != null) {

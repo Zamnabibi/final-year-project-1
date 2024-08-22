@@ -1,11 +1,11 @@
 package com.bbms.ui;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+
 import java.sql.SQLException;
 import com.bbms.util.DatabaseConnection;
 
@@ -14,8 +14,8 @@ public class AddBloodGroupFrame extends JFrame {
     private JTextField groupNameField;
     private JButton addButton;
     private JButton closeButton;
-    private JTable bloodGroupTable;
-    private DefaultTableModel tableModel;
+    
+  
 
     public AddBloodGroupFrame() {
         setTitle("Add Blood Group");
@@ -34,13 +34,7 @@ public class AddBloodGroupFrame extends JFrame {
         formPanel.add(groupNameField);
         add(formPanel, BorderLayout.NORTH);
 
-        // Table setup
-        tableModel = new DefaultTableModel();
-        bloodGroupTable = new JTable(tableModel);
-        tableModel.addColumn("BloodGroupId");
-        tableModel.addColumn("GroupName");
-        loadBloodGroupData();
-        add(new JScrollPane(bloodGroupTable), BorderLayout.CENTER);
+       
 
         // Buttons and Footer Panel
         JPanel bottomPanel = new JPanel();
@@ -86,31 +80,26 @@ public class AddBloodGroupFrame extends JFrame {
         closeButton.addActionListener(e -> dispose());
     }
 
-    private void loadBloodGroupData() {
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "SELECT * FROM BloodGroup";
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
-
-            tableModel.setRowCount(0); // Clear existing rows
-
-            while (resultSet.next()) {
-                tableModel.addRow(new Object[]{
-                        resultSet.getInt("BloodGroupId"),
-                        resultSet.getString("GroupName")
-                });
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error loading blood groups.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
+   
 
     private void addBloodGroup() {
         String groupName = groupNameField.getText();
         if (groupName.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter a group name.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
+        }
+
+        // Show confirmation dialog
+        int confirmation = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to add this blood group?",
+            "Confirm Addition",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (confirmation != JOptionPane.YES_OPTION) {
+            return; // If user clicks No, exit the method
         }
 
         try (Connection connection = DatabaseConnection.getConnection()) {
@@ -120,13 +109,15 @@ public class AddBloodGroupFrame extends JFrame {
 
             statement.executeUpdate();
             JOptionPane.showMessageDialog(this, "Blood group added successfully.");
-            loadBloodGroupData(); // Refresh the table with updated data
+            // Refresh the table with updated data (assuming you have a method for that)
+            // refreshTable();
             groupNameField.setText(""); // Clear the input field
         } catch (SQLException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error adding blood group.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new AddBloodGroupFrame().setVisible(true));

@@ -45,7 +45,7 @@ public class DonorSignupSystem extends JFrame {
          if (con == null) {
              JOptionPane.showMessageDialog(this, "Database connection failed!", "Error", JOptionPane.ERROR_MESSAGE);
          }
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 850, 550);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -115,18 +115,32 @@ public class DonorSignupSystem extends JFrame {
         textFieldEmail.setBounds(516, 254, 200, 25);
         contentPane.add(textFieldEmail);
         textFieldEmail.setColumns(10);
-
         JButton btnSignup = new JButton("Login");
         Image img4 = new ImageIcon(this.getClass().getResource("/Ok-icon.png")).getImage();
         btnSignup.setIcon(new ImageIcon(img4));
         btnSignup.setFont(new Font("Tahoma", Font.BOLD, 14));
+        btnSignup.setBounds(350, 347, 122, 23);
+
         btnSignup.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                signUp();
+                // Prompt user for confirmation
+                int confirmResult = JOptionPane.showConfirmDialog(
+                    btnSignup, 
+                    "Are you sure you want to proceed with the login?", 
+                    "Confirm Login", 
+                    JOptionPane.YES_NO_OPTION, 
+                    JOptionPane.QUESTION_MESSAGE
+                );
+
+                // If the user confirms, proceed with the signup
+                if (confirmResult == JOptionPane.YES_OPTION) {
+                    signUp();
+                }
             }
         });
-        btnSignup.setBounds(350, 347, 122, 23);
+
         contentPane.add(btnSignup);
+
 
         JButton btnClose = new JButton("Close");
         Image img2 = new ImageIcon(getClass().getResource("/close.png")).getImage();

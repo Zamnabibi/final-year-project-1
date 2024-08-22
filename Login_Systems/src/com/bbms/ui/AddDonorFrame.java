@@ -9,8 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import com.bbms.util.DatabaseConnection;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
+
 import java.util.HashMap;
 
 @SuppressWarnings("serial")
@@ -22,8 +21,7 @@ public class AddDonorFrame extends JFrame {
     private JComboBox<String> amountComboBox;
     private JButton addButton;
     private JButton closeButton;
-    private JTable donorTable;
-    private DefaultTableModel tableModel;
+   
 
     // Map to store the relationship between BloodGroupId and GroupName
     private HashMap<String, String> bloodGroupMap = new HashMap<>();
@@ -36,7 +34,7 @@ public class AddDonorFrame extends JFrame {
 
     public AddDonorFrame() {
         setTitle("Add Donor");
-        setSize(880, 700); // Increased height to accommodate new label
+        setSize(880, 537); // Increased height to accommodate new label
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new BorderLayout());
         getContentPane().setBackground(Color.PINK); // Set background color for the frame
@@ -108,28 +106,10 @@ public class AddDonorFrame extends JFrame {
         addButton.addActionListener(e -> addDonor());
         closeButton.addActionListener(e -> dispose()); // Dispose of the frame when clicked
 
-        // Table setup
-        tableModel = new DefaultTableModel();
-        tableModel.setColumnIdentifiers(new Object[]{"DonorId", "UserId", "Name", "BloodGroupId", "GroupName", "Amount", "BloodUnit", "ContactNo"});
-        donorTable = new JTable(tableModel);
-
-        // Set table and header background color
-        donorTable.setBackground(Color.WHITE); // Set background color for the table
-        donorTable.setForeground(Color.BLACK); // Optional: Set text color
-        donorTable.setGridColor(Color.BLACK); // Optional: Set grid color
-        JScrollPane tableScrollPane = new JScrollPane(donorTable);
-
-        // Set viewport background color
-        tableScrollPane.getViewport().setBackground(Color.PINK);
-
-        getContentPane().add(tableScrollPane, BorderLayout.CENTER);
-
-        JTableHeader tableHeader = donorTable.getTableHeader();
-        tableHeader.setBackground(Color.white); // Set a different background color for the header
-        tableHeader.setForeground(Color.BLACK); // Optional: Set header text color
+       
 
         // Load Table Data
-        loadTableData();
+        
 
         // Footer Panel
         footerPanel = new JPanel(new BorderLayout());
@@ -232,35 +212,43 @@ public class AddDonorFrame extends JFrame {
     }
 
     private void addDonor() {
+        // Retrieve values from input fields
         String selectedUserId = (String) userComboBox.getSelectedItem();
         String selectedBloodGroupId = (String) bloodGroupComboBox.getSelectedItem();
-        String selectedGroupName = (String) groupNameComboBox.getSelectedItem();
-        String selectedAmount = (String) amountComboBox.getSelectedItem();
         String bloodUnit = bloodUnitField.getText();
-        String contactNo = contactNoLabel.getText();
-        String name = nameLabel.getText();
-
-        if (selectedUserId == null || selectedBloodGroupId == null || selectedGroupName == null ||
-            selectedAmount == null || bloodUnit.isEmpty() || contactNo.isEmpty() || name.isEmpty()) {
+        
+        // Validate inputs
+        if (selectedUserId == null || selectedBloodGroupId == null || bloodUnit.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill all fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
+        // Show confirmation dialog
+        int confirmation = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to add this donor?",
+            "Confirm Addition",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (confirmation != JOptionPane.YES_OPTION) {
+            return; // If user clicks No, exit the method
+        }
+
         try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "INSERT INTO Donor (UserId, Name, BloodGroupId, GroupName, Amount, BloodUnit, ContactNo) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            // Updated SQL query to include new columns
+            String query = "INSERT INTO Donor (UserId, BloodGroupId, BloodUnit) VALUES (?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, selectedUserId);
-            statement.setString(2, name);
-            statement.setString(3, selectedBloodGroupId);
-            statement.setString(4, selectedGroupName);
-            statement.setBigDecimal(5, new BigDecimal(selectedAmount.replace("$", ""))); // Remove $ symbol before converting to BigDecimal
-            statement.setInt(6, Integer.parseInt(bloodUnit));
-            statement.setString(7, contactNo);
+            statement.setString(2, selectedBloodGroupId);
+            statement.setInt(3, Integer.parseInt(bloodUnit));
 
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
                 JOptionPane.showMessageDialog(this, "Donor added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
-                loadTableData(); // Reload the table data to reflect the new donor
+                // Reload the table data to reflect the new donor
+                // refreshTable(); // Uncomment and implement if you have a table to refresh
             } else {
                 JOptionPane.showMessageDialog(this, "Failed to add donor.", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -272,32 +260,6 @@ public class AddDonorFrame extends JFrame {
             JOptionPane.showMessageDialog(this, "Please enter a valid number for Blood Unit.", "Input Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    private void loadTableData() {
-        try (Connection connection = DatabaseConnection.getConnection()) {
-        	String query = "SELECT DonorId, UserId,Name, BloodGroupId, GroupName, Amount, BloodUnit, ContactNo FROM Donor";
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
-            tableModel.setRowCount(0); // Clear existing data
-            while (resultSet.next()) {
-                Object[] rowData = {
-                    resultSet.getString("DonorId"),
-                    resultSet.getString("UserId"),
-                    resultSet.getString("Name"),
-                    resultSet.getString("BloodGroupId"),
-                    resultSet.getString("GroupName"),
-                    resultSet.getBigDecimal("Amount"),
-                    resultSet.getInt("BloodUnit"),
-                    resultSet.getString("ContactNo")
-                };
-                tableModel.addRow(rowData);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to load table data.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

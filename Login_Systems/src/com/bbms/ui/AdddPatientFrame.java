@@ -1,74 +1,56 @@
 package com.bbms.ui;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import com.bbms.util.DatabaseConnection;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.mail.*;
-import javax.mail.internet.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import com.bbms.util.DatabaseConnection;
+
+
+import java.awt.*;
+import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class AdddPatientFrame extends JFrame {
-    private JTextField bloodUnitField;
     private JComboBox<String> userComboBox;
     private JComboBox<String> bloodGroupComboBox;
     private JComboBox<String> groupNameComboBox;
+    private JTextField bloodUnitField;
     private JComboBox<String> hospitalComboBox;
-    private JTextField recipientUsernameField;
-    private JPasswordField recipientPasswordField;
-    private JButton addButton;
-    private JButton closeButton;
-    private JButton sendRequestButton;
-    
     private JTable donorTable;
     private DefaultTableModel donorTableModel;
-    private String selectedDonorContactNumber;
-    private final String placeholderText = "Enter App-Specific Password";
     private Map<String, String> bloodGroupMap = new HashMap<>();
-    private Map<Integer, String> donorEmailMap = new HashMap<>();
-    private Set<Integer> selectedDonors = new HashSet<>();
-
+    private Map<String, String> groupNameMap = new HashMap<>();
+	private JPanel footerPanel;
+	private JLabel footerLabel;
 
     public AdddPatientFrame() {
-        setTitle("Add Patient");
-        setSize(1000, 745);
+        setTitle("Patient Frame");
+        setSize(1000, 536);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new BorderLayout());
-        getContentPane().setBackground(Color.PINK);
 
-        JPanel formPanel = new JPanel(new GridLayout(10, 2)); // Adjusted grid layout
+        JPanel formPanel = new JPanel(new GridLayout(7, 2));
         formPanel.setBackground(Color.PINK);
         getContentPane().add(formPanel, BorderLayout.NORTH);
 
-        formPanel.add(new JLabel("UserId:"));
+        formPanel.add(new JLabel("User ID:"));
         userComboBox = new JComboBox<>();
         formPanel.add(userComboBox);
 
-        formPanel.add(new JLabel("BloodGroupId:"));
+        formPanel.add(new JLabel("Blood Group ID:"));
         bloodGroupComboBox = new JComboBox<>();
         formPanel.add(bloodGroupComboBox);
 
-        formPanel.add(new JLabel("GroupName:"));
+        formPanel.add(new JLabel("Group Name:"));
         groupNameComboBox = new JComboBox<>();
         formPanel.add(groupNameComboBox);
 
-        formPanel.add(new JLabel("HospitalName:"));
+        formPanel.add(new JLabel("Hospital Name:"));
         hospitalComboBox = new JComboBox<>(new String[]{
         		"Shaukat Khanum Memorial Cancer Hospital & Research Centre, Johar Town, Lahore",
                 "Mayo Hospital, Nila Gumbad, Anarkali, Lahore",
@@ -170,77 +152,40 @@ public class AdddPatientFrame extends JFrame {
                 "Bahria International Hospital (Emergency) Bahria Town, Lahore",
                 "Gulab Devi Chest Hospital (Emergency) Ferozepur Road, Lahore",
                 "Lahore Medical Complex (Emergency) Ferozepur Road, Lahore"
-            // Add more hospital names as needed
+            // Add other options here...
         });
         formPanel.add(hospitalComboBox);
 
-        formPanel.add(new JLabel("BloodUnit:"));
+        formPanel.add(new JLabel("Blood Unit:"));
         bloodUnitField = new JTextField();
         formPanel.add(bloodUnitField);
-
-        formPanel.add(new JLabel("Recipient Username:"));
-        recipientUsernameField = new JTextField();
-        formPanel.add(recipientUsernameField);
-
-        formPanel.add(new JLabel("Recipient Password:"));
-
-        // Create the password field and placeholder label
-        recipientPasswordField = new JPasswordField();
-        recipientPasswordField.setColumns(20);
-
-        // Placeholder text
-        JLabel placeholderLabel = new JLabel(placeholderText);
-        placeholderLabel.setForeground(Color.GRAY);
-        placeholderLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        placeholderLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-        // Panel to hold the password field and placeholder label
-        JPanel passwordPanel = new JPanel(new BorderLayout());
-        passwordPanel.setOpaque(false);
-        passwordPanel.add(recipientPasswordField, BorderLayout.CENTER);
-        passwordPanel.add(placeholderLabel, BorderLayout.WEST);
-
-        formPanel.add(passwordPanel);
-
-        // Handle placeholder visibility
-        recipientPasswordField.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                placeholderLabel.setVisible(false);
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (new String(recipientPasswordField.getPassword()).isEmpty()) {
-                    placeholderLabel.setVisible(true);
-                }
-            }
-        });
-
         
+        // Footer Panel
+        footerPanel = new JPanel(new BorderLayout());
+        footerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        footerPanel.setBackground(Color.PINK);
 
-        addButton = new JButton("Add Patient");
-        formPanel.add(addButton);
+        footerLabel = new JLabel("© 2024 Blood Bank Management System. All rights reserved.", SwingConstants.CENTER);
+        footerLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        footerLabel.setForeground(Color.black);
 
-        sendRequestButton = new JButton("Send Request");
-        formPanel.add(sendRequestButton);
+        footerPanel.add(footerLabel, BorderLayout.CENTER);
 
-        closeButton = new JButton("Close");
-        formPanel.add(closeButton);
-        
+        getContentPane().add(footerPanel, BorderLayout.SOUTH);
+
+        JPanel buttonPanel = new JPanel();
+        JButton addButton = new JButton("Add Patient");
+        JButton closeButton = new JButton("Close");
+       
+        buttonPanel.add(addButton);
+        buttonPanel.add(closeButton);
+
         // Load icons
         try {
             Image imgUpdate = new ImageIcon(this.getClass().getResource("/add new.png")).getImage();
             addButton.setIcon(new ImageIcon(imgUpdate));
         } catch (Exception e) {
-            System.out.println("Update icon not found.");
-        }
-        
-        try {
-            Image imgsendRequest = new ImageIcon(this.getClass().getResource("/blood group.png")).getImage();
-            sendRequestButton.setIcon(new ImageIcon(imgsendRequest));
-        } catch (Exception e) {
-            System.out.println("Update icon not found.");
+            System.out.println("Add icon not found.");
         }
 
         try {
@@ -250,138 +195,48 @@ public class AdddPatientFrame extends JFrame {
             System.out.println("Close icon not found.");
         }
 
-       
+        formPanel.add(Box.createVerticalStrut(10));
+        formPanel.add(buttonPanel);
+        
+        getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+
+        donorTableModel = new DefaultTableModel(new Object[]{
+            "Donor ID", "User ID", "Blood Group ID", "Name", "Email", "Contact No", "Amount", "Group Name"
+        }, 0);
+        donorTable = new JTable(donorTableModel);
+        donorTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane donorTableScrollPane = new JScrollPane(donorTable);
+        getContentPane().add(donorTableScrollPane, BorderLayout.CENTER);
+
         loadComboBoxes();
+        customizeTable();
 
         bloodGroupComboBox.addActionListener(e -> updateGroupName());
         groupNameComboBox.addActionListener(e -> updateBloodGroupId());
-
         addButton.addActionListener(e -> addPatient());
         closeButton.addActionListener(e -> dispose());
-        sendRequestButton.addActionListener(e -> sendRequest());
 
-      
-        donorTableModel = new DefaultTableModel();
-        donorTableModel.setColumnIdentifiers(new Object[]{"Donor ID", "Name", "Email", "Blood Group ID", "Group Name", "Amount", "ContactNo"});
-        donorTable = new JTable(donorTableModel);
-        donorTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         donorTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                handleTableSelection();
-            }
-        });
-
-        JScrollPane donorTableScrollPane = new JScrollPane(donorTable);
-        donorTableScrollPane.setBounds(10, 250, 960, 200);
-        getContentPane().add(donorTableScrollPane);
-
-
-        // Set donor table background color
-        donorTable.setBackground(Color.PINK);
-        donorTable.setOpaque(true);
-
-        // Customize donor table header
-        JTableHeader donorTableHeader = donorTable.getTableHeader();
-        donorTableHeader.setBackground(Color.white);
-        donorTableHeader.setForeground(Color.BLACK);
-        
-
-
-        loadDonors((String) groupNameComboBox.getSelectedItem());
-    }
-    
-    private void handleTableSelection() {
-        int selectedRow = donorTable.getSelectedRow();
-        if (selectedRow != -1) {
-            int selectedDonorId = (Integer) donorTableModel.getValueAt(selectedRow, 0);
-            if (selectedDonors.contains(selectedDonorId)) {
-                JOptionPane.showMessageDialog(this,
-                        "This donor is already selected by another patient.",
-                        "Donor Not Available",
-                        JOptionPane.WARNING_MESSAGE);
-                donorTable.clearSelection();
-            } else {
-                String contactNo = getContactNumberForDonor(selectedDonorId);
-                String message = String.format("Contact me on mail and contact me on my number.\nContact Number: %s", contactNo);
-                JOptionPane.showMessageDialog(this,
-                        message,
-                        "Donor Information",
-                        JOptionPane.INFORMATION_MESSAGE);
-                selectedDonors.add(selectedDonorId);
-
-                if (!isDonorInRequestTable(selectedDonorId)) {
-                    moveDonorToRequestTable(selectedDonorId);
-                } else {
-                    JOptionPane.showMessageDialog(this,
-                            "This donor is already in the request table.",
-                            "Donor Not Available",
-                            JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        }
-    }
-
-    private boolean isDonorInRequestTable(int donorId) {
-        String sql = "SELECT COUNT(*) FROM Request WHERE DonorId = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, donorId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) > 0;
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error checking request table: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
-        }
-        return false;
-    }
-
-    private void moveDonorToRequestTable(int donorId) {
-        String sql = "INSERT INTO Request (DonorId, UserId,Name, BloodGroupId, GroupName, Amount, ContactNo) " +
-                     "SELECT DonorId, UserId,Name, BloodGroupId, GroupName, Amount, ContactNo FROM Donor WHERE DonorId = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, donorId);
-            int rowsAffected = stmt.executeUpdate();
-            if (rowsAffected > 0) {
-                JOptionPane.showMessageDialog(this, "Request is send by Email", "by providing info", JOptionPane.INFORMATION_MESSAGE);
-                new EmailFrame().setVisible(true);
-            } else {
-                JOptionPane.showMessageDialog(this, "Failed to add donor to request table.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error moving donor to request table: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-
-        private String getContactNumberForDonor(int donorId) {
-            String contactNumber = null;
-            String sql = "SELECT ContactNo FROM Donor WHERE DonorId = ?"; // Use correct column name
-
-            try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bloods", "root", "zamna0");
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-                stmt.setInt(1, donorId); // Set the donor's ID for the query
-
-                try (ResultSet rs = stmt.executeQuery()) {
-                    if (rs.next()) {
-                        contactNumber = rs.getString("ContactNo"); // Fetch the contact number if a match is found
+                if (!e.getValueIsAdjusting()) {
+                    int selectedRow = donorTable.getSelectedRow();
+                    if (selectedRow != -1) {
+                        int donorId = (Integer) donorTableModel.getValueAt(selectedRow, 0); // Donor ID column
+                        moveToRequestTable(donorId);
+                        String email = (String) donorTableModel.getValueAt(selectedRow, 4); // Email column
+                        String contactNo = (String) donorTableModel.getValueAt(selectedRow, 5); // Contact No column
+                        JOptionPane.showMessageDialog(
+                            AdddPatientFrame.this,
+                            "Contact me through email: " + email + "\nContact me through contact no: " + contactNo,
+                            "Contact Information",
+                            JOptionPane.INFORMATION_MESSAGE
+                        );
                     }
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Error fetching contact number: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
             }
-
-            return contactNumber != null ? contactNumber : "Contact number not available"; // Return default message if null
-        }
-
-
+        });
+    }
 
     private void loadComboBoxes() {
         try (Connection connection = DatabaseConnection.getConnection()) {
@@ -394,18 +249,17 @@ public class AdddPatientFrame extends JFrame {
                 }
             }
 
-            // Load Blood Group IDs and Group Names
+            // Load Blood Groups
             query = "SELECT BloodGroupId, GroupName FROM BloodGroup";
             try (PreparedStatement statement = connection.prepareStatement(query);
                  ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     String bloodGroupId = resultSet.getString("BloodGroupId");
                     String groupName = resultSet.getString("GroupName");
-
                     bloodGroupComboBox.addItem(bloodGroupId);
                     groupNameComboBox.addItem(groupName);
-
                     bloodGroupMap.put(bloodGroupId, groupName);
+                    groupNameMap.put(groupName, bloodGroupId);
                 }
             }
         } catch (SQLException e) {
@@ -424,139 +278,60 @@ public class AdddPatientFrame extends JFrame {
     private void updateBloodGroupId() {
         String selectedGroupName = (String) groupNameComboBox.getSelectedItem();
         if (selectedGroupName != null) {
-            for (Map.Entry<String, String> entry : bloodGroupMap.entrySet()) {
-                if (entry.getValue().equals(selectedGroupName)) {
-                    bloodGroupComboBox.setSelectedItem(entry.getKey());
-                    break;
-                }
-            }
+            String bloodGroupId = groupNameMap.get(selectedGroupName);
+            bloodGroupComboBox.setSelectedItem(bloodGroupId);
         }
     }
 
     private void addPatient() {
-        String userIdText = (String) userComboBox.getSelectedItem();
-        String bloodGroupIdText = (String) bloodGroupComboBox.getSelectedItem();
-        String groupName = (String) groupNameComboBox.getSelectedItem();
+        String userId = (String) userComboBox.getSelectedItem();
+        String bloodGroupId = (String) bloodGroupComboBox.getSelectedItem();
         String hospitalName = (String) hospitalComboBox.getSelectedItem();
-        String bloodUnitText = bloodUnitField.getText();
+        String bloodUnit = bloodUnitField.getText();
+        String selectedGroupName = (String) groupNameComboBox.getSelectedItem(); // Get selected GroupName
 
-        // Validate input fields
-        if (userIdText == null || bloodGroupIdText == null || groupName == null || hospitalName == null || bloodUnitText.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill out all fields.", "Input Error", JOptionPane.ERROR_MESSAGE);
+        if (userId == null || bloodGroupId == null || hospitalName.isEmpty() || bloodUnit.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "All fields are required.", "Input Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        int userId, bloodGroupId, bloodUnit;
+        // Show confirmation dialog
+        int confirmation = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to add this patient?",
+            "Confirm Addition",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
 
-        try {
-            userId = Integer.parseInt(userIdText);
-            bloodGroupId = Integer.parseInt(bloodGroupIdText);
-            bloodUnit = Integer.parseInt(bloodUnitText); // Ensure bloodUnit is also parsed
-
-            // You can remove this line if 'selectedPatientRow' is not used
-            // int selectedPatientRow = patientTable.getSelectedRow();
-
-            String sql = "INSERT INTO Patient (UserId, BloodGroupId, GroupName, HospitalName, BloodUnit) VALUES (?, ?, ?, ?, ?)";
-            try (Connection connection = DatabaseConnection.getConnection();
-                 PreparedStatement statement = connection.prepareStatement(sql)) {
-
-                // Set parameters for the PreparedStatement
-                statement.setInt(1, userId);
-                statement.setInt(2, bloodGroupId);
-                statement.setString(3, groupName);
-                statement.setString(4, hospitalName);
-                statement.setInt(5, bloodUnit);
-             
-
-                // Execute the update
-                statement.executeUpdate();
-
-                // Notify the user
-                JOptionPane.showMessageDialog(this, "Patient added successfully.");
-
-                // Reload table data and donor list based on the selected group
-               
-                loadDonors(groupName);
-
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(this, "Error adding patient: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Invalid number format: " + e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-
-    private void sendRequest() {
-        String recipientUsername = recipientUsernameField.getText();
-        String recipientPassword = new String(recipientPasswordField.getPassword());
-
-        if (recipientUsername.isEmpty() || recipientPassword.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter recipient username and password.", "Input Error", JOptionPane.ERROR_MESSAGE);
-            return;
+        if (confirmation != JOptionPane.YES_OPTION) {
+            return; // If user clicks No, exit the method
         }
 
-        int selectedRow = donorTable.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a donor from the table.", "Selection Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        int donorId = (Integer) donorTableModel.getValueAt(selectedRow, 0);
-        if (selectedDonors.contains(donorId)) {
-            JOptionPane.showMessageDialog(this, "This donor is already selected by another patient.", "Donor Not Available", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        String donorEmail = donorEmailMap.get(donorId);
-
-        // Use the stored contact number
-        String contectNumber = selectedDonorContactNumber;
-
-        String from = "dollzuni468@gmail.com";
-        String host = "smtp.gmail.com";
-        Properties properties = System.getProperties();
-        properties.setProperty("mail.smtp.host", host);
-        properties.setProperty("mail.smtp.port", "587");
-        properties.setProperty("mail.smtp.auth", "true");
-        properties.setProperty("mail.smtp.starttls.enable", "true");
-        
-        String subject = "Blood Donation Request";
-        String body = "Dear Donor,\n\n" +
-                      "A patient has requested a blood donation.\n" +
-                      "Please find the details below:\n" +
-                      "Patient Username: " + recipientUsername + "\n" +
-                      "Group Name: " + groupNameComboBox.getSelectedItem() + "\n" +
-                      "Blood Unit Required: " + bloodUnitField.getText() + "\n" +
-                      "Contect Number: " + contectNumber + "\n\n" +
-                      "Thank you.";
-
-        Session session = Session.getDefaultInstance(properties, new Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(from, recipientPassword);
-            }
-        });
-
-        try {
-            MimeMessage message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(from));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(donorEmail));
-            message.setSubject(subject);
-            message.setText(body);
-
-            Transport.send(message);
-            JOptionPane.showMessageDialog(this, "Request sent successfully.");
-        } catch (MessagingException e) {
-            JOptionPane.showMessageDialog(this, "Error sending email: " + e.getMessage(), "Email Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-
-   
-
-    public void loadDonors(String groupName) {
         try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "SELECT d.DonorId, u.Name, u.Email, d.BloodGroupId, bg.GroupName, u.Amount, d.ContactNo " +
+            // Add the patient to the database
+            String query = "INSERT INTO Patient (UserId, BloodGroupId, HospitalName, BloodUnit) VALUES (?, ?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, userId);
+                statement.setString(2, bloodGroupId);
+                statement.setString(3, hospitalName);
+                statement.setInt(4, Integer.parseInt(bloodUnit));
+                statement.executeUpdate();
+                JOptionPane.showMessageDialog(this, "Patient added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+            // Load donors with the same GroupName
+            loadDonorsByGroupName(selectedGroupName);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error adding patient: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void loadDonorsByGroupName(String groupName) {
+        donorTableModel.setRowCount(0);
+
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            String query = "SELECT d.DonorId, d.UserId, d.BloodGroupId, u.Name, u.Email, u.ContactNo, d.BloodUnit AS Amount, bg.GroupName " +
                            "FROM Donor d " +
                            "JOIN BloodGroup bg ON d.BloodGroupId = bg.BloodGroupId " +
                            "JOIN User u ON d.UserId = u.UserId " +
@@ -564,33 +339,93 @@ public class AdddPatientFrame extends JFrame {
             try (PreparedStatement statement = connection.prepareStatement(query)) {
                 statement.setString(1, groupName);
                 try (ResultSet resultSet = statement.executeQuery()) {
-
-                    
-
-                    donorTableModel.setRowCount(0); // Clear existing data
-
-                    while (resultSet.next()) {
-                        int donorId = resultSet.getInt("DonorId");
-                        String name = resultSet.getString("Name");
-                        String email = resultSet.getString("Email");
-                        int bloodGroupId = resultSet.getInt("BloodGroupId");
-                        String donorGroupName = resultSet.getString("GroupName");
-                        BigDecimal amount = resultSet.getBigDecimal("Amount");
-                        String contactNo = resultSet.getString("ContactNo");
-
-                        donorEmailMap.put(donorId, email);
-                        donorTableModel.addRow(new Object[]{donorId, name, email, bloodGroupId, donorGroupName, amount, contactNo});
+                    if (!resultSet.next()) {
+                        JOptionPane.showMessageDialog(this, "No donors found for the selected Group Name.", "No Data", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        do {
+                            donorTableModel.addRow(new Object[]{
+                                resultSet.getInt("DonorId"),
+                                resultSet.getString("UserId"),
+                                resultSet.getString("BloodGroupId"),
+                                resultSet.getString("Name"),
+                                resultSet.getString("Email"),
+                                resultSet.getString("ContactNo"),
+                                resultSet.getInt("Amount"),
+                                resultSet.getString("GroupName")
+                            });
+                        } while (resultSet.next());
                     }
                 }
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error loading donors: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error loading donor data: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    private void moveToRequestTable(int donorId) {
+        try (Connection connection = DatabaseConnection.getConnection()) {
+            // Check if the donor already exists in the Request table
+            String checkQuery = "SELECT COUNT(*) FROM Request WHERE DonorId = ?";
+            try (PreparedStatement checkStatement = connection.prepareStatement(checkQuery)) {
+                checkStatement.setInt(1, donorId);
+                try (ResultSet checkResultSet = checkStatement.executeQuery()) {
+                    if (checkResultSet.next() && checkResultSet.getInt(1) > 0) {
+                        // Donor already exists in the Request table
+                        JOptionPane.showMessageDialog(
+                            this,
+                            "Donor is not available",
+                            "Right Now",
+                            JOptionPane.WARNING_MESSAGE
+                        );
+                        return ; // Exit the method if the donor already exists
+                        
+                    }
+                }
+            }
+
+            // Fetch donor details
+            String fetchQuery = "SELECT UserId, BloodGroupId FROM Donor WHERE DonorId = ?";
+            try (PreparedStatement fetchStatement = connection.prepareStatement(fetchQuery)) {
+                fetchStatement.setInt(1, donorId);
+                try (ResultSet fetchResultSet = fetchStatement.executeQuery()) {
+                    if (fetchResultSet.next()) {
+                        String userId = fetchResultSet.getString("UserId");
+                        String bloodGroupId = fetchResultSet.getString("BloodGroupId");
+
+                        // Insert into Request table
+                        String insertQuery = "INSERT INTO Request (UserId, BloodGroupId, DonorId) VALUES (?, ?, ?)";
+                        try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
+                            insertStatement.setString(1, userId);
+                            insertStatement.setString(2, bloodGroupId);
+                            insertStatement.setInt(3, donorId);
+
+                            insertStatement.executeUpdate();
+
+                            // Optionally, notify the user that the donor was successfully moved
+                            JOptionPane.showMessageDialog(
+                                this,
+                                "Request send",
+                                "Successfully",
+                                JOptionPane.INFORMATION_MESSAGE
+                                
+                            );
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error moving donor data to request table: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+    private void customizeTable() {
+        JTableHeader header = donorTable.getTableHeader();
+        header.setFont(new Font("Arial", Font.BOLD, 14));
+        donorTable.setFont(new Font("Arial", Font.PLAIN, 12));
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new AdddPatientFrame().setVisible(true));
     }
 }
-

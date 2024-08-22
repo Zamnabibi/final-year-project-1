@@ -15,7 +15,7 @@ public class WelcomePage extends JFrame {
 
     public WelcomePage() {
         setTitle("Welcome Page");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 1000, 400);
         setLocationRelativeTo(null); // Center the frame on the screen
 
@@ -39,7 +39,7 @@ public class WelcomePage extends JFrame {
         });
         animationTimer.start();
 
-        // Create buttons and ensure they are placed outside the animation area
+        // Create buttons and place them outside the animation area
         JButton btnAdmin = new JButton("Admin");
         btnAdmin.setBounds(750, 80, 100, 30);
         btnAdmin.addActionListener(new ActionListener() {
@@ -68,7 +68,7 @@ public class WelcomePage extends JFrame {
         contentPane.add(btnPatient);
 
         // Create and add label
-        JLabel lblSignUp = new JLabel("Sign Up As:");
+        JLabel lblSignUp = new JLabel("Login As:");
         lblSignUp.setFont(new Font("Tahoma", Font.BOLD, 34));
         lblSignUp.setBounds(750, 20, 210, 52);
         contentPane.add(lblSignUp);
@@ -89,11 +89,13 @@ public class WelcomePage extends JFrame {
 
     // Method to animate the image
     private void animateImage() {
+        // Restrict the animation within a smaller area to the left
+        int maxWidth = 700 - animationLabel.getWidth();
         xCoordinate += direction;
         animationLabel.setLocation(xCoordinate, 0);
 
-        // Reverse direction when image reaches the edge of the frame
-        if (xCoordinate >= getWidth() - animationLabel.getWidth() || xCoordinate <= 0) {
+        // Reverse direction when image reaches the edge of the restricted area
+        if (xCoordinate >= maxWidth || xCoordinate <= 0) {
             direction *= -1;
         }
     }

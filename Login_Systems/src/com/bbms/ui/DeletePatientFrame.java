@@ -2,7 +2,6 @@ package com.bbms.ui;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,9 +15,11 @@ public class DeletePatientFrame extends JFrame {
     private JComboBox<String> patientComboBox;
     private JButton deleteButton;
     private JButton closeButton;
-    private JTable patientTable;
-    private DefaultTableModel tableModel;
-    private JComboBox<String> bloodGroupComboBox; // Ensure it's not null
+
+    private JTextField userIdField;
+    private JTextField bloodGroupIdField;
+    private JTextField hospitalNameField;
+    private JTextField bloodUnitField;
     private JPanel footerPanel;
     private JLabel footerLabel;
 
@@ -33,53 +34,31 @@ public class DeletePatientFrame extends JFrame {
         patientComboBox = new JComboBox<>();
         deleteButton = new JButton("Delete Patient");
         closeButton = new JButton("Close");
-        
 
-       
-
-        // Load icons
-        try {
-            Image imgUpdate = new ImageIcon(this.getClass().getResource("/delete.png")).getImage();
-            deleteButton.setIcon(new ImageIcon(imgUpdate));
-        } catch (Exception e) {
-            System.out.println("Update icon not found.");
-        }
-
-        try {
-            Image imgClose = new ImageIcon(this.getClass().getResource("/close.png")).getImage();
-            closeButton.setIcon(new ImageIcon(imgClose));
-        } catch (Exception e) {
-            System.out.println("Close icon not found.");
-        }
-        patientTable = new JTable();
-        tableModel = new DefaultTableModel(
-                new Object[]{"PatientId", "UserId", "BloodGroupId", "GroupName", "HospitalName", "BloodUnit", "CreatedAt", "UpdatedAt"},
-                0
-        );
-        patientTable.setModel(tableModel);
-
-        bloodGroupComboBox = new JComboBox<>(); // Initialize it
+        userIdField = new JTextField();
+        bloodGroupIdField = new JTextField();
+        hospitalNameField = new JTextField();
+        bloodUnitField = new JTextField();
 
         // Panel for controls
         JPanel controlPanel = new JPanel();
-        controlPanel.setLayout(new GridLayout(3, 2)); // Adjusted to include bloodGroupComboBox
+        controlPanel.setLayout(new GridLayout(6, 2)); // Adjusted to include relevant fields
         controlPanel.setBackground(Color.PINK); // Set background color to pink
         controlPanel.add(new JLabel("Select Patient:"));
         controlPanel.add(patientComboBox);
-        controlPanel.add(new JLabel("Select Blood Group:")); // Label for bloodGroupComboBox
-        controlPanel.add(bloodGroupComboBox); // Add bloodGroupComboBox to panel
+        controlPanel.add(new JLabel("User ID:"));
+        controlPanel.add(userIdField);
+        controlPanel.add(new JLabel("Blood Group ID:"));
+        controlPanel.add(bloodGroupIdField);
+        controlPanel.add(new JLabel("Hospital Name:"));
+        controlPanel.add(hospitalNameField);
+        controlPanel.add(new JLabel("Blood Unit:"));
+        controlPanel.add(bloodUnitField);
         controlPanel.add(deleteButton);
         controlPanel.add(closeButton);
 
         // Add components to frame
         getContentPane().add(controlPanel, BorderLayout.NORTH);
-
-        // Add scroll pane for the table
-        JScrollPane scrollPane = new JScrollPane(patientTable);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder()); // Remove default border
-        scrollPane.getViewport().setBackground(Color.PINK); // Set background color of viewport
-
-        getContentPane().add(scrollPane, BorderLayout.CENTER); // Add scroll pane to center
 
         // Create footer panel
         footerPanel = new JPanel(new BorderLayout());
@@ -98,39 +77,29 @@ public class DeletePatientFrame extends JFrame {
         // Add action listeners
         deleteButton.addActionListener(e -> deletePatient());
         closeButton.addActionListener(e -> dispose());
+        patientComboBox.addActionListener(e -> updatePatientDetails());
 
         // Load data
-        loadPatientData();
         loadComboBoxes();
+        loadIcons();
     }
+    
+    private void loadIcons() {
+        try {
+            Image imgDelete = new ImageIcon(getClass().getResource("/delete.png")).getImage();
+            deleteButton.setIcon(new ImageIcon(imgDelete));
+        } catch (Exception e) {
+            System.err.println("Delete icon not found.");
+        }
 
-    private void loadPatientData() {
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "SELECT Patient.PatientId, Patient.UserId, Patient.BloodGroupId, BloodGroup.GroupName, " +
-                    "Patient.HospitalName, Patient.BloodUnit, Patient.CreatedAt, Patient.UpdatedAt " +
-                    "FROM Patient " +
-                    "INNER JOIN BloodGroup ON Patient.BloodGroupId = BloodGroup.BloodGroupId";
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
-
-            tableModel.setRowCount(0); // Clear existing rows
-
-            while (resultSet.next()) {
-                tableModel.addRow(new Object[]{
-                        resultSet.getInt("PatientId"),
-                        resultSet.getInt("UserId"),
-                        resultSet.getInt("BloodGroupId"),
-                        resultSet.getString("GroupName"),
-                        resultSet.getString("HospitalName"),
-                        resultSet.getInt("BloodUnit"),
-                        resultSet.getTimestamp("CreatedAt"),
-                        resultSet.getTimestamp("UpdatedAt")
-                });
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error loading patient data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        try {
+            Image imgClose = new ImageIcon(getClass().getResource("/close.png")).getImage();
+            closeButton.setIcon(new ImageIcon(imgClose));
+        } catch (Exception e) {
+            System.err.println("Close icon not found.");
         }
     }
+
 
     private void loadComboBoxes() {
         try (Connection connection = DatabaseConnection.getConnection()) {
@@ -143,64 +112,95 @@ public class DeletePatientFrame extends JFrame {
                 patientComboBox.addItem(userResultSet.getString("UserId"));
             }
 
-            // Load BloodGroupIds
-            String bloodGroupQuery = "SELECT BloodGroupId, GroupName FROM BloodGroup";
-            PreparedStatement bloodGroupStatement = connection.prepareStatement(bloodGroupQuery);
-            ResultSet bloodGroupResultSet = bloodGroupStatement.executeQuery();
-            bloodGroupComboBox.removeAllItems(); // Make sure it's not null
-            while (bloodGroupResultSet.next()) {
-                bloodGroupComboBox.addItem(bloodGroupResultSet.getString("GroupName"));
-            }
-
+            // Load BloodGroupIds if needed
+            // Currently not used but available for future use
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error loading combo box data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void deletePatient() {
-        int selectedRow = patientTable.getSelectedRow();
-        if (selectedRow != -1) {
-            int patientId = (int) tableModel.getValueAt(selectedRow, 0);
-
+    private void updatePatientDetails() {
+        String selectedPatientId = (String) patientComboBox.getSelectedItem();
+        if (selectedPatientId != null) {
             try (Connection connection = DatabaseConnection.getConnection()) {
-                // Log the PatientId for debugging
-                System.out.println("Attempting to delete PatientId: " + patientId);
-
-                // Move patient data to history table
-                String insertQuery = "INSERT INTO History (PatientId, UserId, BloodGroupId, GroupName, BloodUnit, HospitalName, DeletedAt) " +
-                        "SELECT Patient.PatientId, Patient.UserId, Patient.BloodGroupId, BloodGroup.GroupName, Patient.BloodUnit, Patient.HospitalName, NOW() " +
+                String query = "SELECT UserId, BloodGroupId, HospitalName, BloodUnit " +
                         "FROM Patient " +
-                        "INNER JOIN BloodGroup ON Patient.BloodGroupId = BloodGroup.BloodGroupId " +
-                        "WHERE Patient.PatientId = ?";
-                PreparedStatement insertStatement = connection.prepareStatement(insertQuery);
-                insertStatement.setInt(1, patientId);
-                int rowsInserted = insertStatement.executeUpdate();
+                        "WHERE UserId = ?";
+                PreparedStatement statement = connection.prepareStatement(query);
+                statement.setString(1, selectedPatientId);
+                ResultSet resultSet = statement.executeQuery();
 
-                if (rowsInserted > 0) {
-                    // Delete patient record from the Patient table
-                    String deleteQuery = "DELETE FROM Patient WHERE PatientId = ?";
-                    PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery);
-                    deleteStatement.setInt(1, patientId);
-                    int rowsDeleted = deleteStatement.executeUpdate();
-
-                    if (rowsDeleted > 0) {
-                        JOptionPane.showMessageDialog(this, "Patient deleted successfully.");
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Failed to delete the patient.");
-                    }
-
-                    // Refresh the patient data table
-                    loadPatientData();
+                if (resultSet.next()) {
+                    userIdField.setText(resultSet.getString("UserId"));
+                    bloodGroupIdField.setText(resultSet.getString("BloodGroupId"));
+                    hospitalNameField.setText(resultSet.getString("HospitalName"));
+                    bloodUnitField.setText(resultSet.getString("BloodUnit"));
                 } else {
-                    JOptionPane.showMessageDialog(this, "Failed to move patient data to history.");
+                    clearPatientDetails();
                 }
+
             } catch (SQLException e) {
-                JOptionPane.showMessageDialog(this, "Error deleting patient: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error loading patient details: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void clearPatientDetails() {
+        userIdField.setText("");
+        bloodGroupIdField.setText("");
+        hospitalNameField.setText("");
+        bloodUnitField.setText("");
+    }
+
+    private void deletePatient() {
+        String selectedPatientId = (String) patientComboBox.getSelectedItem();
+        if (selectedPatientId != null) {
+            // Show confirmation dialog
+            int confirmResult = JOptionPane.showConfirmDialog(this, 
+                    "Are you sure you want to delete the selected patient?", 
+                    "Confirm Deletion", 
+                    JOptionPane.YES_NO_OPTION, 
+                    JOptionPane.WARNING_MESSAGE);
+            
+            if (confirmResult == JOptionPane.YES_OPTION) {
+                try (Connection connection = DatabaseConnection.getConnection()) {
+                    // Move patient data to history table
+                    String insertQuery = "INSERT INTO History (UserId, BloodGroupId, HistoryBloodUnit, HistoryHospitalName, DeletedAt) " +
+                            "SELECT UserId, BloodGroupId, BloodUnit, HospitalName, NOW() " +
+                            "FROM Patient " +
+                            "WHERE UserId = ?";
+                    PreparedStatement insertStatement = connection.prepareStatement(insertQuery);
+                    insertStatement.setString(1, selectedPatientId);
+                    int rowsInserted = insertStatement.executeUpdate();
+
+                    if (rowsInserted > 0) {
+                        // Delete patient records from the Patient table
+                        String deleteQuery = "DELETE FROM Patient WHERE UserId = ?";
+                        PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery);
+                        deleteStatement.setString(1, selectedPatientId);
+                        int rowsDeleted = deleteStatement.executeUpdate();
+
+                        if (rowsDeleted > 0) {
+                            JOptionPane.showMessageDialog(this, "Patient deleted successfully.");
+                            clearPatientDetails();
+                            loadComboBoxes(); // Reload combo boxes to reflect the deletion
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Failed to delete the patient.");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Failed to move patient data to history.");
+                    }
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(this, "Error deleting patient: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Deletion cancelled.");
             }
         } else {
             JOptionPane.showMessageDialog(this, "No patient selected for deletion.");
         }
     }
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new DeletePatientFrame().setVisible(true));

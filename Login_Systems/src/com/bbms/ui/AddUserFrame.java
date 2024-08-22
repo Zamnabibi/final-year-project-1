@@ -2,15 +2,12 @@ package com.bbms.ui;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import com.bbms.util.DatabaseConnection;
 
@@ -28,15 +25,14 @@ public class AddUserFrame extends JFrame {
     private JComboBox<String> amountComboBox;
     private JButton addButton;
     private JButton closeButton;
-    private JTable userTable;
-    private DefaultTableModel tableModel;
+   
     private JPanel formPanel;
-	private JLabel footerLabel;
-	private JPanel footerPanel;
+    private JLabel footerLabel;
+    private JPanel footerPanel;
 
     public AddUserFrame() {
         setTitle("Add User");
-        setSize(800, 697);
+        setSize(800, 651);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new BorderLayout());
 
@@ -95,7 +91,7 @@ public class AddUserFrame extends JFrame {
             Image imgUpdate = new ImageIcon(this.getClass().getResource("/add new.png")).getImage();
             addButton.setIcon(new ImageIcon(imgUpdate));
         } catch (Exception e) {
-            System.out.println("Update icon not found.");
+            System.out.println("Add icon not found.");
         }
 
         try {
@@ -110,26 +106,7 @@ public class AddUserFrame extends JFrame {
 
         getContentPane().add(formPanel, BorderLayout.NORTH);
 
-        String[] columnNames = {"UserId", "UserType", "Name", "FatherName", "MotherName", "DOB", "ContactNo", "Gender", "Email", "Amount", "Address"};
-        tableModel = new DefaultTableModel(columnNames, 0);
-        userTable = new JTable(tableModel);
-        userTable.setFillsViewportHeight(true);
-
-        userTable.setBackground(Color.WHITE);
-        userTable.setForeground(Color.BLACK);
-        userTable.setGridColor(Color.BLACK);
-
-        JScrollPane tableScrollPane = new JScrollPane(userTable);
-        tableScrollPane.setBackground(Color.PINK);
-        tableScrollPane.getViewport().setBackground(Color.PINK);
-
-        JTableHeader tableHeader = userTable.getTableHeader();
-        tableHeader.setBackground(Color.WHITE);
-        tableHeader.setForeground(Color.BLACK);
-
-        getContentPane().add(tableScrollPane, BorderLayout.CENTER);
-        
-     // Footer Panel
+        // Footer Panel
         footerPanel = new JPanel(new BorderLayout());
         footerPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         footerPanel.setBackground(Color.PINK);
@@ -141,7 +118,6 @@ public class AddUserFrame extends JFrame {
         footerPanel.add(footerLabel, BorderLayout.CENTER);
 
         getContentPane().add(footerPanel, BorderLayout.SOUTH);
-
 
         addButton.addActionListener(new ActionListener() {
             @Override
@@ -156,32 +132,20 @@ public class AddUserFrame extends JFrame {
                 dispose();
             }
         });
-        userTypeComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String selectedType = (String) userTypeComboBox.getSelectedItem();
-                if ("Patient".equals(selectedType)) {
-                    amountComboBox.setEnabled(false);
-                    amountComboBox.setSelectedItem(null); // Clear the selection for patients
-                } else {
-                    amountComboBox.setEnabled(true);
-                }
-            }
-        });
 
-        // Add a listener to enable/disable amountComboBox based on userTypeComboBox selection
         userTypeComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedType = (String) userTypeComboBox.getSelectedItem();
                 amountComboBox.setEnabled("Donor".equals(selectedType));
+                if ("Patient".equals(selectedType)) {
+                    amountComboBox.setSelectedItem(null); // Clear the selection for patients
+                }
             }
         });
 
         // Initialize amountComboBox state based on default userTypeComboBox selection
         amountComboBox.setEnabled("Donor".equals(userTypeComboBox.getSelectedItem()));
-
-        loadUserData();
     }
 
     private void addFormField(String label, JComponent field) {
@@ -199,90 +163,60 @@ public class AddUserFrame extends JFrame {
     }
 
     private void addUser() {
-        try {
-            String userType = (String) userTypeComboBox.getSelectedItem();
-            String name = nameField.getText().trim();
-            String fatherName = fatherNameField.getText().trim();
-            String motherName = motherNameField.getText().trim();
-            String email = emailField.getText().trim();
-            String contactNo = contactNoField.getText().trim();
-            String dob = dobField.getText().trim();
-            String gender = (String) genderComboBox.getSelectedItem();
-            int amount = 0; // Default amount for non-donors
+        String selectedAmount = (String) amountComboBox.getSelectedItem();
+        BigDecimal amount = BigDecimal.ZERO; // Default to zero if not applicable
 
-            if ("Donor".equals(userType)) {
-                String amountString = (String) amountComboBox.getSelectedItem();
-                if (amountString != null && amountString.startsWith("$")) {
-                    amount = Integer.parseInt(amountString.substring(1));
-                }
+        if (selectedAmount != null && !selectedAmount.isEmpty()) {
+            try {
+                // Remove the dollar sign and parse as BigDecimal
+                amount = new BigDecimal(selectedAmount.replace("$", ""));
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Invalid amount format.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+                return;
             }
-
-            String address = addressField.getText().trim();
-
-            Connection connection = DatabaseConnection.getConnection();
-            String query = "INSERT INTO User (UserType, Name, FatherName, MotherName, Email, ContactNo, DOB, Gender, Amount, Address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, userType);
-            statement.setString(2, name);
-            statement.setString(3, fatherName);
-            statement.setString(4, motherName);
-            statement.setString(5, email);
-            statement.setString(6, contactNo);
-            statement.setString(7, dob);
-            statement.setString(8, gender);
-            statement.setInt(9, amount);
-            statement.setString(10, address);
-
-            int rowsInserted = statement.executeUpdate();
-            if (rowsInserted > 0) {
-                JOptionPane.showMessageDialog(this, "User added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                loadUserData();
-            }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Error adding user: " + ex.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
 
-    private void loadUserData() {
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "SELECT * FROM User";
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
+        // Show confirmation dialog
+        int confirmation = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to add this user?",
+            "Confirm Addition",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
 
-            tableModel.setRowCount(0);
+        if (confirmation != JOptionPane.YES_OPTION) {
+            return; // If user clicks No, exit the method
+        }
 
-            while (resultSet.next()) {
-                Object[] row = new Object[]{
-                    resultSet.getInt("UserId"),
-                    resultSet.getString("UserType"),
-                    resultSet.getString("Name"),
-                    resultSet.getString("FatherName"),
-                    resultSet.getString("MotherName"),
-                    resultSet.getDate("DOB"),
-                    resultSet.getString("ContactNo"),
-                    resultSet.getString("Gender"),
-                    resultSet.getString("Email"),
-                    resultSet.getInt("Amount"),
-                    resultSet.getString("Address")
-                };
-                tableModel.addRow(row);
-            }
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String sql = "INSERT INTO user (Name, FatherName, MotherName, Email, ContactNo, DOB, UserType, Gender, Amount, Address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, nameField.getText());
+                stmt.setString(2, fatherNameField.getText());
+                stmt.setString(3, motherNameField.getText());
+                stmt.setString(4, emailField.getText());
+                stmt.setString(5, contactNoField.getText());
+                stmt.setString(6, dobField.getText());
+                stmt.setString(7, (String) userTypeComboBox.getSelectedItem());
+                stmt.setString(8, (String) genderComboBox.getSelectedItem());
+                stmt.setBigDecimal(9, amount);
+                stmt.setString(10, addressField.getText());
 
-            userTable.getColumnModel().getColumn(9).setCellRenderer(new DefaultTableCellRenderer() {
-                @Override
-                public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                    Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                    if (value instanceof Integer) {
-                        setText("$" + value);
-                    }
-                    return c;
+                int rowsInserted = stmt.executeUpdate();
+                if (rowsInserted > 0) {
+                    JOptionPane.showMessageDialog(this, "User added successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "User addition failed.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            });
-
+            }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error loading user data: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error adding user: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new AddUserFrame().setVisible(true));

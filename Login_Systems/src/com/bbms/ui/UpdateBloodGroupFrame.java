@@ -2,7 +2,7 @@ package com.bbms.ui;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,8 +15,7 @@ public class UpdateBloodGroupFrame extends JFrame {
     private JComboBox<Integer> bloodGroupIdComboBox;
     private JTextField groupNameField;
     private JButton updateButton, closeButton;
-    private JTable bloodGroupTable;
-    private DefaultTableModel tableModel;
+    
     private JPanel footerPanel;
     private JLabel footerLabel;
 
@@ -79,14 +78,6 @@ public class UpdateBloodGroupFrame extends JFrame {
 
         getContentPane().add(footerPanel, BorderLayout.SOUTH);
 
-        // Table setup
-        tableModel = new DefaultTableModel();
-        bloodGroupTable = new JTable(tableModel);
-        tableModel.addColumn("BloodGroupId");
-        tableModel.addColumn("GroupName");
-        loadBloodGroupData();
-        add(new JScrollPane(bloodGroupTable), BorderLayout.CENTER);
-
         // Load BloodGroup IDs
         loadBloodGroupIds();
 
@@ -94,11 +85,11 @@ public class UpdateBloodGroupFrame extends JFrame {
         bloodGroupIdComboBox.addActionListener(e -> loadGroupName());
         updateButton.addActionListener(e -> updateBloodGroup());
         closeButton.addActionListener(e -> dispose());
-        bloodGroupTable.getSelectionModel().addListSelectionListener(e -> fillFormFromTable());
-
+        
         setVisible(true);
     }
 
+    // Method to load Blood Group IDs into the ComboBox
     private void loadBloodGroupIds() {
         try (Connection connection = DatabaseConnection.getConnection()) {
             String query = "SELECT BloodGroupId FROM BloodGroup";
@@ -113,6 +104,7 @@ public class UpdateBloodGroupFrame extends JFrame {
         }
     }
 
+    // Method to load Group Name based on selected BloodGroupId
     private void loadGroupName() {
         Integer bloodGroupId = (Integer) bloodGroupIdComboBox.getSelectedItem();
         if (bloodGroupId != null) {
@@ -130,58 +122,48 @@ public class UpdateBloodGroupFrame extends JFrame {
         }
     }
 
-    private void loadBloodGroupData() {
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "SELECT * FROM BloodGroup";
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
-
-            tableModel.setRowCount(0); // Clear existing rows
-
-            while (resultSet.next()) {
-                tableModel.addRow(new Object[]{
-                        resultSet.getInt("BloodGroupId"),
-                        resultSet.getString("GroupName")
-                });
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error loading blood groups.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void fillFormFromTable() {
-        int selectedRow = bloodGroupTable.getSelectedRow();
-        if (selectedRow >= 0) {
-            Integer bloodGroupId = (Integer) tableModel.getValueAt(selectedRow, 0);
-            String groupName = (String) tableModel.getValueAt(selectedRow, 1);
-
-            bloodGroupIdComboBox.setSelectedItem(bloodGroupId);
-            groupNameField.setText(groupName);
-        }
-    }
-
+ // Method to update Blood Group details
     private void updateBloodGroup() {
         Integer bloodGroupId = (Integer) bloodGroupIdComboBox.getSelectedItem();
         String groupName = groupNameField.getText();
 
+        // Validate input
         if (bloodGroupId == null || groupName.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please select a blood group ID and enter a group name.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "UPDATE BloodGroup SET GroupName = ? WHERE BloodGroupId = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, groupName);
-            statement.setInt(2, bloodGroupId);
+        // Confirmation dialog
+        int confirmation = JOptionPane.showConfirmDialog(
+            this,
+            "Are you sure you want to update the blood group?",
+            "Confirm Update",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        );
 
-            statement.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Blood group updated successfully.");
-            loadBloodGroupData(); // Refresh table data
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error updating blood group.", "Error", JOptionPane.ERROR_MESSAGE);
+        // Proceed if user confirms
+        if (confirmation == JOptionPane.YES_OPTION) {
+            try (Connection connection = DatabaseConnection.getConnection()) {
+                String query = "UPDATE BloodGroup SET GroupName = ? WHERE BloodGroupId = ?";
+                PreparedStatement statement = connection.prepareStatement(query);
+                statement.setString(1, groupName);
+                statement.setInt(2, bloodGroupId);
+
+                int rowsAffected = statement.executeUpdate();
+                if (rowsAffected > 0) {
+                    JOptionPane.showMessageDialog(this, "Blood group updated successfully.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "No blood group found with the given ID.", "Warning", JOptionPane.WARNING_MESSAGE);
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error updating blood group.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            // User chose not to update
+            JOptionPane.showMessageDialog(this, "Update canceled.");
         }
     }
 

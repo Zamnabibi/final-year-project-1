@@ -23,6 +23,11 @@ public class PatientHomeFrame extends JFrame {
         setJMenuBar(menuBar);
 
         // Create a panel with a background color
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setBackground(Color.PINK);
+
+        // Create a background image panel
         JPanel backgroundPanel = new JPanel();
         backgroundPanel.setLayout(null);
         backgroundPanel.setBackground(Color.PINK);
@@ -34,8 +39,23 @@ public class PatientHomeFrame extends JFrame {
         lblBackground.setBounds(0, 0, 854, 517);
         backgroundPanel.add(lblBackground);
 
-        // Add the background panel to the frame
-        setContentPane(backgroundPanel);
+        // Add the background panel to the main panel
+        mainPanel.add(backgroundPanel, BorderLayout.CENTER);
+
+        // Create and add the footer panel
+        JPanel footerPanel = new JPanel();
+        footerPanel.setBackground(Color.PINK);
+        footerPanel.setPreferredSize(new Dimension(getWidth(), 50)); // Set the preferred height of the footer
+
+        JLabel footerLabel = new JLabel("© 2024 Blood Bank Management System. All rights reserved.");
+        footerLabel.setForeground(Color.BLACK); // Change the text color if needed
+        footerPanel.add(footerLabel);
+
+        // Add the footer panel to the bottom of the main panel
+        mainPanel.add(footerPanel, BorderLayout.SOUTH);
+
+        // Add the main panel to the frame
+        setContentPane(mainPanel);
     }
 
     private void createUserMenu(JMenuBar menuBar) {
@@ -82,7 +102,7 @@ public class PatientHomeFrame extends JFrame {
 
         // Define actions and corresponding icons
         String[] actions = {"Add Patient Unit", "Update Patient Unit", "Delete Patient Unit"};
-        String[] icons = {"/add donor.png", "/update.png", "/delete.png"}; // Update with your actual icon paths
+        String[] icons = {"/add new.png", "/update.png", "/delete.png"}; // Update with your actual icon paths
 
         for (int i = 0; i < actions.length; i++) {
             final String action = actions[i]; // Make the variable final for use in lambda expression
@@ -129,9 +149,11 @@ public class PatientHomeFrame extends JFrame {
             case "Add User": new AddUserFrame().setVisible(true); break;
             case "Update User": new UpdateUserFrame().setVisible(true); break;
             case "Delete User": new DeleteUserFrame().setVisible(true); break;
-            case "Add Patient Unit": new AddPatientFrame().setVisible(true); break;
+            case "View User": new ViewUserFrame().setVisible(true); break;
+            case "Add Patient Unit": new AdddPatientFrame().setVisible(true); break;
             case "Update Patient Unit": new UpdatePatientFrame().setVisible(true); break;
             case "Delete Patient Unit": new DeletePatientFrame().setVisible(true); break;
+            case "View Patient Units": new ViewPatientFrame().setVisible(true); break;
         }
     }
 
@@ -147,12 +169,12 @@ public class PatientHomeFrame extends JFrame {
             case "Add User" -> KeyStroke.getKeyStroke("ctrl shift U");
             case "Update User" -> KeyStroke.getKeyStroke("ctrl shift E");
             case "Delete User" -> KeyStroke.getKeyStroke("ctrl shift R");
+            
             case "Add Patient Unit" -> KeyStroke.getKeyStroke("ctrl shift P");
             case "Update Patient Unit" -> KeyStroke.getKeyStroke("ctrl shift X");
             case "Delete Patient Unit" -> KeyStroke.getKeyStroke("ctrl shift C");
-            default -> null;
             
-           
+            default -> null;
         };
         if (keyStroke != null) {
             getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyStroke, action);
